@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace CosmosApi.Callbacks
 {
-    public class AfterCall
+    public class Error
     {
         /// <summary>The HttpRequestMessage associated with this call.</summary>
         public HttpRequestMessage Request { get; set; }
@@ -15,13 +15,24 @@ namespace CosmosApi.Callbacks
         public DateTime StartedUtc { get; set; }
         /// <summary>DateTime the moment a response was received.</summary>
         public DateTime? EndedUtc { get; set; }
+        /// <summary>
+        /// Exception that occurred while sending the HttpRequestMessage.
+        /// </summary>
+        public Exception Exception { get; set; }
+        /// <summary>
+        /// User code should set this to true inside global event handlers (OnError, etc) to indicate
+        /// that the exception was handled and should not be propagated further.
+        /// </summary>
+        public bool Handled { get; set; }
 
-        public AfterCall(HttpRequestMessage request, HttpResponseMessage? response, DateTime startedUtc, DateTime? endedUtc)
+        internal Error(HttpRequestMessage request, HttpResponseMessage? response, DateTime startedUtc, DateTime? endedUtc, Exception exception, bool handled)
         {
             Request = request;
             Response = response;
             StartedUtc = startedUtc;
             EndedUtc = endedUtc;
+            Exception = exception;
+            Handled = handled;
         }
     }
 }

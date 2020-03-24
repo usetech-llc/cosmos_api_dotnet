@@ -6,5 +6,10 @@ namespace CosmosApi.Callbacks
     {
         /// <summary>The HttpRequestMessage associated with this call.</summary>
         public HttpRequestMessage Request { get; set; }
+
+        internal BeforeCall(HttpRequestMessage request)
+        {
+            Request = request;
+        }
     }
 }

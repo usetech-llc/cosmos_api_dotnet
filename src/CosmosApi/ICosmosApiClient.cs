@@ -1,11 +1,10 @@
 ﻿using System;
-using CosmosApi.CosmosClient;
+using CosmosApi.Endpoints;
 
 namespace CosmosApi
 {
-    public interface ICosmosApiClient
+    public interface ICosmosApiClient : IDisposable
     {
-        ICosmosApiClient Configure(Action<CosmosApiClientSettings> configurator);
         IGaiaREST GaiaRest { get; }
     }
 }
