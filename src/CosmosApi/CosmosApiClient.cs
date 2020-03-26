@@ -4,6 +4,8 @@ using CosmosApi.Callbacks;
 using CosmosApi.Endpoints;
 using CosmosApi.Flurl;
 using Flurl.Http;
+using Flurl.Http.Configuration;
+using Newtonsoft.Json;
 
 namespace CosmosApi
 {
@@ -18,9 +20,11 @@ namespace CosmosApi
             _flurlClient = new Lazy<IFlurlClient>(CreateClient, LazyThreadSafetyMode.ExecutionAndPublication);
             
             GaiaRest = new GaiaREST(GetClient);
+            TendermintRpc = new TendermintRPC(GetClient);
         }
 
         public IGaiaREST GaiaRest { get; }
+        public ITendermintRPC TendermintRpc { get; set; }
 
         private IFlurlClient GetClient()
         {
@@ -75,6 +79,11 @@ namespace CosmosApi
                     {
                         s.AfterCallAsync = call => _settings.OnAfterCallAsync(new AfterCall(call.Request, call.Response, call.StartedUtc, call.EndedUtc));
                     }
+                    
+                    s.JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings()
+                    {
+                        DateFormatHandling = DateFormatHandling.IsoDateFormat,
+                    });
                 });
             if (_settings.BaseUrl != null)
             {

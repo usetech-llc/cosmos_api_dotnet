@@ -2,24 +2,24 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class Paths14mn4yvsyncinggetresponses200contentapplicationJsonschema
+    public partial class NodeSyncingStatus
     {
         /// <summary>
         /// Initializes a new instance of the
-        /// Paths14mn4yvsyncinggetresponses200contentapplicationJsonschema
+        /// NodeSyncingStatus
         /// class.
         /// </summary>
-        public Paths14mn4yvsyncinggetresponses200contentapplicationJsonschema()
+        public NodeSyncingStatus()
         {
             CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the
-        /// Paths14mn4yvsyncinggetresponses200contentapplicationJsonschema
+        /// NodeSyncingStatus
         /// class.
         /// </summary>
-        public Paths14mn4yvsyncinggetresponses200contentapplicationJsonschema(bool? syncing = default(bool?))
+        public NodeSyncingStatus(bool? syncing = default(bool?))
         {
             Syncing = syncing;
             CustomInit();

@@ -3,24 +3,24 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class Paths1f814j2validatorsetsLatestgetresponses200contentapplicationJsonschema
+    public partial class ValidatorSet
     {
         /// <summary>
         /// Initializes a new instance of the
-        /// Paths1f814j2validatorsetsLatestgetresponses200contentapplicationJsonschema
+        /// ValidatorSet
         /// class.
         /// </summary>
-        public Paths1f814j2validatorsetsLatestgetresponses200contentapplicationJsonschema()
+        public ValidatorSet()
         {
             CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the
-        /// Paths1f814j2validatorsetsLatestgetresponses200contentapplicationJsonschema
+        /// ValidatorSet
         /// class.
         /// </summary>
-        public Paths1f814j2validatorsetsLatestgetresponses200contentapplicationJsonschema(string blockHeight = default(string), IList<TendermintValidator> validators = default(IList<TendermintValidator>))
+        public ValidatorSet(string blockHeight = default(string), IList<TendermintValidator> validators = default(IList<TendermintValidator>))
         {
             BlockHeight = blockHeight;
             Validators = validators;

@@ -3,32 +3,22 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class Block
+    public class Block
     {
         /// <summary>
         /// Initializes a new instance of the Block class.
         /// </summary>
         public Block()
         {
-            CustomInit();
         }
 
-        /// <summary>
-        /// Initializes a new instance of the Block class.
-        /// </summary>
-        public Block(BlockHeader header = default(BlockHeader), IList<string> txs = default(IList<string>), IList<string> evidence = default(IList<string>), BlockLastCommit lastCommit = default(BlockLastCommit))
+        public Block(BlockHeader header = null, BlockData data = null, EvidenceData evidence = null, BlockLastCommit? lastCommit = null)
         {
             Header = header;
-            Txs = txs;
+            Data = data;
             Evidence = evidence;
             LastCommit = lastCommit;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>
@@ -37,18 +27,18 @@ namespace CosmosApi.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "txs")]
-        public IList<string> Txs { get; set; }
+        [JsonProperty(PropertyName = "data")]
+        public BlockData Data { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "evidence")]
-        public IList<string> Evidence { get; set; }
+        public EvidenceData Evidence { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "last_commit")]
-        public BlockLastCommit LastCommit { get; set; }
+        public BlockLastCommit? LastCommit { get; set; }
 
     }
 }

@@ -2,24 +2,24 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class Paths1fhy649nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesprotocolVersion
+    public partial class ProtocolVersion
     {
         /// <summary>
         /// Initializes a new instance of the
-        /// Paths1fhy649nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesprotocolVersion
+        /// ProtocolVersion
         /// class.
         /// </summary>
-        public Paths1fhy649nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesprotocolVersion()
+        public ProtocolVersion()
         {
             CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the
-        /// Paths1fhy649nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesprotocolVersion
+        /// ProtocolVersion
         /// class.
         /// </summary>
-        public Paths1fhy649nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesprotocolVersion(string p2p = default(string), string block = default(string), string app = default(string))
+        public ProtocolVersion(ulong p2p = default(ulong), ulong block = default(ulong), ulong app = default(ulong))
         {
             P2p = p2p;
             Block = block;
@@ -35,17 +35,17 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "p2p")]
-        public string P2p { get; set; }
+        public ulong P2p { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "block")]
-        public string Block { get; set; }
+        public ulong Block { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "app")]
-        public string App { get; set; }
+        public ulong App { get; set; }
 
     }
 }

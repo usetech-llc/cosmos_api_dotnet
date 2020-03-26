@@ -3,30 +3,27 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class BlockLastCommit
+    /// <summary>
+    /// Commit contains the evidence that a block was committed by a set of validators.
+    /// NOTE: Commit is empty for height 1, but never nil.
+    /// </summary>
+    public class BlockLastCommit
     {
         /// <summary>
         /// Initializes a new instance of the BlockLastCommit class.
         /// </summary>
         public BlockLastCommit()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the BlockLastCommit class.
         /// </summary>
-        public BlockLastCommit(BlockID blockId = default(BlockID), IList<BlockLastCommitPrecommitsItem> precommits = default(IList<BlockLastCommitPrecommitsItem>))
+        public BlockLastCommit(BlockID blockId = default, CommitSig[] precommits = default)
         {
             BlockId = blockId;
             Precommits = precommits;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>
@@ -36,7 +33,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "precommits")]
-        public IList<BlockLastCommitPrecommitsItem> Precommits { get; set; }
+        public CommitSig?[]? Precommits { get; set; }
 
     }
 }

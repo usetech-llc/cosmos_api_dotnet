@@ -1,3 +1,4 @@
+using CosmosApi.Serialization;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
@@ -15,7 +16,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the BlockIDParts class.
         /// </summary>
-        public BlockIDParts(double? total = default(double?), string hash = default(string))
+        public BlockIDParts(int? total = default(int?), byte[] hash = default(byte[]))
         {
             Total = total;
             Hash = hash;
@@ -30,12 +31,12 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "total")]
-        public double? Total { get; set; }
+        public int? Total { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "hash")]
-        public string Hash { get; set; }
-
+        [JsonConverter(typeof(HexStringByteArrayConverter))]
+        public byte[] Hash { get; set; }
     }
 }

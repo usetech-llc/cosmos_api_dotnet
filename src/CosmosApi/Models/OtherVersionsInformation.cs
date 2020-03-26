@@ -5,24 +5,24 @@ namespace CosmosApi.Models
     /// <summary>
     /// more information on versions
     /// </summary>
-    public partial class Pathszgho23nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesother
+    public partial class OtherVersionsInformation
     {
         /// <summary>
         /// Initializes a new instance of the
-        /// Pathszgho23nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesother
+        /// OtherVersionsInformation
         /// class.
         /// </summary>
-        public Pathszgho23nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesother()
+        public OtherVersionsInformation()
         {
             CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the
-        /// Pathszgho23nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesother
+        /// OtherVersionsInformation
         /// class.
         /// </summary>
-        public Pathszgho23nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesother(string txIndex = default(string), string rpcAddress = default(string))
+        public OtherVersionsInformation(string txIndex = default(string), string rpcAddress = default(string))
         {
             TxIndex = txIndex;
             RpcAddress = rpcAddress;
