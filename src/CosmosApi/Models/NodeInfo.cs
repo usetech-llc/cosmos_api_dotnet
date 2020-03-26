@@ -21,7 +21,7 @@ namespace CosmosApi.Models
         /// </summary>
         /// <param name="version">Tendermint version</param>
         /// <param name="other">more information on versions</param>
-        public NodeInfo(string id = default(string), string moniker = default(string), Paths1fhy649nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesprotocolVersion protocolVersion = default(Paths1fhy649nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesprotocolVersion), string network = default(string), string channels = default(string), string listenAddr = default(string), string version = default(string), Pathszgho23nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesother other = default(Pathszgho23nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesother))
+        public NodeInfo(string id = default(string), string moniker = default(string), ProtocolVersion protocolVersion = default(ProtocolVersion), string network = default(string), string channels = default(string), string listenAddr = default(string), string version = default(string), OtherVersionsInformation other = default(OtherVersionsInformation))
         {
             Id = id;
             Moniker = moniker;
@@ -52,7 +52,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "protocol_version")]
-        public Paths1fhy649nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesprotocolVersion ProtocolVersion { get; set; }
+        public ProtocolVersion ProtocolVersion { get; set; }
 
         /// <summary>
         /// </summary>
@@ -79,7 +79,7 @@ namespace CosmosApi.Models
         /// Gets or sets more information on versions
         /// </summary>
         [JsonProperty(PropertyName = "other")]
-        public Pathszgho23nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfopropertiesother Other { get; set; }
+        public OtherVersionsInformation Other { get; set; }
 
     }
 }

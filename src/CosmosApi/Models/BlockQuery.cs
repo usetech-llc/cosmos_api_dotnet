@@ -1,31 +1,25 @@
+using System;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class BlockQuery
+    public class BlockQuery
     {
         /// <summary>
         /// Initializes a new instance of the BlockQuery class.
         /// </summary>
         public BlockQuery()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the BlockQuery class.
         /// </summary>
-        public BlockQuery(BlockQueryBlockMeta blockMeta = default(BlockQueryBlockMeta), Block block = default(Block))
+        public BlockQuery(BlockQueryBlockMeta blockMeta = default, Block block = default)
         {
             BlockMeta = blockMeta;
             Block = block;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>

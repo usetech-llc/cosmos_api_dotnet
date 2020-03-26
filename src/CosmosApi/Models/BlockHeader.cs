@@ -1,8 +1,10 @@
+using System;
+using CosmosApi.Serialization;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class BlockHeader
+    public class BlockHeader
     {
         /// <summary>
         /// Initializes a new instance of the BlockHeader class.
@@ -15,7 +17,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the BlockHeader class.
         /// </summary>
-        public BlockHeader(string chainId = default(string), double? height = default(double?), string time = default(string), double? numTxs = default(double?), BlockID lastBlockId = default(BlockID), double? totalTxs = default(double?), string lastCommitHash = default(string), string dataHash = default(string), string validatorsHash = default(string), string nextValidatorsHash = default(string), string consensusHash = default(string), string appHash = default(string), string lastResultsHash = default(string), string evidenceHash = default(string), string proposerAddress = default(string), BlockHeaderVersion version = default(BlockHeaderVersion))
+        public BlockHeader(string chainId = default, long? height = default, DateTimeOffset time = default, long? numTxs = default, BlockID lastBlockId = default, long? totalTxs = default, byte[] lastCommitHash = default, byte[] dataHash = default, byte[] validatorsHash = default, byte[] nextValidatorsHash = default, byte[] consensusHash = default, byte[] appHash = default, byte[] lastResultsHash = default, byte[] evidenceHash = default, byte[] proposerAddress = default, BlockHeaderVersion version = default)
         {
             ChainId = chainId;
             Height = height;
@@ -39,7 +41,9 @@ namespace CosmosApi.Models
         /// <summary>
         /// An initialization method that performs custom operations like setting defaults
         /// </summary>
-        partial void CustomInit();
+        private void CustomInit()
+        {
+        }
 
         /// <summary>
         /// </summary>
@@ -49,19 +53,20 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "height")]
-        public double? Height { get; set; }
+        public long? Height { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "time")]
-        public string Time { get; set; }
+        public DateTimeOffset Time { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "num_txs")]
-        public double? NumTxs { get; set; }
+        public long? NumTxs { get; set; }
 
         /// <summary>
+        /// Prev block info.
         /// </summary>
         [JsonProperty(PropertyName = "last_block_id")]
         public BlockID LastBlockId { get; set; }
@@ -69,57 +74,74 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "total_txs")]
-        public double? TotalTxs { get; set; }
+        public long? TotalTxs { get; set; }
 
         /// <summary>
+        /// Hash of block data: commit from validators from the last block.
         /// </summary>
         [JsonProperty(PropertyName = "last_commit_hash")]
-        public string LastCommitHash { get; set; }
+        [JsonConverter(typeof(HexStringByteArrayConverter))]
+        public byte[] LastCommitHash { get; set; }
 
         /// <summary>
+        /// Hash of block data: transactions.
         /// </summary>
         [JsonProperty(PropertyName = "data_hash")]
-        public string DataHash { get; set; }
+        [JsonConverter(typeof(HexStringByteArrayConverter))]
+        public byte[] DataHash { get; set; }
 
         /// <summary>
+        /// Hash from the app output from the prev block: validators for the current block.
         /// </summary>
         [JsonProperty(PropertyName = "validators_hash")]
-        public string ValidatorsHash { get; set; }
+        [JsonConverter(typeof(HexStringByteArrayConverter))]
+        public byte[] ValidatorsHash { get; set; }
 
         /// <summary>
+        /// Hash from the app output from the prev block: validators for the next block.
         /// </summary>
         [JsonProperty(PropertyName = "next_validators_hash")]
-        public string NextValidatorsHash { get; set; }
+        [JsonConverter(typeof(HexStringByteArrayConverter))]
+        public byte[] NextValidatorsHash { get; set; }
 
         /// <summary>
+        /// Hash from the app output from the prev block: consensus params for current block.
         /// </summary>
         [JsonProperty(PropertyName = "consensus_hash")]
-        public string ConsensusHash { get; set; }
+        [JsonConverter(typeof(HexStringByteArrayConverter))]
+        public byte[] ConsensusHash { get; set; }
 
         /// <summary>
+        /// Hash from the app output from the prev block: state after txs from the previous block.
         /// </summary>
         [JsonProperty(PropertyName = "app_hash")]
-        public string AppHash { get; set; }
+        [JsonConverter(typeof(HexStringByteArrayConverter))]
+        public byte[] AppHash { get; set; }
 
         /// <summary>
+        /// Root hash of all results from the txs from the previous block.
         /// </summary>
         [JsonProperty(PropertyName = "last_results_hash")]
-        public string LastResultsHash { get; set; }
+        [JsonConverter(typeof(HexStringByteArrayConverter))]
+        public byte[] LastResultsHash { get; set; }
 
         /// <summary>
+        /// Consensus info: evidence included in the block.
         /// </summary>
         [JsonProperty(PropertyName = "evidence_hash")]
-        public string EvidenceHash { get; set; }
+        [JsonConverter(typeof(HexStringByteArrayConverter))]
+        public byte[] EvidenceHash { get; set; }
 
         /// <summary>
+        /// Consensus info: original proposer of the block.
         /// </summary>
         [JsonProperty(PropertyName = "proposer_address")]
-        public string ProposerAddress { get; set; }
+        [JsonConverter(typeof(HexStringByteArrayConverter))]
+        public byte[] ProposerAddress { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "version")]
         public BlockHeaderVersion Version { get; set; }
-
     }
 }

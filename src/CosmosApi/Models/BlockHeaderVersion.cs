@@ -1,8 +1,9 @@
+using System;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class BlockHeaderVersion
+    public class BlockHeaderVersion
     {
         /// <summary>
         /// Initializes a new instance of the BlockHeaderVersion class.
@@ -15,7 +16,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the BlockHeaderVersion class.
         /// </summary>
-        public BlockHeaderVersion(string block = default(string), string app = default(string))
+        public BlockHeaderVersion(ulong block = default, ulong app = default)
         {
             Block = block;
             App = app;
@@ -25,17 +26,18 @@ namespace CosmosApi.Models
         /// <summary>
         /// An initialization method that performs custom operations like setting defaults
         /// </summary>
-        partial void CustomInit();
+        private void CustomInit()
+        {
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "block")]
-        public string Block { get; set; }
+        public ulong Block { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "app")]
-        public string App { get; set; }
-
+        public ulong App { get; set; }
     }
 }

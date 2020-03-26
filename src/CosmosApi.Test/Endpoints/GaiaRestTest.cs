@@ -3,14 +3,12 @@ using Xunit;
 
 namespace CosmosApi.Test.Endpoints
 {
-    public class GaiaRestTest
+    public class GaiaRestTest : BaseTest
     {
         [Fact]
         public async Task AsyncGetNodeInfoCompletes()
         {
-            using var client = new CosmosApiBuilder()
-                .UseBaseUrl("https://api.cosmos.network")
-                .CreateClient();
+            using var client = CreateClient();
 
             var nodeInfo = await client.GaiaRest.GetNodeInfoAsync();
         }
@@ -18,9 +16,7 @@ namespace CosmosApi.Test.Endpoints
         [Fact]
         public void SyncGetNodeInfoCompletes()
         {
-            using var client = new CosmosApiBuilder()
-                .UseBaseUrl("https://api.cosmos.network")
-                .CreateClient();
+            using var client = CreateClient();
 
             var nodeInfo = client.GaiaRest.GetNodeInfo();
         }
