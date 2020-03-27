@@ -12,6 +12,7 @@ namespace CosmosApi.Models
         }
 
         [JsonProperty(PropertyName = "txs")]
+        [JsonConverter(typeof(Base64StringByteArrayConverter))]
         public List<byte[]>? Transactions { get; set; }
     }
 }

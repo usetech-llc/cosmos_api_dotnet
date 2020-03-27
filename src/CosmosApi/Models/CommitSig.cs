@@ -69,6 +69,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "signature")]
+        [JsonConverter(typeof(Base64StringByteArrayConverter))]
         public byte[] Signature { get; set; }
 
     }

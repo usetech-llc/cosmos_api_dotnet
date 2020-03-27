@@ -55,24 +55,30 @@ namespace CosmosApi.Endpoints
             return GetBlockByHeightAsync(height).Sync();
         }
 
-        public Task<ValidatorSet> GetLatestValidatorSetAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ResponseWithHeight<ValidatorSet>> GetLatestValidatorSetAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            return _clientGetter()
+                .Request("validatorsets", "latest")
+                .GetJsonAsync<ResponseWithHeight<ValidatorSet>>(cancellationToken: cancellationToken)
+                .WrapExceptions();
         }
 
-        public ValidatorSet GetLatestValidatorSet()
+        public ResponseWithHeight<ValidatorSet> GetLatestValidatorSet()
         {
-            throw new NotImplementedException();
+            return GetLatestValidatorSetAsync().Sync();
         }
 
-        public Task<ValidatorSet> GetValidatorSetByHeightAsync(long height, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ResponseWithHeight<ValidatorSet>> GetValidatorSetByHeightAsync(long height, CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            return _clientGetter()
+                .Request("validatorsets", height)
+                .GetJsonAsync<ResponseWithHeight<ValidatorSet>>(cancellationToken: cancellationToken)
+                .WrapExceptions();
         }
 
-        public ValidatorSet GetValidatorSetByHeight(long height)
+        public ResponseWithHeight<ValidatorSet> GetValidatorSetByHeight(long height)
         {
-            throw new NotImplementedException();
+            return GetValidatorSetByHeightAsync(height).Sync();
         }
     }
 }
