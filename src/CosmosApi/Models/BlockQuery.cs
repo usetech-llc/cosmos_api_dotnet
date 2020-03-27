@@ -30,6 +30,5 @@ namespace CosmosApi.Models
         /// </summary>
         [JsonProperty(PropertyName = "block")]
         public Block Block { get; set; }
-
     }
 }

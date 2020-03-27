@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Globalization;
+using CosmosApi.Extensions;
 using CosmosApi.Models;
-using CosmosApi.Serialization;
 
 namespace CosmosApi.Test.TestData
 {
@@ -10,9 +9,13 @@ namespace CosmosApi.Test.TestData
         private static DateTimeOffset ParseDateTime(string str) =>
             DateTimeOffset.Parse(str);
 
-        private static byte[] ParseHex(string str) => HexStringByteArrayConverter.ToByteArray(str);
-        private static byte[] ParseBase64(string str) => System.Convert.FromBase64String(str);
+        private static byte[] ParseHex(string str) => ByteArrayExtensions.ParseHexString(str);
+        private static byte[] ParseBase64(string str) => ByteArrayExtensions.ParseBase64(str);
 
+        /// <summary>
+        /// Creates block response, which was made by querying https://api.cosmos.network/blocks/3
+        /// And converting resulting json to C# code. 
+        /// </summary>
         public static BlockQuery BlockQueryHeight3()
         {
             return new BlockQuery()

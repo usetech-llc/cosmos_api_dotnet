@@ -67,12 +67,12 @@ namespace CosmosApi.Endpoints
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<ValidatorSet> GetLatestValidatorSetAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<ResponseWithHeight<ValidatorSet>> GetLatestValidatorSetAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get the latest validator set
         /// </summary>
-        ValidatorSet GetLatestValidatorSet();
+        ResponseWithHeight<ValidatorSet> GetLatestValidatorSet();
         
         /// <summary>
         /// Get a validator set a certain height
@@ -83,7 +83,7 @@ namespace CosmosApi.Endpoints
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<ValidatorSet> GetValidatorSetByHeightAsync(long height, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ResponseWithHeight<ValidatorSet>> GetValidatorSetByHeightAsync(long height, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get a validator set a certain height
@@ -91,6 +91,6 @@ namespace CosmosApi.Endpoints
         /// <param name='height'>
         /// Block height
         /// </param>
-        ValidatorSet GetValidatorSetByHeight(long height);
+        ResponseWithHeight<ValidatorSet> GetValidatorSetByHeight(long height);
     }
 }

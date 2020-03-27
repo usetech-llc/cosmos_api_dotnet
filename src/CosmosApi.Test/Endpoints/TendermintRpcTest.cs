@@ -31,7 +31,6 @@ namespace CosmosApi.Test.Endpoints
             using var client = CreateClient();
 
             var block = await client.TendermintRpc.GetLatestBlockAsync();
-            
         }
 
         [Fact]
@@ -47,7 +46,10 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient();
 
-            var block = await client.TendermintRpc.GetBlockByHeightAsync(1);
+            for (int i = 1; i < 5; i++)
+            {
+                var block = await client.TendermintRpc.GetBlockByHeightAsync(i);
+            }
         }
 
         [Fact]
@@ -106,6 +108,79 @@ namespace CosmosApi.Test.Endpoints
             var block = client.TendermintRpc.GetBlockByHeight(3);
             var expectedBlock = Blocks.BlockQueryHeight3().ToExpectedObject();
             expectedBlock.ShouldEqual(block);
+        }
+
+        [Fact]
+        public async Task AsyncLatestValidatorSetCompletes()
+        {
+            using var client = CreateClient();
+
+            var validatorSet = await client.TendermintRpc.GetLatestValidatorSetAsync();
+        }
+        
+        [Fact]
+        public void SyncLatestValidatorSetCompletes()
+        {
+            using var client = CreateClient();
+
+            var validatorSet = client.TendermintRpc.GetLatestValidatorSetAsync();
+        }
+        
+        [Fact]
+        public async Task AsyncValidatorSetByHeightFirstSetIsCorrect()
+        {
+            using var client = CreateClient();
+
+            var validatorSet = await client.TendermintRpc.GetValidatorSetByHeightAsync(1);
+            var expectedValidatorSet = ValidatorSets
+                .FirstValidatorSet()
+                .ToExpectedObject();
+            
+            expectedValidatorSet.ShouldEqual(validatorSet);
+        }
+
+        [Fact]
+        public async Task AsyncValidatorSetByHeightMaxLongHeightFailsWith404()
+        {
+            using var client = CreateClient();
+
+            try
+            {
+                var validatorSet = await client.TendermintRpc.GetValidatorSetByHeightAsync(long.MaxValue);
+            }
+            catch (CosmosHttpException ex)
+            {
+                Assert.Equal(HttpStatusCode.NotFound, ex.Response.StatusCode);
+            }
+
+        }
+                
+        [Fact]
+        public void SyncValidatorSetByHeightFirstSetIsCorrect()
+        {
+            using var client = CreateClient();
+
+            var validatorSet = client.TendermintRpc.GetValidatorSetByHeight(1);
+            var expectedValidatorSet = ValidatorSets
+                .FirstValidatorSet()
+                .ToExpectedObject();
+            
+            expectedValidatorSet.ShouldEqual(validatorSet);
+        }
+
+        [Fact]
+        public void SyncValidatorSetByHeightMaxLongHeightFailsWith404()
+        {
+            using var client = CreateClient();
+
+            try
+            {
+                var validatorSet = client.TendermintRpc.GetValidatorSetByHeight(long.MaxValue);
+            }
+            catch (CosmosHttpException ex)
+            {
+                Assert.Equal(HttpStatusCode.NotFound, ex.Response.StatusCode);
+            }
         }
     }
 }
