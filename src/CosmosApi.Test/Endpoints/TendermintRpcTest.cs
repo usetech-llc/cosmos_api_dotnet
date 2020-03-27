@@ -69,9 +69,9 @@ namespace CosmosApi.Test.Endpoints
             {
                 var block = await client.TendermintRpc.GetBlockByHeightAsync(long.MaxValue);
             }
-            catch (FlurlHttpException exception)
+            catch (CosmosHttpException exception)
             {
-                Assert.Equal(HttpStatusCode.NotFound, exception.Call.HttpStatus);
+                Assert.Equal(HttpStatusCode.NotFound, exception.Response.StatusCode);
             }
         }
 
@@ -92,10 +92,20 @@ namespace CosmosApi.Test.Endpoints
             {
                 var block = client.TendermintRpc.GetBlockByHeight(long.MaxValue);
             }
-            catch (FlurlHttpException exception)
+            catch (CosmosHttpException exception)
             {
-                Assert.Equal(HttpStatusCode.NotFound, exception.Call.HttpStatus);
+                Assert.Equal(HttpStatusCode.NotFound, exception.Response.StatusCode);
             }
+        }
+
+        [Fact]
+        public void SyncBlockByHeight3rdBlockIsCorrect()
+        {
+            using var client = CreateClient();
+
+            var block = client.TendermintRpc.GetBlockByHeight(3);
+            var expectedBlock = Blocks.BlockQueryHeight3().ToExpectedObject();
+            expectedBlock.ShouldEqual(block);
         }
     }
 }

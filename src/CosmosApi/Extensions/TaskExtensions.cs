@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Flurl.Http;
 
 namespace CosmosApi.Extensions
 {
@@ -7,6 +9,18 @@ namespace CosmosApi.Extensions
         public static T Sync<T>(this Task<T> task)
         {
             return task.GetAwaiter().GetResult();
+        }
+
+        public static async Task<T> WrapExceptions<T>(this Task<T> task)
+        {
+            try
+            {
+                return await task.ConfigureAwait(false);
+            }
+            catch (FlurlHttpException ex)
+            {
+                throw ex.WrapException();
+            }
         }
     }
 }

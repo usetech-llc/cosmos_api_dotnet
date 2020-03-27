@@ -2,6 +2,7 @@
 using System.Threading;
 using CosmosApi.Callbacks;
 using CosmosApi.Endpoints;
+using CosmosApi.Extensions;
 using CosmosApi.Flurl;
 using Flurl.Http;
 using Flurl.Http.Configuration;
@@ -47,7 +48,7 @@ namespace CosmosApi
                     {
                         s.OnError = call =>
                         {
-                            var error = new Error(call.Request, call.Response, call.StartedUtc, call.EndedUtc, call.Exception, call.ExceptionHandled);
+                            var error = new Error(call.Request, call.Response, call.StartedUtc, call.EndedUtc, call.Exception.WrapException(), call.ExceptionHandled);
                             _settings.OnError(error);
                             call.ExceptionHandled = error.Handled;
                         };
@@ -56,7 +57,7 @@ namespace CosmosApi
                     {
                         s.OnErrorAsync = async call =>
                         {
-                            var error = new Error(call.Request, call.Response, call.StartedUtc, call.EndedUtc, call.Exception, call.ExceptionHandled);
+                            var error = new Error(call.Request, call.Response, call.StartedUtc, call.EndedUtc, call.Exception.WrapException(), call.ExceptionHandled);
                             await _settings.OnErrorAsync(error);
                             call.ExceptionHandled = error.Handled;
                         };

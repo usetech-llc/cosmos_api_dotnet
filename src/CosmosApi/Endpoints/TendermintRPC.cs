@@ -20,7 +20,8 @@ namespace CosmosApi.Endpoints
         {
             return _clientGetter()
                 .Request("syncing")
-                .GetJsonAsync<NodeSyncingStatus>(cancellationToken: cancellationToken);
+                .GetJsonAsync<NodeSyncingStatus>(cancellationToken: cancellationToken)
+                .WrapExceptions();
         }
 
         public NodeSyncingStatus GetSyncing()
@@ -32,7 +33,8 @@ namespace CosmosApi.Endpoints
         {
             return _clientGetter()
                 .Request("blocks", "latest")
-                .GetJsonAsync<BlockQuery>(cancellationToken);
+                .GetJsonAsync<BlockQuery>(cancellationToken)
+                .WrapExceptions();
         }
 
         public BlockQuery GetLatestBlock()
@@ -44,7 +46,8 @@ namespace CosmosApi.Endpoints
         {
             return _clientGetter()
                 .Request("blocks", height)
-                .GetJsonAsync<BlockQuery>(cancellationToken);
+                .GetJsonAsync<BlockQuery>(cancellationToken)
+                .WrapExceptions();
         }
 
         public BlockQuery GetBlockByHeight(long height)
