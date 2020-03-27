@@ -25,7 +25,7 @@ namespace CosmosApi.Endpoints
         
         public Task<NodeStatus> GetNodeInfoAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return InternalGetNodeInfoAsync(cancellationToken);
+            return InternalGetNodeInfoAsync(cancellationToken).WrapExceptions();
         }
 
         public NodeStatus GetNodeInfo()
