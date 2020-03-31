@@ -6,13 +6,12 @@ namespace CosmosApi.Models
 {
     public class BlockData
     {
-        public BlockData(List<byte[]>? transactions = default)
+        public BlockData(IList<string>? transactions = default)
         {
             Transactions = transactions;
         }
 
         [JsonProperty(PropertyName = "txs")]
-        [JsonConverter(typeof(Base64StringByteArrayConverter))]
-        public List<byte[]>? Transactions { get; set; }
+        public IList<string>? Transactions { get; set; }
     }
 }
