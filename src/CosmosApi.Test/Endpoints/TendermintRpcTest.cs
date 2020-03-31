@@ -1,14 +1,24 @@
-﻿using System.Net;
+﻿using System;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using CosmosApi.Test.TestData;
 using ExpectedObjects;
 using Flurl.Http;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace CosmosApi.Test.Endpoints
 {
     public class TendermintRpcTest : BaseTest
     {
+        private readonly ITestOutputHelper output;
+
+        public TendermintRpcTest(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+        
         [Fact]
         public async Task AsyncSyncingCompletes()
         {
@@ -34,11 +44,28 @@ namespace CosmosApi.Test.Endpoints
         }
 
         [Fact]
-        public void SyncLatestBlockCompletes()
+        public async Task SyncLatestBlockCompletes()
         {
             using var client = CreateClient();
 
-            var block = client.TendermintRpc.GetLatestBlock();
+            try
+            {
+                var block = client.TendermintRpc.GetLatestBlock();
+            }
+            catch (CosmosHttpException ex)
+            {
+                if (ex.Response != null)
+                {
+                    output.WriteLine($"Exception, status code: {ex.Response.StatusCode}");
+                    output.WriteLine($"Headers: {string.Join(Environment.NewLine, ex.Response.Headers.Select(h => $"{h.Key}: {h.Value}"))}");
+                    
+                    var responseContent = await ex.Response.Content.ReadAsStringAsync();
+                    output.WriteLine("");
+                    output.WriteLine($"Response content was: {responseContent}");
+                }
+
+                throw;
+            }
         }
 
         [Fact]
