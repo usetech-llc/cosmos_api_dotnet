@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
+using System.Reflection;
+using CosmosApi.Models;
+using CosmosApi.Serialization;
 
 namespace CosmosApi
 {
@@ -44,6 +49,21 @@ namespace CosmosApi
         public ICosmosApiBuilder UseBaseUrl(string url)
         {
             return Configure(s => s.BaseUrl = url);
+        }
+
+        public ICosmosApiBuilder RegisterTxType<T>(string jsonName) where T : ITx
+        {
+            return Configure(s => { s.TxConverterFactory.Subtypes.Add((typeof(T), jsonName)); });
+        }
+
+        public ICosmosApiBuilder RegisterMsgType<T>(string jsonName) where T : IMsg
+        {
+            return Configure(s => { s.MsgConverterFactory.Subtypes.Add((typeof(T), jsonName)); });
+        }
+
+        public ICosmosApiBuilder AddJsonConverterFactory(IConverterFactory factory)
+        {
+            return Configure(s => s.ConverterFactories.Add(factory));
         }
     }
 }

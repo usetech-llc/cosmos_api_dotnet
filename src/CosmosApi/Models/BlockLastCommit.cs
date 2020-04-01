@@ -19,7 +19,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the BlockLastCommit class.
         /// </summary>
-        public BlockLastCommit(BlockID blockId = default, CommitSig[] precommits = default)
+        public BlockLastCommit(BlockID blockId = default, IList<CommitSig> precommits = default)
         {
             BlockId = blockId;
             Precommits = precommits;
@@ -33,7 +33,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "precommits")]
-        public CommitSig?[]? Precommits { get; set; }
+        public IList<CommitSig?>? Precommits { get; set; }
 
     }
 }

@@ -4,14 +4,13 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class BlockID
+    public class BlockID
     {
         /// <summary>
         /// Initializes a new instance of the BlockID class.
         /// </summary>
         public BlockID()
         {
-            CustomInit();
         }
 
         /// <summary>
@@ -21,13 +20,7 @@ namespace CosmosApi.Models
         {
             Hash = hash;
             Parts = parts;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>

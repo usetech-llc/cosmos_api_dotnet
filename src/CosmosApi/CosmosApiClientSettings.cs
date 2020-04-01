@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CosmosApi.Callbacks;
+using CosmosApi.Models;
+using CosmosApi.Serialization;
 
 namespace CosmosApi
 {
@@ -13,6 +16,14 @@ namespace CosmosApi
 
         public CosmosApiClientSettings()
         {
+            TxConverterFactory = new JsonTypeDiscriminatorConverterFactory(typeof(ITx), new List<(Type SubType, string DiscriminatorValue)>(), "type");
+            MsgConverterFactory = new JsonTypeDiscriminatorConverterFactory(typeof(IMsg), new List<(Type SubType, string DiscriminatorValue)>(), "type");
+            
+            ConverterFactories = new List<IConverterFactory>()
+            {
+                TxConverterFactory,
+                MsgConverterFactory
+            };
         }
         
         /// <summary>
@@ -83,5 +94,14 @@ namespace CosmosApi
         /// HTTP status code is returned in the response.
         /// </summary>
         public Func<Error, Task>? OnErrorAsync { get; set; }
+        
+        /// <summary>
+        /// List of custom json converters. 
+        /// </summary>
+        public List<IConverterFactory> ConverterFactories { get; set; }
+        
+        internal JsonTypeDiscriminatorConverterFactory TxConverterFactory { get; }
+        
+        internal JsonTypeDiscriminatorConverterFactory MsgConverterFactory { get; }
     }
 }

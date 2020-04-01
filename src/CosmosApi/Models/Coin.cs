@@ -2,31 +2,28 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
+    /// <summary>
+    /// Coin hold some amount of one currency.
+    /// CONTRACT: A coin will never hold a negative amount of any denomination.
+    /// </summary>
 
-    public partial class Coin
+    public class Coin
     {
         /// <summary>
         /// Initializes a new instance of the Coin class.
         /// </summary>
         public Coin()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the Coin class.
         /// </summary>
-        public Coin(string denom = default(string), string amount = default(string))
+        public Coin(string denom = default, int amount = default)
         {
             Denom = denom;
             Amount = amount;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>
@@ -36,7 +33,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "amount")]
-        public string Amount { get; set; }
+        public int Amount { get; set; }
 
     }
 }

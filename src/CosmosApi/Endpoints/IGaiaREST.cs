@@ -6,7 +6,6 @@ namespace CosmosApi.Endpoints
 {
 
     /// <summary>
-    /// GaiaREST operations.
     /// </summary>
     public interface IGaiaREST
     {
