@@ -6,7 +6,7 @@ using CosmosApi.Models;
 namespace CosmosApi.Endpoints
 {
     /// <summary>
-    /// TendermintRPC operations.
+    /// Tendermint APIs, such as query blocks, transactions and validatorset
     /// </summary>
     public interface ITendermintRPC
     {

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -20,7 +19,7 @@ namespace CosmosApi.Models
         /// ValidatorSet
         /// class.
         /// </summary>
-        public ValidatorSet(long blockHeight = default, TendermintValidator[] validators = default)
+        public ValidatorSet(long blockHeight = default, IList<TendermintValidator> validators = default)
         {
             BlockHeight = blockHeight;
             Validators = validators;
@@ -35,7 +34,6 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "validators")]
-        public TendermintValidator[] Validators { get; set; }
-
+        public IList<TendermintValidator> Validators { get; set; }
     }
 }

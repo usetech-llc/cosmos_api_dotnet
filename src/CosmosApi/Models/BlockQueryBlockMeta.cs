@@ -2,14 +2,13 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class BlockQueryBlockMeta
+    public class BlockQueryBlockMeta
     {
         /// <summary>
         /// Initializes a new instance of the BlockQueryBlockMeta class.
         /// </summary>
         public BlockQueryBlockMeta()
         {
-            CustomInit();
         }
 
         /// <summary>
@@ -19,13 +18,7 @@ namespace CosmosApi.Models
         {
             Header = header;
             BlockId = blockId;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>

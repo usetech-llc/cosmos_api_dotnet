@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using CosmosApi.Callbacks;
 using CosmosApi.Endpoints;
 using CosmosApi.Extensions;
 using CosmosApi.Flurl;
+using CosmosApi.Models;
 using Flurl.Http;
 using Flurl.Http.Configuration;
+using JsonSubTypes;
 using Newtonsoft.Json;
 
 namespace CosmosApi
 {
-    public class CosmosApiClient : ICosmosApiClient, IDisposable
+    public class CosmosApiClient : ICosmosApiClient
     {
         private readonly CosmosApiClientSettings _settings;
         private Lazy<IFlurlClient> _flurlClient;
@@ -22,10 +25,12 @@ namespace CosmosApi
             
             GaiaRest = new GaiaREST(GetClient);
             TendermintRpc = new TendermintRPC(GetClient);
+            Transactions = new Transactions(GetClient);
         }
 
         public IGaiaREST GaiaRest { get; }
-        public ITendermintRPC TendermintRpc { get; set; }
+        public ITendermintRPC TendermintRpc { get; }
+        public ITransactions Transactions { get; }
 
         private IFlurlClient GetClient()
         {
@@ -80,11 +85,18 @@ namespace CosmosApi
                     {
                         s.AfterCallAsync = call => _settings.OnAfterCallAsync(new AfterCall(call.Request, call.Response, call.StartedUtc, call.EndedUtc));
                     }
-                    
-                    s.JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings()
+
+                    var jsonSerializerSettings = new JsonSerializerSettings()
                     {
                         DateFormatHandling = DateFormatHandling.IsoDateFormat,
-                    });
+                    };
+
+                    foreach (var factory in _settings.ConverterFactories)
+                    {
+                        jsonSerializerSettings.Converters.Add(factory.CreateConverter());
+                    }
+                    
+                    s.JsonSerializer = new NewtonsoftJsonSerializer(jsonSerializerSettings);
                 });
             if (_settings.BaseUrl != null)
             {

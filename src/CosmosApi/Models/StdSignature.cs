@@ -1,33 +1,35 @@
+using System;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class StdTxSignature
+    public class StdSignature
     {
         /// <summary>
-        /// Initializes a new instance of the StdTxSignature class.
+        /// Initializes a new instance of the StdSignature class.
         /// </summary>
-        public StdTxSignature()
+        public StdSignature()
         {
-            CustomInit();
         }
 
         /// <summary>
-        /// Initializes a new instance of the StdTxSignature class.
+        /// Initializes a new instance of the StdSignature class.
         /// </summary>
-        public StdTxSignature(string signature = default(string), StdTxSignaturePubKey pubKey = default(StdTxSignaturePubKey), string accountNumber = default(string), string sequence = default(string))
+        public StdSignature(string signature = default, StdTxSignaturePubKey pubKey = default, string accountNumber = default, string sequence = default)
         {
             Signature = signature;
             PubKey = pubKey;
             AccountNumber = accountNumber;
             Sequence = sequence;
-            CustomInit();
         }
 
         /// <summary>
         /// An initialization method that performs custom operations like setting defaults
         /// </summary>
-        partial void CustomInit();
+        private void CustomInit()
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// </summary>

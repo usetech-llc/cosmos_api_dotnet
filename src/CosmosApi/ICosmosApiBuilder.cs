@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Reflection;
+using CosmosApi.Models;
+using CosmosApi.Serialization;
 
 namespace CosmosApi
 {
@@ -23,5 +26,26 @@ namespace CosmosApi
         /// Sets the base url used by created clients. 
         /// </summary>
         ICosmosApiBuilder UseBaseUrl(string url);
+
+        /// <summary>
+        /// Adds a possible subtype of the <see cref="ITx"/> so it can be serialized
+        /// and deserialized properly. 
+        /// </summary>
+        /// <typeparam name="T">Type which might be used where <see cref="ITx"/> is used.</typeparam>
+        /// <param name="jsonName">Value of the type discriminator. If empty value of <see cref="JsonTypeAttribute"/> will be used.</param>
+        ICosmosApiBuilder RegisterTxType<T>(string jsonName) where T : ITx;
+
+        /// <summary>
+        /// Adds a possible subtype of the <see cref="IMsg"/> so it can be serialized
+        /// and deserialized properly. 
+        /// </summary>
+        /// <typeparam name="T">Type which might be used where <see cref="IMsg"/> is used.</typeparam>
+        /// <param name="jsonName">Value of the type discriminator.</param>
+        ICosmosApiBuilder RegisterMsgType<T>(string jsonName) where T : IMsg;
+
+        /// <summary>
+        /// Adds a converter factory to use for serialization and deserialization.
+        /// </summary>
+        ICosmosApiBuilder AddJsonConverterFactory(IConverterFactory factory);
     }
 }
