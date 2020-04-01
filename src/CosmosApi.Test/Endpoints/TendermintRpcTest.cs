@@ -12,19 +12,18 @@ namespace CosmosApi.Test.Endpoints
 {
     public class TendermintRpcTest : BaseTest
     {
-        private readonly ITestOutputHelper output;
-
-        public TendermintRpcTest(ITestOutputHelper output)
+        public TendermintRpcTest(ITestOutputHelper outputHelper) : base(outputHelper)
         {
-            this.output = output;
         }
-        
+
         [Fact]
         public async Task AsyncSyncingCompletes()
         {
             using var client = CreateClient();
 
             var syncData = await client.TendermintRpc.GetSyncingAsync();
+            OutputHelper.WriteLine("Deserialized into");
+            Dump(syncData);
         }
         
         [Fact]
@@ -33,6 +32,8 @@ namespace CosmosApi.Test.Endpoints
             using var client = CreateClient();
 
             var syncData = client.TendermintRpc.GetSyncing();
+            OutputHelper.WriteLine("Deserialized into");
+            Dump(syncData);
         }
 
         [Fact]
@@ -41,6 +42,8 @@ namespace CosmosApi.Test.Endpoints
             using var client = CreateClient();
 
             var block = await client.TendermintRpc.GetLatestBlockAsync();
+            OutputHelper.WriteLine("Deserialized into");
+            Dump(block);
         }
 
         [Fact]
@@ -48,24 +51,9 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient();
 
-            try
-            {
-                var block = client.TendermintRpc.GetLatestBlock();
-            }
-            catch (CosmosHttpException ex)
-            {
-                if (ex.Response != null)
-                {
-                    output.WriteLine($"Exception, status code: {ex.Response.StatusCode}");
-                    output.WriteLine($"Headers: {string.Join(Environment.NewLine, ex.Response.Headers.Select(h => $"{h.Key}: {h.Value}"))}");
-                    
-                    var responseContent = await ex.Response.Content.ReadAsStringAsync();
-                    output.WriteLine("");
-                    output.WriteLine($"Response content was: {responseContent}");
-                }
-
-                throw;
-            }
+            var block = client.TendermintRpc.GetLatestBlock();
+            OutputHelper.WriteLine("Deserialized into");
+            Dump(block);
         }
 
         [Fact]
@@ -76,6 +64,8 @@ namespace CosmosApi.Test.Endpoints
             for (int i = 1; i < 5; i++)
             {
                 var block = await client.TendermintRpc.GetBlockByHeightAsync(i);
+                OutputHelper.WriteLine("Deserialized into");
+                Dump(block);
             }
         }
 
@@ -98,6 +88,8 @@ namespace CosmosApi.Test.Endpoints
             try
             {
                 var block = await client.TendermintRpc.GetBlockByHeightAsync(long.MaxValue);
+                OutputHelper.WriteLine("Deserialized into");
+                Dump(block);
             }
             catch (CosmosHttpException exception)
             {
@@ -111,6 +103,8 @@ namespace CosmosApi.Test.Endpoints
             using var client = CreateClient();
 
             var block = client.TendermintRpc.GetBlockByHeight(1);
+            OutputHelper.WriteLine("Deserialized into");
+            Dump(block);
         }
 
         [Fact]
@@ -121,6 +115,8 @@ namespace CosmosApi.Test.Endpoints
             try
             {
                 var block = client.TendermintRpc.GetBlockByHeight(long.MaxValue);
+                OutputHelper.WriteLine("Deserialized into");
+                Dump(block);
             }
             catch (CosmosHttpException exception)
             {
@@ -145,6 +141,8 @@ namespace CosmosApi.Test.Endpoints
             using var client = CreateClient();
 
             var validatorSet = await client.TendermintRpc.GetLatestValidatorSetAsync();
+            OutputHelper.WriteLine("Deserialized into");
+            Dump(validatorSet);
         }
         
         [Fact]
@@ -152,7 +150,9 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient();
 
-            var validatorSet = client.TendermintRpc.GetLatestValidatorSetAsync();
+            var validatorSet = client.TendermintRpc.GetLatestValidatorSet();
+            OutputHelper.WriteLine("Deserialized into");
+            Dump(validatorSet);
         }
         
         //[Fact]
@@ -177,6 +177,8 @@ namespace CosmosApi.Test.Endpoints
             try
             {
                 var validatorSet = await client.TendermintRpc.GetValidatorSetByHeightAsync(long.MaxValue);
+                OutputHelper.WriteLine("Deserialized into");
+                Dump(validatorSet);
             }
             catch (CosmosHttpException ex)
             {
@@ -207,6 +209,8 @@ namespace CosmosApi.Test.Endpoints
             try
             {
                 var validatorSet = client.TendermintRpc.GetValidatorSetByHeight(long.MaxValue);
+                OutputHelper.WriteLine("Deserialized into");
+                Dump(validatorSet);
             }
             catch (CosmosHttpException ex)
             {
