@@ -2,11 +2,16 @@
 using System.Threading.Tasks;
 using CosmosApi.Extensions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace CosmosApi.Test.Endpoints
 {
     public class TransactionsTest : BaseTest
     {
+        public TransactionsTest(ITestOutputHelper outputHelper) : base(outputHelper)
+        {
+        }
+
         //[Fact]
         //todo: uncomment when server will stop sending 502.
         public async Task AsyncGetSearchCompletes()
@@ -63,6 +68,8 @@ namespace CosmosApi.Test.Endpoints
             using var client = CreateClient();
             var tx = await client.Transactions.GetByHashAsync(
                 ByteArrayExtensions.ParseHexString("7DCB49D5B4FAE87A5532741816E68EE4222C1DBD66326FBADA55268FA7E760E6"));
+            OutputHelper.WriteLine("Deserialized into");
+            Dump(tx);
         }
         
         
@@ -72,6 +79,8 @@ namespace CosmosApi.Test.Endpoints
             using var client = CreateClient();
             var tx = client.Transactions.GetByHash(
                 ByteArrayExtensions.ParseHexString("7DCB49D5B4FAE87A5532741816E68EE4222C1DBD66326FBADA55268FA7E760E6"));
+            OutputHelper.WriteLine("Deserialized into");
+            Dump(tx);
         }
     }
 }
