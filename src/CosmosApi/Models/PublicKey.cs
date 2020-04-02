@@ -2,14 +2,13 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class PublicKey
+    public class PublicKey
     {
         /// <summary>
         /// Initializes a new instance of the PublicKey class.
         /// </summary>
         public PublicKey()
         {
-            CustomInit();
         }
 
         /// <summary>
@@ -19,13 +18,7 @@ namespace CosmosApi.Models
         {
             Type = type;
             Value = value;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>
@@ -36,6 +29,5 @@ namespace CosmosApi.Models
         /// </summary>
         [JsonProperty(PropertyName = "value")]
         public string Value { get; set; }
-
     }
 }

@@ -61,6 +61,11 @@ namespace CosmosApi
             return Configure(s => { s.MsgConverterFactory.Subtypes.Add((typeof(T), jsonName)); });
         }
 
+        public ICosmosApiBuilder RegisterTypeValue<T>(string jsonName)
+        {
+            return Configure(s => { s.TypeValueConverter.AddType<T>(jsonName); });
+        }
+
         public ICosmosApiBuilder AddJsonConverterFactory(IConverterFactory factory)
         {
             return Configure(s => s.ConverterFactories.Add(factory));

@@ -26,11 +26,13 @@ namespace CosmosApi
             GaiaRest = new GaiaREST(GetClient);
             TendermintRpc = new TendermintRPC(GetClient);
             Transactions = new Transactions(GetClient);
+            Auth = new Auth(GetClient);
         }
 
         public IGaiaREST GaiaRest { get; }
         public ITendermintRPC TendermintRpc { get; }
         public ITransactions Transactions { get; }
+        public IAuth Auth { get; }
 
         private IFlurlClient GetClient()
         {
@@ -95,6 +97,8 @@ namespace CosmosApi
                     {
                         jsonSerializerSettings.Converters.Add(factory.CreateConverter());
                     }
+                    
+                    jsonSerializerSettings.Converters.Add(_settings.TypeValueConverter);
                     
                     s.JsonSerializer = new NewtonsoftJsonSerializer(jsonSerializerSettings);
                 });
