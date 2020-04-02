@@ -32,7 +32,7 @@ namespace CosmosApi
         /// and deserialized properly. 
         /// </summary>
         /// <typeparam name="T">Type which might be used where <see cref="ITx"/> is used.</typeparam>
-        /// <param name="jsonName">Value of the type discriminator. If empty value of <see cref="JsonTypeAttribute"/> will be used.</param>
+        /// <param name="jsonName">Value of the type discriminator.</param>
         ICosmosApiBuilder RegisterTxType<T>(string jsonName) where T : ITx;
 
         /// <summary>
@@ -42,6 +42,13 @@ namespace CosmosApi
         /// <typeparam name="T">Type which might be used where <see cref="IMsg"/> is used.</typeparam>
         /// <param name="jsonName">Value of the type discriminator.</param>
         ICosmosApiBuilder RegisterMsgType<T>(string jsonName) where T : IMsg;
+        
+        /// <summary>
+        /// Adds a possible Value type of <see cref="TypeValue{TValue}"/>.
+        /// </summary>
+        /// <param name="jsonName">Value of json discriminator.</param>
+        /// <typeparam name="T">Type of TypeValue's Value.</typeparam>
+        ICosmosApiBuilder RegisterTypeValue<T>(string jsonName);
 
         /// <summary>
         /// Adds a converter factory to use for serialization and deserialization.

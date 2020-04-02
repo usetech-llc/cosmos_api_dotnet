@@ -8,5 +8,6 @@ namespace CosmosApi
         IGaiaREST GaiaRest { get; }
         ITendermintRPC TendermintRpc { get; }
         ITransactions Transactions { get; }
+        IAuth Auth { get; }
     }
 }

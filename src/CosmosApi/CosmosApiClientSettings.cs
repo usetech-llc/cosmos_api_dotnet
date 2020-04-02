@@ -18,12 +18,13 @@ namespace CosmosApi
         {
             TxConverterFactory = new JsonTypeDiscriminatorConverterFactory(typeof(ITx), new List<(Type SubType, string DiscriminatorValue)>(), "type");
             MsgConverterFactory = new JsonTypeDiscriminatorConverterFactory(typeof(IMsg), new List<(Type SubType, string DiscriminatorValue)>(), "type");
-            
             ConverterFactories = new List<IConverterFactory>()
             {
                 TxConverterFactory,
-                MsgConverterFactory
+                MsgConverterFactory,
             };
+            
+            TypeValueConverter = new TypeValueConverter();
         }
         
         /// <summary>
@@ -103,5 +104,16 @@ namespace CosmosApi
         internal JsonTypeDiscriminatorConverterFactory TxConverterFactory { get; }
         
         internal JsonTypeDiscriminatorConverterFactory MsgConverterFactory { get; }
+        
+        /// <summary>
+        /// Serialization and deserialization of json values like
+        /// <example>
+        /// {
+        ///   "type": "cosmos-sdk/SomeType",
+        ///   "value": { properties of SomeType }
+        /// }
+        /// </example>>
+        /// </summary>
+        public TypeValueConverter TypeValueConverter { get; }
     }
 }

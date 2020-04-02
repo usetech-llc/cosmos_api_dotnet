@@ -3,42 +3,35 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class Paths1mk6kstauthAccountsAddressgetresponses200contentapplicationJsonschemapropertiesvalue
+    public class BaseAccount : IAccount
     {
         /// <summary>
         /// Initializes a new instance of the
-        /// Paths1mk6kstauthAccountsAddressgetresponses200contentapplicationJsonschemapropertiesvalue
+        /// BaseAccount
         /// class.
         /// </summary>
-        public Paths1mk6kstauthAccountsAddressgetresponses200contentapplicationJsonschemapropertiesvalue()
+        public BaseAccount()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the
-        /// Paths1mk6kstauthAccountsAddressgetresponses200contentapplicationJsonschemapropertiesvalue
+        /// BaseAccount
         /// class.
         /// </summary>
-        public Paths1mk6kstauthAccountsAddressgetresponses200contentapplicationJsonschemapropertiesvalue(string accountNumber = default(string), string address = default(string), IList<Coin> coins = default(IList<Coin>), PublicKey publicKey = default(PublicKey), string sequence = default(string))
+        public BaseAccount(ulong accountNumber = default, string address = default, IList<Coin> coins = default, PublicKey publicKey = default, ulong sequence = default)
         {
             AccountNumber = accountNumber;
             Address = address;
             Coins = coins;
             PublicKey = publicKey;
             Sequence = sequence;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "account_number")]
-        public string AccountNumber { get; set; }
+        public ulong AccountNumber { get; set; }
 
         /// <summary>
         /// </summary>
@@ -58,7 +51,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "sequence")]
-        public string Sequence { get; set; }
+        public ulong Sequence { get; set; }
 
     }
 }

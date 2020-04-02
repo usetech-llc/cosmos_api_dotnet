@@ -30,6 +30,7 @@ namespace CosmosApi.Test.Endpoints
                 .RegisterTxType<StdTx>("cosmos-sdk/StdTx")
                 .RegisterMsgType<MsgMultiSend>("cosmos-sdk/MsgMultiSend")
                 .RegisterMsgType<MsgSend>("cosmos-sdk/MsgSend")
+                .RegisterTypeValue<BaseAccount>("cosmos-sdk/Account")
                 .CreateClient();
         }
 

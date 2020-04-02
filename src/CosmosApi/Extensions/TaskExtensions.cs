@@ -17,6 +17,10 @@ namespace CosmosApi.Extensions
             {
                 return await task.ConfigureAwait(false);
             }
+            catch (FlurlParsingException ex)
+            {
+                throw new CosmosSerializationException(ex);
+            }
             catch (FlurlHttpException ex)
             {
                 throw ex.WrapException();
