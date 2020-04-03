@@ -27,12 +27,14 @@ namespace CosmosApi
             TendermintRpc = new TendermintRPC(GetClient);
             Transactions = new Transactions(GetClient);
             Auth = new Auth(GetClient);
+            Bank = new Bank(GetClient);
         }
 
         public IGaiaREST GaiaRest { get; }
         public ITendermintRPC TendermintRpc { get; }
         public ITransactions Transactions { get; }
         public IAuth Auth { get; }
+        public IBank Bank { get; }
 
         private IFlurlClient GetClient()
         {
