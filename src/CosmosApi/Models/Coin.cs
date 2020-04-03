@@ -33,7 +33,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "amount")]
-        public int Amount { get; set; }
+        public long Amount { get; set; }
 
     }
 }

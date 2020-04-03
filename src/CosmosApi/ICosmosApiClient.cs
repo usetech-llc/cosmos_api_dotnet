@@ -9,5 +9,6 @@ namespace CosmosApi
         ITendermintRPC TendermintRpc { get; }
         ITransactions Transactions { get; }
         IAuth Auth { get; }
+        IBank Bank { get; }
     }
 }
