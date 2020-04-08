@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  gaia-test:
+    ports:
+      - "26658:26658"
+      - "26657:26657"
+      - "26656:26656"
+      - "1317:1317" 
+    build:
+      context: .
+      dockerfile: Dockerfile.gaia.testenv
+      
+  

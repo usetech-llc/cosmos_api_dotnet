@@ -1,0 +1,15 @@
+FROM golang:latest
+
+COPY gaia gaia
+WORKDIR ./gaia
+
+RUN make install
+
+COPY testenv/.gaiacli /root/.gaiacli
+COPY testenv/.gaiad /root/.gaiad
+COPY testenv/run_gaiad_and_rest.sh .
+RUN chmod 777 ./run_gaiad_and_rest.sh
+
+EXPOSE 26658 26657 26656 1317
+
+CMD ./run_gaiad_and_rest.sh
