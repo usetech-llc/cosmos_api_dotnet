@@ -1,8 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmosApi", "CosmosApi\CosmosApi.csproj", "{380A1566-6167-478F-9D62-76EA26FAD5D3}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29926.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CosmosApi", "CosmosApi\CosmosApi.csproj", "{380A1566-6167-478F-9D62-76EA26FAD5D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmosApi.Test", "CosmosApi.Test\CosmosApi.Test.csproj", "{3CF02C06-EDD4-4265-9EC5-1960957E9792}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CosmosApi.Test", "CosmosApi.Test\CosmosApi.Test.csproj", "{3CF02C06-EDD4-4265-9EC5-1960957E9792}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecdsa.Secp", "Ecdsa.Secp\Ecdsa.Secp.csproj", "{9DACBBEC-36CD-4347-A192-9AFF6CFD99CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +23,15 @@ Global
 		{3CF02C06-EDD4-4265-9EC5-1960957E9792}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CF02C06-EDD4-4265-9EC5-1960957E9792}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CF02C06-EDD4-4265-9EC5-1960957E9792}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DACBBEC-36CD-4347-A192-9AFF6CFD99CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DACBBEC-36CD-4347-A192-9AFF6CFD99CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DACBBEC-36CD-4347-A192-9AFF6CFD99CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DACBBEC-36CD-4347-A192-9AFF6CFD99CB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C042BFDC-6353-4B22-8342-F4D6D2D73F0B}
 	EndGlobalSection
 EndGlobal
