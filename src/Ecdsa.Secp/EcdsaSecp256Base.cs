@@ -37,5 +37,23 @@
             verifier.BlockUpdate(message, 0, message.Length);
             return verifier.VerifySignature(signature);
         }
+
+        public virtual byte[] CompressKey(byte[] publicKey)
+        {
+            var pubKeyParameters = new ECPublicKeyParameters("ECDSA", _curve.Curve.DecodePoint(publicKey), _curveSpec);
+            return pubKeyParameters.Q.GetEncoded(true);
+        }
+
+        public virtual byte[] DecompressKey(byte[] publicKey)
+        {
+            var point = _curve.Curve.DecodePoint(publicKey);
+            var x = point.XCoord.GetEncoded();
+            var y = point.YCoord.GetEncoded();
+            byte[] result = new byte[65];
+            result[0] = 4;
+            x.CopyTo(result, 1);
+            y.CopyTo(result, 33);
+            return result;
+        }
     }
 }
