@@ -10,6 +10,13 @@
         protected ECDomainParameters _curveSpec;
         protected X9ECParameters _curve;
 
+        public byte[] DerivePubKeyFromPrivKey(byte[] privateKey)
+        {
+            var privateKeyParameters = new ECPrivateKeyParameters(new BigInteger(1, privateKey), _curveSpec);
+            var Q = _curveSpec.G.Multiply(privateKeyParameters.D);
+            return Q.GetEncoded();
+        }
+
         public virtual Keypair GenerateKeys()
         {
             var kg = GeneratorUtilities.GetKeyPairGenerator("ECDSA");
@@ -22,7 +29,7 @@
 
         public virtual byte[] SignMessage(byte[] privateKey, byte[] message)
         {
-            var privateKeyParameters = new ECPrivateKeyParameters(new BigInteger(privateKey), _curveSpec);
+            var privateKeyParameters = new ECPrivateKeyParameters(new BigInteger(1, privateKey), _curveSpec);
             var signer = SignerUtilities.GetSigner("SHA-256withECDSA");
             signer.Init(true, privateKeyParameters);
             signer.BlockUpdate(message, 0, message.Length);
