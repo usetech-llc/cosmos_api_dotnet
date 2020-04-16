@@ -14,7 +14,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the PublicKey class.
         /// </summary>
-        public PublicKey(string type = default(string), string value = default(string))
+        public PublicKey(string type = default, string value = default)
         {
             Type = type;
             Value = value;

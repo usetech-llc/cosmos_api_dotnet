@@ -11,7 +11,6 @@ namespace CosmosApi.Models
         /// </summary>
         public NodeInfo()
         {
-            CustomInit();
         }
 
         /// <summary>
@@ -31,13 +30,7 @@ namespace CosmosApi.Models
             ListenAddr = listenAddr;
             Version = version;
             Other = other;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>

@@ -2,34 +2,27 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class NodeStatus
+    public class NodeStatus
     {
         /// <summary>
         /// Initializes a new instance of the
-        /// Pathsy55qd0nodeInfogetresponses200contentapplicationJsonschema
+        /// NodeStatus
         /// class.
         /// </summary>
         public NodeStatus()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the
-        /// Pathsy55qd0nodeInfogetresponses200contentapplicationJsonschema
+        /// NodeStatus
         /// class.
         /// </summary>
-        public NodeStatus(AplicationVersion applicationVersion = default(AplicationVersion), NodeInfo nodeInfo = default(NodeInfo))
+        public NodeStatus(AplicationVersion applicationVersion = default, NodeInfo nodeInfo = default)
         {
             ApplicationVersion = applicationVersion;
             NodeInfo = nodeInfo;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>

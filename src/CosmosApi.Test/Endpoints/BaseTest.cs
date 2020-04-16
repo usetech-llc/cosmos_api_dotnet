@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using CosmosApi.Callbacks;
@@ -10,7 +11,7 @@ namespace CosmosApi.Test.Endpoints
     public class BaseTest
     {
         public ITestOutputHelper OutputHelper { get; }
-        public TestConfiguration Configuration { get; set; }
+        public TestConfiguration Configuration { get; }
         
         public BaseTest(ITestOutputHelper outputHelper)
         {
@@ -18,18 +19,18 @@ namespace CosmosApi.Test.Endpoints
             Configuration = TestConfiguration.Create();
         }
 
-        public ICosmosApiClient CreateClient()
+        public ICosmosApiClient CreateClient(string baseUrl = default)
         {
             return new CosmosApiBuilder()
-                .UseBaseUrl(Configuration.BaseUrl)
+                .UseBaseUrl(baseUrl ?? Configuration.DefaultBaseUrl)
                 .Configure(s =>
                 {
                     s.OnAfterCallAsync = OnAfterCall;
                     s.OnBeforeCallAsync = OnBeforeCall;
                 })
-                .RegisterTxType<StdTx>("cosmos-sdk/StdTx")
-                .RegisterMsgType<MsgMultiSend>("cosmos-sdk/MsgMultiSend")
-                .RegisterMsgType<MsgSend>("cosmos-sdk/MsgSend")
+                .RegisterTypeValue<StdTx>("cosmos-sdk/StdTx")
+                .RegisterTypeValue<MsgMultiSend>("cosmos-sdk/MsgMultiSend")
+                .RegisterTypeValue<MsgSend>("cosmos-sdk/MsgSend")
                 .RegisterTypeValue<BaseAccount>("cosmos-sdk/Account")
                 .CreateClient();
         }
@@ -74,8 +75,15 @@ namespace CosmosApi.Test.Endpoints
             else
             {
                 OutputHelper.WriteLine("");
-                var contentString = await content.ReadAsStringAsync();
-                OutputHelper.WriteLine(contentString);
+                try
+                {
+                    var contentString = await content.ReadAsStringAsync();
+                    OutputHelper.WriteLine(contentString);
+                }
+                catch (ObjectDisposedException)
+                {
+                    OutputHelper.WriteLine("Failed to read stream, it's already disposed.");
+                }
             }
         }
 

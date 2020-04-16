@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Start gaiad
-gaiad start >> /dev/null &
+gaiad start --rpc.laddr "tcp://0.0.0.0:26657" >> /dev/null &
 
 
 # Start rest server

@@ -1,4 +1,5 @@
-﻿using CosmosApi.Serialization;
+﻿using System.Collections.Generic;
+using CosmosApi.Serialization;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
@@ -9,9 +10,12 @@ namespace CosmosApi.Models
     public class MsgSend : IMsg
     {
         [JsonProperty("from_address")]
-        public byte[] FromAddress { get; set; }
+        public string FromAddress { get; set; }
         
         [JsonProperty("to_address")]
-        public byte[] ToAddress { get; set; }
+        public string ToAddress { get; set; }
+        
+        [JsonProperty("amount")]
+        public IList<Coin> Amount { get; set; }
     }
 }

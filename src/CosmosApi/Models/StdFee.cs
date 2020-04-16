@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CosmosApi.Serialization;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
@@ -30,6 +31,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "gas")]
+        [JsonConverter(typeof(StringNumberConverter))]
         public ulong Gas { get; set; }
 
         /// <summary>
