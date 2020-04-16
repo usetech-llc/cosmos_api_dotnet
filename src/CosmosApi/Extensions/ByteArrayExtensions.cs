@@ -6,7 +6,7 @@ namespace CosmosApi.Extensions
 {
     public static class ByteArrayExtensions
     {
-        public static string? ToHexString(this byte[]? array)
+        public static string ToHexString(this byte[]? array)
         {
             if (array == null)
             {

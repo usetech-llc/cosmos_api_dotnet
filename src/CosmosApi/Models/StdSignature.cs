@@ -1,4 +1,5 @@
 using System;
+using CosmosApi.Serialization;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
@@ -15,41 +16,21 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the StdSignature class.
         /// </summary>
-        public StdSignature(string signature = default, StdTxSignaturePubKey pubKey = default, string accountNumber = default, string sequence = default)
+        public StdSignature(byte[] signature = default, PublicKey pubKey = default)
         {
             Signature = signature;
             PubKey = pubKey;
-            AccountNumber = accountNumber;
-            Sequence = sequence;
-        }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        private void CustomInit()
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "signature")]
-        public string Signature { get; set; }
+        [JsonConverter(typeof(Base64StringByteArrayConverter))]
+        public byte[] Signature { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "pub_key")]
-        public StdTxSignaturePubKey PubKey { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "account_number")]
-        public string AccountNumber { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "sequence")]
-        public string Sequence { get; set; }
-
+        public PublicKey PubKey { get; set; }
     }
 }

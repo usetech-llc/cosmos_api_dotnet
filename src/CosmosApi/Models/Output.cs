@@ -9,7 +9,7 @@ namespace CosmosApi.Models
     public class Output
     {
         [JsonProperty("address")]
-        public byte[] AccAddress { get; set; }
+        public string AccAddress { get; set; }
         
         [JsonProperty("coins")]
         public IList<Coin> Coins { get; set; }
@@ -18,7 +18,7 @@ namespace CosmosApi.Models
         {
         }
 
-        public Output(byte[] accAddress, IList<Coin> coins)
+        public Output(string accAddress, IList<Coin> coins)
         {
             AccAddress = accAddress;
             Coins = coins;

@@ -1,15 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using CosmosApi.Callbacks;
+using CosmosApi.Crypto;
 using CosmosApi.Endpoints;
 using CosmosApi.Extensions;
 using CosmosApi.Flurl;
 using CosmosApi.Models;
+using CosmosApi.Serialization;
+using Cryptography.ECDSA;
 using Flurl.Http;
 using Flurl.Http.Configuration;
-using JsonSubTypes;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CosmosApi
 {
@@ -35,6 +42,61 @@ namespace CosmosApi
         public ITransactions Transactions { get; }
         public IAuth Auth { get; }
         public IBank Bank { get; }
+        
+        public async Task<BroadcastTxResult> SendAsync(string chainId, string fromAddress, string toAddress, IList<Coin> coins, BroadcastTxMode mode, StdFee fee, string privateKey, string passphrase, string memo = "" , CancellationToken cancellationToken = default)
+        {
+            var account = await Auth.GetAuthAccountByAddressAsync(fromAddress, cancellationToken);
+            
+            var msg = new MsgSend()
+            {
+                FromAddress = fromAddress,
+                ToAddress = toAddress,
+                Amount = coins,
+            };
+            var signMsg = new StdSignDoc()
+            {
+                Fee = fee,
+                Memo = memo,
+                Messages = new List<TypeValue<IMsg>>
+                {
+                    new TypeValue<IMsg>(msg), 
+                },
+                Sequence = account.Result.Value.GetSequence(),
+                AccountNumber = account.Result.Value.GetAccountNumber(),
+                ChainId = chainId
+            };
+            var bytesToSign = GetSignBytes(signMsg);
+            var key = KeysParser.Parse(privateKey, passphrase);
+            var data = Sha256Manager.GetHash(bytesToSign);
+            var signed = Secp256K1Manager.SignCompact(data, key, out var recoveryId);
+            var tx = new StdTx()
+            {
+                Msg = new List<TypeValue<IMsg>>() { new TypeValue<IMsg>(msg) },
+                Memo = memo,
+                Fee = fee,
+                Signatures = new List<StdSignature>()
+                {
+                    new StdSignature()
+                    {
+                        Signature = signed,
+                        PubKey = account.Result.Value.GetPublicKey()
+                    }
+                },
+                
+            };
+            
+            cancellationToken.ThrowIfCancellationRequested();
+            return await Transactions.PostBroadcastAsync(new BroadcastTxBody(tx, mode), cancellationToken);
+        }
+
+        internal byte[] GetSignBytes(StdSignDoc signMsg)
+        {
+            var jsonSerializerSettings = JsonSerializerSettings();
+            var jObject = JObject.FromObject(signMsg, JsonSerializer.Create(jsonSerializerSettings));
+            JsonSorting.SortJson(jObject);
+            var json = jObject.ToString(Formatting.None, jsonSerializerSettings.Converters.ToArray());
+            return Encoding.UTF8.GetBytes(json);
+        }
 
         private IFlurlClient GetClient()
         {
@@ -90,18 +152,8 @@ namespace CosmosApi
                         s.AfterCallAsync = call => _settings.OnAfterCallAsync(new AfterCall(call.Request, call.Response, call.StartedUtc, call.EndedUtc));
                     }
 
-                    var jsonSerializerSettings = new JsonSerializerSettings()
-                    {
-                        DateFormatHandling = DateFormatHandling.IsoDateFormat,
-                    };
+                    var jsonSerializerSettings = JsonSerializerSettings();
 
-                    foreach (var factory in _settings.ConverterFactories)
-                    {
-                        jsonSerializerSettings.Converters.Add(factory.CreateConverter());
-                    }
-                    
-                    jsonSerializerSettings.Converters.Add(_settings.TypeValueConverter);
-                    
                     s.JsonSerializer = new NewtonsoftJsonSerializer(jsonSerializerSettings);
                 });
             if (_settings.BaseUrl != null)
@@ -115,6 +167,22 @@ namespace CosmosApi
             }
 
             return client;
+        }
+
+        private JsonSerializerSettings JsonSerializerSettings()
+        {
+            var jsonSerializerSettings = new JsonSerializerSettings()
+            {
+                DateFormatHandling = DateFormatHandling.IsoDateFormat,
+            };
+
+            foreach (var factory in _settings.ConverterFactories)
+            {
+                //jsonSerializerSettings.Converters.Add(factory.CreateConverter());
+            }
+
+            jsonSerializerSettings.Converters.Add(_settings.TypeValueConverter);
+            return jsonSerializerSettings;
         }
 
         public void Dispose()

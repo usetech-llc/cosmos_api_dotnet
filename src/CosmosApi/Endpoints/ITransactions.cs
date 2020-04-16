@@ -74,6 +74,38 @@ namespace CosmosApi.Endpoints
         /// </summary>
         /// <param name="hash">Tx hash</param>
         TxResponse GetByHash(byte[] hash);
+
+        /// <summary>
+        /// Broadcast a signed tx to a full node.
+        /// </summary>
+        /// <param name="txBroadcast">
+        /// The tx must be a signed StdTx.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// The cancellation token.
+        /// </param>
+        Task<BroadcastTxResult> PostBroadcastAsync(BroadcastTxBody txBroadcast, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Broadcast a signed tx to a full node.
+        /// </summary>
+        /// <param name="txBroadcast">
+        /// The tx must be a signed StdTx.
+        /// </param>
+        BroadcastTxResult PostBroadcast(BroadcastTxBody txBroadcast);
         
+        /// <summary>
+        /// Encode a transaction to the Amino wire format.
+        /// Encode a transaction (signed or not) from JSON to base64-encoded Amino serialized bytes.
+        /// </summary>
+        /// <param name="tx">
+        /// The tx to encode.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// The cancellation token.
+        /// </param>
+        /// <returns></returns>
+        Task<EncodeTxResponse> PostEncodeAsync(ITx tx, CancellationToken cancellationToken = default);
+
     }
 }

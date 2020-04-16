@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using CosmosApi.Extensions;
@@ -23,8 +24,8 @@ namespace CosmosApi.Endpoints
                 .Request("txs")
                 .SetQueryParam("message.action", messageAction)
                 .SetQueryParam("message.sender", messageSender)
-                .SetQueryParam("page", page)
-                .SetQueryParam("limit", limit)
+                .SetQueryParam("page", page ?? 1)
+                .SetQueryParam("limit", limit ?? 10)
                 .SetQueryParam("tx.minheight", minHeight)
                 .SetQueryParam("tx.maxheight", maxHeight)
                 .GetJsonAsync<PaginatedTxs>(cancellationToken)
@@ -48,6 +49,31 @@ namespace CosmosApi.Endpoints
         public TxResponse GetByHash(byte[] hash)
         {
             return GetByHashAsync(hash).Sync();
+        }
+
+        public Task<BroadcastTxResult> PostBroadcastAsync(BroadcastTxBody txBroadcast, CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("txs")
+                .PostJsonAsync(txBroadcast, cancellationToken)
+                .WrapExceptions()
+                .ReceiveJson<BroadcastTxResult>()
+                .WrapExceptions();
+        }
+
+        public BroadcastTxResult PostBroadcast(BroadcastTxBody txBroadcast)
+        {
+            return PostBroadcastAsync(txBroadcast).Sync();
+        }
+
+        public Task<EncodeTxResponse> PostEncodeAsync(ITx tx, CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("txs", "encode")
+                .PostJsonAsync(new TypeValue<ITx>(tx), cancellationToken)
+                .WrapExceptions()
+                .ReceiveJson<EncodeTxResponse>()
+                .WrapExceptions();
         }
     }
 }

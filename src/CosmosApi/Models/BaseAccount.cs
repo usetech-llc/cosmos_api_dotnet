@@ -53,5 +53,19 @@ namespace CosmosApi.Models
         [JsonProperty(PropertyName = "sequence")]
         public ulong Sequence { get; set; }
 
+        public PublicKey GetPublicKey()
+        {
+            return PublicKey;
+        }
+
+        public ulong GetSequence()
+        {
+            return Sequence;
+        }
+
+        public ulong GetAccountNumber()
+        {
+            return AccountNumber;
+        }
     }
 }
