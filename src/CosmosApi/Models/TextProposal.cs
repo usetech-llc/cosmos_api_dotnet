@@ -3,20 +3,19 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class TextProposal
+    public class TextProposal
     {
         /// <summary>
         /// Initializes a new instance of the TextProposal class.
         /// </summary>
         public TextProposal()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the TextProposal class.
         /// </summary>
-        public TextProposal(int? proposalId = default(int?), string title = default(string), string description = default(string), string proposalType = default(string), string proposalStatus = default(string), TallyResult finalTallyResult = default(TallyResult), string submitTime = default(string), IList<Coin> totalDeposit = default(IList<Coin>), string votingStartTime = default(string))
+        public TextProposal(int? proposalId, string title, string description, string proposalType, string proposalStatus, TallyResult finalTallyResult, string submitTime, IList<Coin> totalDeposit, string votingStartTime)
         {
             ProposalId = proposalId;
             Title = title;
@@ -27,13 +26,7 @@ namespace CosmosApi.Models
             SubmitTime = submitTime;
             TotalDeposit = totalDeposit;
             VotingStartTime = votingStartTime;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>
@@ -43,42 +36,42 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "title")]
-        public string Title { get; set; }
+        public string Title { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "proposal_type")]
-        public string ProposalType { get; set; }
+        public string ProposalType { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "proposal_status")]
-        public string ProposalStatus { get; set; }
+        public string ProposalStatus { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "final_tally_result")]
-        public TallyResult FinalTallyResult { get; set; }
+        public TallyResult FinalTallyResult { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "submit_time")]
-        public string SubmitTime { get; set; }
+        public string SubmitTime { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "total_deposit")]
-        public IList<Coin> TotalDeposit { get; set; }
+        public IList<Coin> TotalDeposit { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "voting_start_time")]
-        public string VotingStartTime { get; set; }
+        public string VotingStartTime { get; set; } = null!;
 
     }
 }

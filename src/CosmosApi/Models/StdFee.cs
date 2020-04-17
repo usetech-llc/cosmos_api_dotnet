@@ -22,7 +22,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the StdFee class.
         /// </summary>
-        public StdFee(ulong gas = default, IList<Coin> amount = default)
+        public StdFee(ulong gas, IList<Coin> amount)
         {
             Gas = gas;
             Amount = amount;
@@ -37,7 +37,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "amount")]
-        public IList<Coin> Amount { get; set; }
+        public IList<Coin> Amount { get; set; } = null!;
 
     }
 }

@@ -18,7 +18,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the PaginatedQueryTxs class.
         /// </summary>
-        public PaginatedTxs(int totalCount = default, int count = default, int pageNumber = default, int pageTotal = default, int limit = default, IList<TxResponse> txs = default)
+        public PaginatedTxs(int totalCount, int count, int pageNumber, int pageTotal, int limit, IList<TxResponse> txs)
         {
             TotalCount = totalCount;
             Count = count;
@@ -62,7 +62,7 @@ namespace CosmosApi.Models
         /// List of txs in current page.
         /// </summary>
         [JsonProperty(PropertyName = "txs")]
-        public IList<TxResponse> Txs { get; set; }
+        public IList<TxResponse> Txs { get; set; } = null!;
 
     }
 }

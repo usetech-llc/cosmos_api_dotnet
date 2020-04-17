@@ -16,7 +16,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the BlockID class.
         /// </summary>
-        public BlockID(byte[] hash = default(byte[]), BlockIDParts parts = default(BlockIDParts))
+        public BlockID(byte[] hash, BlockIDParts parts)
         {
             Hash = hash;
             Parts = parts;
@@ -26,12 +26,12 @@ namespace CosmosApi.Models
         /// </summary>
         [JsonProperty(PropertyName = "hash")]
         [JsonConverter(typeof(HexStringByteArrayConverter))]
-        public byte[] Hash { get; set; }
+        public byte[] Hash { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "parts")]
-        public BlockIDParts Parts { get; set; }
+        public BlockIDParts Parts { get; set; } = null!;
 
     }
 }

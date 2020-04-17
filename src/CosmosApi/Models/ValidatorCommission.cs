@@ -2,52 +2,45 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class ValidatorCommission
+    public class ValidatorCommission
     {
         /// <summary>
         /// Initializes a new instance of the ValidatorCommission class.
         /// </summary>
         public ValidatorCommission()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the ValidatorCommission class.
         /// </summary>
-        public ValidatorCommission(string rate = default(string), string maxRate = default(string), string maxChangeRate = default(string), string updateTime = default(string))
+        public ValidatorCommission(string rate, string maxRate, string maxChangeRate, string updateTime)
         {
             Rate = rate;
             MaxRate = maxRate;
             MaxChangeRate = maxChangeRate;
             UpdateTime = updateTime;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "rate")]
-        public string Rate { get; set; }
+        public string Rate { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "max_rate")]
-        public string MaxRate { get; set; }
+        public string MaxRate { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "max_change_rate")]
-        public string MaxChangeRate { get; set; }
+        public string MaxChangeRate { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "update_time")]
-        public string UpdateTime { get; set; }
+        public string UpdateTime { get; set; } = null!;
 
     }
 }

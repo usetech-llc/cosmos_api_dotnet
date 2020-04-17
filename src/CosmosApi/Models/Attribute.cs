@@ -8,10 +8,20 @@ namespace CosmosApi.Models
     /// </summary>
     public class Attribute
     {
+        public Attribute()
+        {
+        }
+        
+        public Attribute(string key, string value)
+        {
+            Key = key;
+            Value = value;
+        }
+
         [JsonProperty(PropertyName = "key")]
-        public string Key { get; set; }
+        public string Key { get; set; } = null!;
 
         [JsonProperty(PropertyName = "value")]
-        public string Value { get; set; }
+        public string Value { get; set; } = null!;
     }
 }

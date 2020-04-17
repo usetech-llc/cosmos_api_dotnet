@@ -3,46 +3,39 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class Deposit
+    public class Deposit
     {
         /// <summary>
         /// Initializes a new instance of the Deposit class.
         /// </summary>
         public Deposit()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the Deposit class.
         /// </summary>
-        public Deposit(IList<Coin> amount = default(IList<Coin>), string proposalId = default(string), string depositor = default(string))
+        public Deposit(IList<Coin> amount, string proposalId, string depositor)
         {
             Amount = amount;
             ProposalId = proposalId;
             Depositor = depositor;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "amount")]
-        public IList<Coin> Amount { get; set; }
+        public IList<Coin> Amount { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "proposal_id")]
-        public string ProposalId { get; set; }
+        public string ProposalId { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "depositor")]
-        public string Depositor { get; set; }
+        public string Depositor { get; set; } = null!;
 
     }
 }

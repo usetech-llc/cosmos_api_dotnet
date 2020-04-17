@@ -11,13 +11,12 @@ namespace CosmosApi.Models
         /// </summary>
         public BlockHeader()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the BlockHeader class.
         /// </summary>
-        public BlockHeader(string chainId = default, long? height = default, DateTimeOffset time = default, long? numTxs = default, BlockID lastBlockId = default, long? totalTxs = default, byte[] lastCommitHash = default, byte[] dataHash = default, byte[] validatorsHash = default, byte[] nextValidatorsHash = default, byte[] consensusHash = default, byte[] appHash = default, byte[] lastResultsHash = default, byte[] evidenceHash = default, byte[] proposerAddress = default, BlockHeaderVersion version = default)
+        public BlockHeader(string chainId, long? height, DateTimeOffset time, long? numTxs, BlockID lastBlockId, long? totalTxs, byte[] lastCommitHash, byte[] dataHash, byte[] validatorsHash, byte[] nextValidatorsHash, byte[] consensusHash, byte[] appHash, byte[] lastResultsHash, byte[] evidenceHash, byte[] proposerAddress, BlockHeaderVersion version)
         {
             ChainId = chainId;
             Height = height;
@@ -35,20 +34,12 @@ namespace CosmosApi.Models
             EvidenceHash = evidenceHash;
             ProposerAddress = proposerAddress;
             Version = version;
-            CustomInit();
-        }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        private void CustomInit()
-        {
         }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "chain_id")]
-        public string ChainId { get; set; }
+        public string ChainId { get; set; } = null!;
 
         /// <summary>
         /// </summary>
@@ -69,7 +60,7 @@ namespace CosmosApi.Models
         /// Prev block info.
         /// </summary>
         [JsonProperty(PropertyName = "last_block_id")]
-        public BlockID LastBlockId { get; set; }
+        public BlockID LastBlockId { get; set; } = null!;
 
         /// <summary>
         /// </summary>
@@ -81,67 +72,67 @@ namespace CosmosApi.Models
         /// </summary>
         [JsonProperty(PropertyName = "last_commit_hash")]
         [JsonConverter(typeof(HexStringByteArrayConverter))]
-        public byte[] LastCommitHash { get; set; }
+        public byte[] LastCommitHash { get; set; } = null!;
 
         /// <summary>
         /// Hash of block data: transactions.
         /// </summary>
         [JsonProperty(PropertyName = "data_hash")]
         [JsonConverter(typeof(HexStringByteArrayConverter))]
-        public byte[] DataHash { get; set; }
+        public byte[] DataHash { get; set; } = null!;
 
         /// <summary>
         /// Hash from the app output from the prev block: validators for the current block.
         /// </summary>
         [JsonProperty(PropertyName = "validators_hash")]
         [JsonConverter(typeof(HexStringByteArrayConverter))]
-        public byte[] ValidatorsHash { get; set; }
+        public byte[] ValidatorsHash { get; set; } = null!;
 
         /// <summary>
         /// Hash from the app output from the prev block: validators for the next block.
         /// </summary>
         [JsonProperty(PropertyName = "next_validators_hash")]
         [JsonConverter(typeof(HexStringByteArrayConverter))]
-        public byte[] NextValidatorsHash { get; set; }
+        public byte[] NextValidatorsHash { get; set; } = null!;
 
         /// <summary>
         /// Hash from the app output from the prev block: consensus params for current block.
         /// </summary>
         [JsonProperty(PropertyName = "consensus_hash")]
         [JsonConverter(typeof(HexStringByteArrayConverter))]
-        public byte[] ConsensusHash { get; set; }
+        public byte[] ConsensusHash { get; set; } = null!;
 
         /// <summary>
         /// Hash from the app output from the prev block: state after txs from the previous block.
         /// </summary>
         [JsonProperty(PropertyName = "app_hash")]
         [JsonConverter(typeof(HexStringByteArrayConverter))]
-        public byte[] AppHash { get; set; }
+        public byte[] AppHash { get; set; } = null!;
 
         /// <summary>
         /// Root hash of all results from the txs from the previous block.
         /// </summary>
         [JsonProperty(PropertyName = "last_results_hash")]
         [JsonConverter(typeof(HexStringByteArrayConverter))]
-        public byte[] LastResultsHash { get; set; }
+        public byte[] LastResultsHash { get; set; } = null!;
 
         /// <summary>
         /// Consensus info: evidence included in the block.
         /// </summary>
         [JsonProperty(PropertyName = "evidence_hash")]
         [JsonConverter(typeof(HexStringByteArrayConverter))]
-        public byte[] EvidenceHash { get; set; }
+        public byte[] EvidenceHash { get; set; } = null!;
 
         /// <summary>
         /// Consensus info: original proposer of the block.
         /// </summary>
         [JsonProperty(PropertyName = "proposer_address")]
         [JsonConverter(typeof(HexStringByteArrayConverter))]
-        public byte[] ProposerAddress { get; set; }
+        public byte[] ProposerAddress { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "version")]
-        public BlockHeaderVersion Version { get; set; }
+        public BlockHeaderVersion Version { get; set; } = null!;
     }
 }

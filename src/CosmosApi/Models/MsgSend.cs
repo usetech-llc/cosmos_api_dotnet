@@ -9,13 +9,24 @@ namespace CosmosApi.Models
     /// </summary>
     public class MsgSend : IMsg
     {
+        public MsgSend()
+        {
+        }
+
+        public MsgSend(string fromAddress, string address, IList<Coin> amount)
+        {
+            FromAddress = fromAddress;
+            ToAddress = address;
+            Amount = amount;
+        }
+
         [JsonProperty("from_address")]
-        public string FromAddress { get; set; }
+        public string FromAddress { get; set; } = null!;
         
         [JsonProperty("to_address")]
-        public string ToAddress { get; set; }
+        public string ToAddress { get; set; } = null!;
         
         [JsonProperty("amount")]
-        public IList<Coin> Amount { get; set; }
+        public IList<Coin> Amount { get; set; } = null!;
     }
 }

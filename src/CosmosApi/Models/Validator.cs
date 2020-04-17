@@ -2,20 +2,19 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class Validator
+    public class Validator
     {
         /// <summary>
         /// Initializes a new instance of the Validator class.
         /// </summary>
         public Validator()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the Validator class.
         /// </summary>
-        public Validator(string operatorAddress = default(string), string consensusPubkey = default(string), bool? jailed = default(bool?), int? status = default(int?), string tokens = default(string), string delegatorShares = default(string), ValidatorDescription description = default(ValidatorDescription), string bondHeight = default(string), int? bondIntraTxCounter = default(int?), string unbondingHeight = default(string), string unbondingTime = default(string), ValidatorCommission commission = default(ValidatorCommission))
+        public Validator(string operatorAddress, string consensusPubkey, bool? jailed, int? status, string tokens, string delegatorShares, ValidatorDescription description, string bondHeight, int? bondIntraTxCounter, string unbondingHeight, string unbondingTime, ValidatorCommission commission)
         {
             OperatorAddress = operatorAddress;
             ConsensusPubkey = consensusPubkey;
@@ -29,23 +28,17 @@ namespace CosmosApi.Models
             UnbondingHeight = unbondingHeight;
             UnbondingTime = unbondingTime;
             Commission = commission;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "operator_address")]
-        public string OperatorAddress { get; set; }
+        public string OperatorAddress { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "consensus_pubkey")]
-        public string ConsensusPubkey { get; set; }
+        public string ConsensusPubkey { get; set; } = null!;
 
         /// <summary>
         /// </summary>
@@ -60,22 +53,22 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "tokens")]
-        public string Tokens { get; set; }
+        public string Tokens { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "delegator_shares")]
-        public string DelegatorShares { get; set; }
+        public string DelegatorShares { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "description")]
-        public ValidatorDescription Description { get; set; }
+        public ValidatorDescription Description { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "bond_height")]
-        public string BondHeight { get; set; }
+        public string BondHeight { get; set; } = null!;
 
         /// <summary>
         /// </summary>
@@ -85,17 +78,17 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "unbonding_height")]
-        public string UnbondingHeight { get; set; }
+        public string UnbondingHeight { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "unbonding_time")]
-        public string UnbondingTime { get; set; }
+        public string UnbondingTime { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "commission")]
-        public ValidatorCommission Commission { get; set; }
+        public ValidatorCommission Commission { get; set; } = null!;
 
     }
 }

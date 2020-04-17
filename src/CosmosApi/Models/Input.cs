@@ -9,10 +9,10 @@ namespace CosmosApi.Models
     public class Input
     {
         [JsonProperty("address")]
-        public string AccAddress { get; set; }
+        public string AccAddress { get; set; } = null!;
         
         [JsonProperty("coins")]
-        public IList<Coin> Coins { get; set; }
+        public IList<Coin> Coins { get; set; } = null!;
 
         public Input()
         {

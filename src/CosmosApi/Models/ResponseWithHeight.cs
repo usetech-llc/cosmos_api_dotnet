@@ -6,8 +6,9 @@ namespace CosmosApi.Models
     {
         [JsonProperty("height")]
         public long Height { get; set; }
-        [JsonProperty("result")]
-        public TResult Result { get; set; }
+
+        [JsonProperty("result")] 
+        public TResult Result { get; set; } = default!;
 
         public ResponseWithHeight()
         {

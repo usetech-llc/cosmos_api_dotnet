@@ -7,10 +7,10 @@ namespace CosmosApi.Models
     public class MsgMultiSend : IMsg
     {
         [JsonProperty("inputs")]
-        public IList<Input> Inputs { get; set; }
+        public IList<Input> Inputs { get; set; } = null!;
         
         [JsonProperty("outputs")]
-        public IList<Output> Outputs { get; set; }
+        public IList<Output> Outputs { get; set; } = null!;
 
         public MsgMultiSend()
         {

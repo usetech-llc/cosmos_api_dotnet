@@ -14,7 +14,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the PublicKey class.
         /// </summary>
-        public PublicKey(string type = default, string value = default)
+        public PublicKey(string type, string value)
         {
             Type = type;
             Value = value;
@@ -23,11 +23,11 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
+        public string Type { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "value")]
-        public string Value { get; set; }
+        public string Value { get; set; } = null!;
     }
 }

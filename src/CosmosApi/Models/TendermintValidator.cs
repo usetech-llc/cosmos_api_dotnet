@@ -17,7 +17,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the TendermintValidator class.
         /// </summary>
-        public TendermintValidator(byte[] address = default, string pubKey = default, long votingPower = default, long proposerPriority = default)
+        public TendermintValidator(byte[] address, string pubKey, long votingPower, long proposerPriority)
         {
             Address = address;
             PubKey = pubKey;
@@ -29,12 +29,12 @@ namespace CosmosApi.Models
         /// </summary>
         [JsonProperty(PropertyName = "address")]
         [JsonConverter(typeof(Base64StringByteArrayConverter))]
-        public byte[] Address { get; set; }
+        public byte[] Address { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "pub_key")]
-        public string PubKey { get; set; }
+        public string PubKey { get; set; } = null!;
 
         /// <summary>
         /// </summary>

@@ -16,7 +16,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the StdSignature class.
         /// </summary>
-        public StdSignature(byte[] signature = default, PublicKey pubKey = default)
+        public StdSignature(byte[] signature, PublicKey pubKey)
         {
             Signature = signature;
             PubKey = pubKey;
@@ -26,11 +26,11 @@ namespace CosmosApi.Models
         /// </summary>
         [JsonProperty(PropertyName = "signature")]
         [JsonConverter(typeof(Base64StringByteArrayConverter))]
-        public byte[] Signature { get; set; }
+        public byte[] Signature { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "pub_key")]
-        public PublicKey PubKey { get; set; }
+        public PublicKey PubKey { get; set; } = null!;
     }
 }
