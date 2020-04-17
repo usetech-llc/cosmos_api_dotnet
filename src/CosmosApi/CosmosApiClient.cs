@@ -23,7 +23,7 @@ namespace CosmosApi
     public class CosmosApiClient : ICosmosApiClient
     {
         private readonly CosmosApiClientSettings _settings;
-        private Lazy<IFlurlClient> _flurlClient;
+        private Lazy<IFlurlClient>? _flurlClient;
 
         public CosmosApiClient(CosmosApiClientSettings settings)
         {
@@ -100,7 +100,7 @@ namespace CosmosApi
 
         private IFlurlClient GetClient()
         {
-            return _flurlClient.Value;
+            return _flurlClient?.Value ?? throw new ObjectDisposedException(nameof(CosmosApiClient));
         }
 
         private IFlurlClient CreateClient()

@@ -2,58 +2,51 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class ValidatorDescription
+    public class ValidatorDescription
     {
         /// <summary>
         /// Initializes a new instance of the ValidatorDescription class.
         /// </summary>
         public ValidatorDescription()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the ValidatorDescription class.
         /// </summary>
-        public ValidatorDescription(string moniker = default(string), string identity = default(string), string website = default(string), string securityContact = default(string), string details = default(string))
+        public ValidatorDescription(string moniker, string identity, string website, string securityContact, string details)
         {
             Moniker = moniker;
             Identity = identity;
             Website = website;
             SecurityContact = securityContact;
             Details = details;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "moniker")]
-        public string Moniker { get; set; }
+        public string Moniker { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "identity")]
-        public string Identity { get; set; }
+        public string Identity { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "website")]
-        public string Website { get; set; }
+        public string Website { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "security_contact")]
-        public string SecurityContact { get; set; }
+        public string SecurityContact { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "details")]
-        public string Details { get; set; }
+        public string Details { get; set; } = null!;
 
     }
 }

@@ -19,7 +19,7 @@ namespace CosmosApi.Models
         /// BaseAccount
         /// class.
         /// </summary>
-        public BaseAccount(ulong accountNumber = default, string address = default, IList<Coin> coins = default, PublicKey publicKey = default, ulong sequence = default)
+        public BaseAccount(ulong accountNumber, string address, IList<Coin> coins, PublicKey publicKey, ulong sequence)
         {
             AccountNumber = accountNumber;
             Address = address;
@@ -36,17 +36,17 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "address")]
-        public string Address { get; set; }
+        public string Address { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "coins")]
-        public IList<Coin> Coins { get; set; }
+        public IList<Coin> Coins { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "public_key")]
-        public PublicKey PublicKey { get; set; }
+        public PublicKey PublicKey { get; set; } = null!;
 
         /// <summary>
         /// </summary>

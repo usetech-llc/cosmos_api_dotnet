@@ -20,7 +20,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the Coin class.
         /// </summary>
-        public Coin(string denom = default, int amount = default)
+        public Coin(string denom, int amount)
         {
             Denom = denom;
             Amount = amount;
@@ -29,7 +29,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "denom")]
-        public string Denom { get; set; }
+        public string Denom { get; set; } = null!;
 
         /// <summary>
         /// </summary>

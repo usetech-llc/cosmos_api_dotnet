@@ -16,7 +16,7 @@ namespace CosmosApi.Test.Client
         [Fact]
         public void BytesForSigningComputedCorrectlyForStdTx()
         {
-            using var client = CreateClient() as CosmosApiClient;
+            using var client = CreateClient();
 
             var bytes = client.GetSignBytes(new StdSignDoc()
             {

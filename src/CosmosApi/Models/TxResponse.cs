@@ -18,22 +18,22 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "txhash")]
-        public string TxHash { get; set; }
+        public string TxHash { get; set; } = null!;
         
         [JsonProperty(PropertyName = "code")]
         public uint Code { get; set; }
         
         [JsonProperty(PropertyName = "data")]
-        public string Data { get; set; }
+        public string Data { get; set; } = null!;
         
         [JsonProperty(PropertyName = "raw_log")]
-        public string RawLog { get; set; }
+        public string RawLog { get; set; } = null!;
         
         [JsonProperty(PropertyName = "logs")]
-        public IList<ABCIMessageLog> Logs { get; set; }
+        public IList<ABCIMessageLog> Logs { get; set; } = null!;
         
         [JsonProperty(PropertyName = "info")]
-        public string Info { get; set; }
+        public string Info { get; set; } = null!;
         
         [JsonProperty(PropertyName = "gas_wanted")]
         public long GasWanted { get; set; }
@@ -42,12 +42,12 @@ namespace CosmosApi.Models
         public long GasUsed { get; set; }
         
         [JsonProperty(PropertyName = "codespace")]
-        public string Codespace { get; set; }
+        public string Codespace { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "txs")]
-        public IList<ITx> Tx { get; set; }
+        public IList<ITx> Tx { get; set; } = null!;
 
         /// <summary>
         /// </summary>
@@ -58,7 +58,7 @@ namespace CosmosApi.Models
         {
         }
 
-        public TxResponse(long height = default, string txHash = null, uint code = default, string data = null, string rawLog = null, IList<ABCIMessageLog> logs = null, string info = null, long gasWanted = default, long gasUsed = default, string codespace = null, IList<ITx> tx = null, DateTimeOffset timestamp = default)
+        public TxResponse(long height, string txHash, uint code, string data, string rawLog, IList<ABCIMessageLog> logs, string info, long gasWanted, long gasUsed, string codespace, IList<ITx> tx, DateTimeOffset timestamp)
         {
             Height = height;
             TxHash = txHash;

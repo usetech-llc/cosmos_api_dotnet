@@ -25,7 +25,11 @@ namespace CosmosApi.Models
         [JsonProperty(PropertyName = "events")]
         public IList<StringEvent>? Events { get; set; }
 
-        public ABCIMessageLog(ushort msgIndex = default, bool success = default, string? log = null, IList<StringEvent>? events = null)
+        public ABCIMessageLog()
+        {
+        }
+
+        public ABCIMessageLog(ushort msgIndex, bool success, string? log, IList<StringEvent>? events)
         {
             MsgIndex = msgIndex;
             Success = success;

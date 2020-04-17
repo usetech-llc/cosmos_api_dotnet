@@ -20,7 +20,7 @@ namespace CosmosApi.Models
         /// TypeValue
         /// class.
         /// </summary>
-        public TypeValue(TValue value = default)
+        public TypeValue(TValue value)
         {
             Value = value;
         }
@@ -28,7 +28,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "value")]
-        public TValue Value { get; set; }
+        public TValue Value { get; set; } = null!;
 
     }
 }

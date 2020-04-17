@@ -2,20 +2,19 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class UnbondingDelegation
+    public class UnbondingDelegation
     {
         /// <summary>
         /// Initializes a new instance of the UnbondingDelegation class.
         /// </summary>
         public UnbondingDelegation()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the UnbondingDelegation class.
         /// </summary>
-        public UnbondingDelegation(string delegatorAddress = default(string), string validatorAddress = default(string), string initialBalance = default(string), string balance = default(string), int? creationHeight = default(int?), int? minTime = default(int?))
+        public UnbondingDelegation(string delegatorAddress, string validatorAddress, string initialBalance, string balance, int? creationHeight, int? minTime)
         {
             DelegatorAddress = delegatorAddress;
             ValidatorAddress = validatorAddress;
@@ -23,33 +22,27 @@ namespace CosmosApi.Models
             Balance = balance;
             CreationHeight = creationHeight;
             MinTime = minTime;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "delegator_address")]
-        public string DelegatorAddress { get; set; }
+        public string DelegatorAddress { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "validator_address")]
-        public string ValidatorAddress { get; set; }
+        public string ValidatorAddress { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "initial_balance")]
-        public string InitialBalance { get; set; }
+        public string InitialBalance { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "balance")]
-        public string Balance { get; set; }
+        public string Balance { get; set; } = null!;
 
         /// <summary>
         /// </summary>

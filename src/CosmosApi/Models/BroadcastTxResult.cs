@@ -14,7 +14,7 @@ namespace CosmosApi.Models
         {
         }
 
-        public BroadcastTxResult(string txHash = null, int? height = default, string? rawLog = null, IList<ABCIMessageLog> logs = null, ulong gasWanted = default, ulong gasUsed = default, IList<StringEvent> events = null)
+        public BroadcastTxResult(string txHash, int? height, string? rawLog, IList<ABCIMessageLog> logs, ulong gasWanted, ulong gasUsed, IList<StringEvent> events)
         {
             TxHash = txHash;
             Height = height;
@@ -28,7 +28,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "txhash")]
-        public string TxHash { get; set; }
+        public string TxHash { get; set; } = null!;
 
         /// <summary>
         /// </summary>
@@ -39,7 +39,7 @@ namespace CosmosApi.Models
         public string? RawLog { get; set; }
         
         [JsonProperty("logs")]
-        public IList<ABCIMessageLog> Logs { get; set; } 
+        public IList<ABCIMessageLog> Logs { get; set; } = null!;
         
         [JsonProperty("gas_wanted")]
         [JsonConverter(typeof(StringNumberConverter))]
@@ -50,6 +50,6 @@ namespace CosmosApi.Models
         public ulong GasUsed { get; set; }
 
         [JsonProperty(PropertyName = "events")]
-        public IList<StringEvent> Events { get; set; }
+        public IList<StringEvent> Events { get; set; } = null!;
     }
 }

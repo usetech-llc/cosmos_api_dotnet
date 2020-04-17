@@ -2,33 +2,26 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class RedelegationEntry
+    public class RedelegationEntry
     {
         /// <summary>
         /// Initializes a new instance of the RedelegationEntry class.
         /// </summary>
         public RedelegationEntry()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the RedelegationEntry class.
         /// </summary>
-        public RedelegationEntry(int? creationHeight = default(int?), int? completionTime = default(int?), string initialBalance = default(string), string balance = default(string), string sharesDst = default(string))
+        public RedelegationEntry(int? creationHeight, int? completionTime, string initialBalance, string balance, string sharesDst)
         {
             CreationHeight = creationHeight;
             CompletionTime = completionTime;
             InitialBalance = initialBalance;
             Balance = balance;
             SharesDst = sharesDst;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>
@@ -43,17 +36,17 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "initial_balance")]
-        public string InitialBalance { get; set; }
+        public string InitialBalance { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "balance")]
-        public string Balance { get; set; }
+        public string Balance { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "shares_dst")]
-        public string SharesDst { get; set; }
+        public string SharesDst { get; set; } = null!;
 
     }
 }

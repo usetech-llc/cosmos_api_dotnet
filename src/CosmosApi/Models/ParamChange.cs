@@ -2,52 +2,45 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class ParamChange
+    public class ParamChange
     {
         /// <summary>
         /// Initializes a new instance of the ParamChange class.
         /// </summary>
         public ParamChange()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the ParamChange class.
         /// </summary>
-        public ParamChange(string subspace = default(string), string key = default(string), string subkey = default(string), object value = default(object))
+        public ParamChange(string subspace, string key, string subkey, object value)
         {
             Subspace = subspace;
             Key = key;
             Subkey = subkey;
             Value = value;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "subspace")]
-        public string Subspace { get; set; }
+        public string Subspace { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "key")]
-        public string Key { get; set; }
+        public string Key { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "subkey")]
-        public string Subkey { get; set; }
+        public string Subkey { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "value")]
-        public object Value { get; set; }
+        public object Value { get; set; } = null!;
 
     }
 }

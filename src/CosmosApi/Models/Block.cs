@@ -12,7 +12,7 @@ namespace CosmosApi.Models
         {
         }
 
-        public Block(BlockHeader header = null, BlockData data = null, EvidenceData evidence = null, BlockLastCommit? lastCommit = null)
+        public Block(BlockHeader header, BlockData data, EvidenceData evidence, BlockLastCommit? lastCommit)
         {
             Header = header;
             Data = data;
@@ -23,17 +23,17 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "header")]
-        public BlockHeader Header { get; set; }
+        public BlockHeader Header { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "data")]
-        public BlockData Data { get; set; }
+        public BlockData Data { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "evidence")]
-        public EvidenceData Evidence { get; set; }
+        public EvidenceData Evidence { get; set; } = null!;
 
         /// <summary>
         /// </summary>
