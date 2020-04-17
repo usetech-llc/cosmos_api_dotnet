@@ -22,7 +22,7 @@ namespace CosmosApi.Test.Endpoints
         public ICosmosApiClient CreateClient(string baseUrl = default)
         {
             return new CosmosApiBuilder()
-                .UseBaseUrl(baseUrl ?? Configuration.DefaultBaseUrl)
+                .UseBaseUrl(baseUrl ?? Configuration.GlobalBaseUrl)
                 .Configure(s =>
                 {
                     s.OnAfterCallAsync = OnAfterCall;
