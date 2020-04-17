@@ -1,3 +1,4 @@
-git submodule init && git submodule update --recursive --remote
-docker-compose build gaia-test
-docker-compose up -d gaia-test
+docker-compose build cosmos-api-test
+docker-compose up -d cosmos-api-test
+
+docker-compose run cosmos-api-test dotnet test -l "console;verbosity=detailed"

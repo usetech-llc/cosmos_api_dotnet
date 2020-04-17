@@ -18,7 +18,7 @@ namespace CosmosApi.Test.Client
         [Fact]
         public async Task AsyncCreateTransactionTransferCoins()
         {
-            using var client = CreateClient("http://localhost:1317");
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var account1BeforeTransaction = (await client.Auth.GetAuthAccountByAddressAsync(Configuration.Validator1Address)).Result.Value as BaseAccount;
             Assert.NotNull(account1BeforeTransaction);

@@ -15,12 +15,13 @@ namespace CosmosApi.Flurl
             _messageHandlerFactory = messageHandlerFactory;
         }
 
-        public HttpClient CreateHttpClient(HttpMessageHandler handler)
+        public override HttpClient CreateHttpClient(HttpMessageHandler handler)
         {
             return _httpClientFactory?.Invoke(handler) ?? base.CreateHttpClient(handler);
         }
 
-        public HttpMessageHandler CreateMessageHandler()
+
+        public override HttpMessageHandler CreateMessageHandler()
         {
             return _messageHandlerFactory?.Invoke() ?? base.CreateMessageHandler();
         }

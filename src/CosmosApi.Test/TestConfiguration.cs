@@ -1,17 +1,26 @@
-﻿namespace CosmosApi.Test
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace CosmosApi.Test
 {
     public class TestConfiguration
     {
-        public string DefaultBaseUrl { get; }
-        public string Validator1Address { get; }
-        public string Validator2Address { get; }
-        public string Validator1PrivateKey { get; }
-        public string Validator1Passphrase { get; }
-        public string LocalChainId { get; }
+        public string GlobalBaseUrl { get; set; }
+        public string LocalBaseUrl { get; set; }
+        public string Validator1Address { get; set; }
+        public string Validator2Address { get; set; }
+        public string Validator1PrivateKey { get; set; }
+        public string Validator1Passphrase { get; set; }
+        public string LocalChainId { get; set; }
 
-        private TestConfiguration(string defaultBaseUrl, string validator1Address, string validator2Address, string validator1PrivateKey, string validator1Passphrase, string localChainId)
+        private TestConfiguration()
         {
-            DefaultBaseUrl = defaultBaseUrl;
+        }
+
+        private TestConfiguration(string globalBaseUrl, string localBaseUrl, string validator1Address, string validator2Address, string validator1PrivateKey, string validator1Passphrase, string localChainId)
+        {
+            GlobalBaseUrl = globalBaseUrl;
+            LocalBaseUrl = localBaseUrl;
             Validator1Address = validator1Address;
             Validator2Address = validator2Address;
             Validator1PrivateKey = validator1PrivateKey;
@@ -21,21 +30,13 @@
 
         public static TestConfiguration Create()
         {
-            return new TestConfiguration(
-                "https://api.cosmos.network",
-                @"cosmos1ht7y9zx4n4wnvwmgyqm8309xj2yulwklj54h5j",
-                @"cosmos1235em592dc22gehs9z44reqtuy2hqulndd54zt",
-                @"-----BEGIN TENDERMINT PRIVATE KEY-----
-kdf: bcrypt
-salt: C586A3498B0298905ABE7D6DBADBCB87
-
-FascN+0QNtdvs/Wh3PzxwHBNmPr5nh+yZA3g4aJD6CHbOPLCYnD7ozt4sZW3LvQu
-Zs2mQ5J0t9siMmKCi/1RZ0CoweBz0pUKvO8Kqek=
-=K7Bt
------END TENDERMINT PRIVATE KEY-----",
-                
-                "11111111",
-                "testing");
+            var configurationRoot = new ConfigurationBuilder()
+                .AddYamlFile("TestConfiguration.yml")
+                .AddEnvironmentVariables()
+                .Build();
+            var testConfiguration = new TestConfiguration();
+            configurationRoot.Bind(testConfiguration);
+            return testConfiguration;
         }
     }
 }

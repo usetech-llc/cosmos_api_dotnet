@@ -1,0 +1,15 @@
+﻿GlobalBaseUrl: https://api.cosmos.network
+LocalBaseUrl:  http://localhost:1317
+Validator1Address: cosmos1ht7y9zx4n4wnvwmgyqm8309xj2yulwklj54h5j
+Validator2Address: cosmos1235em592dc22gehs9z44reqtuy2hqulndd54zt
+Validator1PrivateKey: |-
+  -----BEGIN TENDERMINT PRIVATE KEY-----
+  kdf: bcrypt
+  salt: C586A3498B0298905ABE7D6DBADBCB87
+
+  FascN+0QNtdvs/Wh3PzxwHBNmPr5nh+yZA3g4aJD6CHbOPLCYnD7ozt4sZW3LvQu
+  Zs2mQ5J0t9siMmKCi/1RZ0CoweBz0pUKvO8Kqek=
+  =K7Bt
+  -----END TENDERMINT PRIVATE KEY-----
+Validator1Passphrase: 11111111
+LocalChainId: testing

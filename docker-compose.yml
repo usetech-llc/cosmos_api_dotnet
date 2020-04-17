@@ -10,5 +10,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.gaia.testenv
-      
-  
+  cosmos-api-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.cosmos-api.test
+    environment:
+      - LocalBaseUrl=http://gaia-test:1317
