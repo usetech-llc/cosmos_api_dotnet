@@ -25,7 +25,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "tx")]
-        public ITx Tx { get; set; }
+        public ITx Tx { get; set; } = null!;
 
         /// <summary>
         /// </summary>

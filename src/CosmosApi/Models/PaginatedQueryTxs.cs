@@ -3,20 +3,19 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class PaginatedQueryTxs
+    public class PaginatedQueryTxs
     {
         /// <summary>
         /// Initializes a new instance of the PaginatedQueryTxs class.
         /// </summary>
         public PaginatedQueryTxs()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the PaginatedQueryTxs class.
         /// </summary>
-        public PaginatedQueryTxs(double? totalCount = default(double?), double? count = default(double?), double? pageNumber = default(double?), double? pageTotal = default(double?), double? limit = default(double?), IList<TxQuery> txs = default(IList<TxQuery>))
+        public PaginatedQueryTxs(double? totalCount, double? count, double? pageNumber, double? pageTotal, double? limit, IList<TxQuery> txs)
         {
             TotalCount = totalCount;
             Count = count;
@@ -24,13 +23,7 @@ namespace CosmosApi.Models
             PageTotal = pageTotal;
             Limit = limit;
             Txs = txs;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>
@@ -60,7 +53,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "txs")]
-        public IList<TxQuery> Txs { get; set; }
+        public IList<TxQuery> Txs { get; set; } = null!;
 
     }
 }

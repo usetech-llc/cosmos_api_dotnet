@@ -19,7 +19,7 @@ namespace CosmosApi.Models
         /// EncodeTxResponse
         /// class.
         /// </summary>
-        public EncodeTxResponse(byte[] tx = default)
+        public EncodeTxResponse(byte[] tx)
         {
             Tx = tx;
         }
@@ -28,7 +28,7 @@ namespace CosmosApi.Models
         /// </summary>
         [JsonProperty(PropertyName = "tx")]
         [JsonConverter(typeof(Base64StringByteArrayConverter))]
-        public byte[] Tx { get; set; }
+        public byte[] Tx { get; set; } = null!;
 
     }
 }

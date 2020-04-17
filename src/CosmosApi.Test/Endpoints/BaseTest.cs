@@ -19,9 +19,9 @@ namespace CosmosApi.Test.Endpoints
             Configuration = TestConfiguration.Create();
         }
 
-        public ICosmosApiClient CreateClient(string baseUrl = default)
+        public CosmosApiClient CreateClient(string? baseUrl = default)
         {
-            return new CosmosApiBuilder()
+            return (new CosmosApiBuilder()
                 .UseBaseUrl(baseUrl ?? Configuration.GlobalBaseUrl)
                 .Configure(s =>
                 {
@@ -32,7 +32,7 @@ namespace CosmosApi.Test.Endpoints
                 .RegisterTypeValue<MsgMultiSend>("cosmos-sdk/MsgMultiSend")
                 .RegisterTypeValue<MsgSend>("cosmos-sdk/MsgSend")
                 .RegisterTypeValue<BaseAccount>("cosmos-sdk/Account")
-                .CreateClient();
+                .CreateClient() as CosmosApiClient)!;
         }
 
         private Task OnBeforeCall(BeforeCall beforeCall)

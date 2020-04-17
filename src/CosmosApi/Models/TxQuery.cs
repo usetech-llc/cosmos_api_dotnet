@@ -14,7 +14,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the TxQuery class.
         /// </summary>
-        public TxQuery(string txhash = default, long? height = default, StdTx tx = default, TxQueryResult result = default)
+        public TxQuery(string txhash, long? height, StdTx tx, TxQueryResult result)
         {
             Txhash = txhash;
             Height = height;
@@ -30,7 +30,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "Txhash")]
-        public string Txhash { get; set; }
+        public string Txhash { get; set; } = null!;
         
         [JsonProperty(PropertyName = "code")]
         public uint Code { get; set; }
@@ -38,12 +38,12 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "tx")]
-        public StdTx Tx { get; set; }
+        public StdTx Tx { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "result")]
-        public TxQueryResult Result { get; set; }
+        public TxQueryResult Result { get; set; } = null!;
 
     }
 }

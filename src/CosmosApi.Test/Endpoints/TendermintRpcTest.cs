@@ -47,7 +47,7 @@ namespace CosmosApi.Test.Endpoints
         }
 
         [Fact]
-        public async Task SyncLatestBlockCompletes()
+        public void SyncLatestBlockCompletes()
         {
             using var client = CreateClient();
 
@@ -71,7 +71,7 @@ namespace CosmosApi.Test.Endpoints
 
         //[Fact]
         //Todo: uncomment when ExpectedObject will be able to handle DateTimeOffset or there will be some replacement for ExpectedObject
-        public async Task AsyncBlockByHeight3rdBlockIsCorrect()
+        private async Task AsyncBlockByHeight3rdBlockIsCorrect()
         {
             using var client = CreateClient();
 
@@ -93,7 +93,7 @@ namespace CosmosApi.Test.Endpoints
             }
             catch (CosmosHttpException exception)
             {
-                Assert.Equal(HttpStatusCode.NotFound, exception.Response.StatusCode);
+                Assert.Equal(HttpStatusCode.NotFound, exception.Response?.StatusCode);
             }
         }
 
@@ -120,13 +120,13 @@ namespace CosmosApi.Test.Endpoints
             }
             catch (CosmosHttpException exception)
             {
-                Assert.Equal(HttpStatusCode.NotFound, exception.Response.StatusCode);
+                Assert.Equal(HttpStatusCode.NotFound, exception.Response?.StatusCode);
             }
         }
 
         //[Fact]
         //Todo: uncomment when ExpectedObject will be able to handle DateTimeOffset or there will be some replacement for ExpectedObject
-        public void SyncBlockByHeight3rdBlockIsCorrect()
+        private void SyncBlockByHeight3rdBlockIsCorrect()
         {
             using var client = CreateClient();
 
@@ -157,7 +157,7 @@ namespace CosmosApi.Test.Endpoints
         
         //[Fact]
         //Todo: uncomment when ExpectedObject will be able to handle DateTimeOffset or there will be some replacement for ExpectedObject
-        public async Task AsyncValidatorSetByHeightFirstSetIsCorrect()
+        private async Task AsyncValidatorSetByHeightFirstSetIsCorrect()
         {
             using var client = CreateClient();
 
@@ -182,14 +182,14 @@ namespace CosmosApi.Test.Endpoints
             }
             catch (CosmosHttpException ex)
             {
-                Assert.Equal(HttpStatusCode.NotFound, ex.Response.StatusCode);
+                Assert.Equal(HttpStatusCode.NotFound, ex.Response?.StatusCode);
             }
 
         }
                 
         //[Fact]
         //Todo: uncomment when ExpectedObject will be able to handle DateTimeOffset or there will be some replacement for ExpectedObject
-        public void SyncValidatorSetByHeightFirstSetIsCorrect()
+        private void SyncValidatorSetByHeightFirstSetIsCorrect()
         {
             using var client = CreateClient();
 
@@ -214,7 +214,7 @@ namespace CosmosApi.Test.Endpoints
             }
             catch (CosmosHttpException ex)
             {
-                Assert.Equal(HttpStatusCode.NotFound, ex.Response.StatusCode);
+                Assert.Equal(HttpStatusCode.NotFound, ex.Response?.StatusCode);
             }
         }
     }

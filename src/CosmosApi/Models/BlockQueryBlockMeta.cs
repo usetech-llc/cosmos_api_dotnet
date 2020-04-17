@@ -14,7 +14,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the BlockQueryBlockMeta class.
         /// </summary>
-        public BlockQueryBlockMeta(BlockHeader header = default(BlockHeader), BlockID blockId = default(BlockID))
+        public BlockQueryBlockMeta(BlockHeader header, BlockID blockId)
         {
             Header = header;
             BlockId = blockId;
@@ -23,12 +23,12 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "header")]
-        public BlockHeader Header { get; set; }
+        public BlockHeader Header { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "block_id")]
-        public BlockID BlockId { get; set; }
+        public BlockID BlockId { get; set; } = null!;
 
     }
 }

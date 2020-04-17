@@ -14,11 +14,7 @@ namespace CosmosApi.Models
         {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the CommitSig
-        /// class.
-        /// </summary>
-        public CommitSig(byte[] validatorAddress = default, int validatorIndex = default, long height = default, int round = default, DateTimeOffset timestamp = default, SignedMsgType? type = default, BlockID blockId = default, byte[] signature = default)
+        public CommitSig(byte[] validatorAddress, int validatorIndex, long height, int round, DateTimeOffset timestamp, SignedMsgType? type, BlockID blockId, byte[] signature)
         {
             ValidatorAddress = validatorAddress;
             ValidatorIndex = validatorIndex;
@@ -34,7 +30,7 @@ namespace CosmosApi.Models
         /// </summary>
         [JsonProperty(PropertyName = "validator_address")]
         [JsonConverter(typeof(HexStringByteArrayConverter))]
-        public byte[] ValidatorAddress { get; set; }
+        public byte[] ValidatorAddress { get; set; } = null!;
 
         /// <summary>
         /// </summary>
@@ -64,13 +60,13 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "block_id")]
-        public BlockID BlockId { get; set; }
+        public BlockID BlockId { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "signature")]
         [JsonConverter(typeof(Base64StringByteArrayConverter))]
-        public byte[] Signature { get; set; }
+        public byte[] Signature { get; set; } = null!;
 
     }
 }

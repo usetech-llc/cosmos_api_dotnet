@@ -2,46 +2,39 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class Vote
+    public class Vote
     {
         /// <summary>
         /// Initializes a new instance of the Vote class.
         /// </summary>
         public Vote()
         {
-            CustomInit();
         }
 
         /// <summary>
         /// Initializes a new instance of the Vote class.
         /// </summary>
-        public Vote(string voter = default(string), string proposalId = default(string), string option = default(string))
+        public Vote(string voter, string proposalId, string option)
         {
             Voter = voter;
             ProposalId = proposalId;
             Option = option;
-            CustomInit();
         }
-
-        /// <summary>
-        /// An initialization method that performs custom operations like setting defaults
-        /// </summary>
-        partial void CustomInit();
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "voter")]
-        public string Voter { get; set; }
+        public string Voter { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "proposal_id")]
-        public string ProposalId { get; set; }
+        public string ProposalId { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "option")]
-        public string Option { get; set; }
+        public string Option { get; set; } = null!;
 
     }
 }

@@ -51,7 +51,7 @@ namespace CosmosApi.Serialization
                 return null;
             }
 
-            var typeString = jobject["type"].Value<string>();
+            var typeString = jobject["type"]!.Value<string>();
             var type = converter._jsonNameToType[typeString];
             var typeValue = objectType.GetConstructor(new Type[0])?.Invoke(new object?[0]);
             if (typeValue == null)
@@ -59,7 +59,7 @@ namespace CosmosApi.Serialization
                 throw new CosmosSerializationException($"Type {objectType.FullName} doesn't have parameterless constructor.");
             }
 
-            var value = serializer.Deserialize(jobject["value"].CreateReader(), type);
+            var value = serializer.Deserialize(jobject["value"]!.CreateReader(), type);
             typeValue.GetType().GetProperty(nameof(TypeValue<object>.Value))?.SetValue(typeValue, value);
             return typeValue;
         }

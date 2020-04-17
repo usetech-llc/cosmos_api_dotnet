@@ -14,7 +14,7 @@ namespace CosmosApi.Test.Endpoints
 
         //[Fact]
         //todo: uncomment when server will stop sending 502.
-        public async Task AsyncGetSearchCompletes()
+        private async Task AsyncGetSearchCompletes()
         {
             //For some reasons this method returns 502 way too often.
             while (true)
@@ -39,7 +39,7 @@ namespace CosmosApi.Test.Endpoints
         
         //[Fact]
         //todo: uncomment when server will stop sending 502.
-        public void SyncGetSearchCompletes()
+        private void SyncGetSearchCompletes()
         {
             //For some reasons this method returns 502 way too often.
             while (true)

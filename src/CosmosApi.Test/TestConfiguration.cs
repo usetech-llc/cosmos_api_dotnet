@@ -5,13 +5,13 @@ namespace CosmosApi.Test
 {
     public class TestConfiguration
     {
-        public string GlobalBaseUrl { get; set; }
-        public string LocalBaseUrl { get; set; }
-        public string Validator1Address { get; set; }
-        public string Validator2Address { get; set; }
-        public string Validator1PrivateKey { get; set; }
-        public string Validator1Passphrase { get; set; }
-        public string LocalChainId { get; set; }
+        public string GlobalBaseUrl { get; set; } = null!;
+        public string LocalBaseUrl { get; set; } = null!;
+        public string Validator1Address { get; set; } = null!;
+        public string Validator2Address { get; set; } = null!;
+        public string Validator1PrivateKey { get; set; } = null!;
+        public string Validator1Passphrase { get; set; } = null!;
+        public string LocalChainId { get; set; } = null!;
 
         private TestConfiguration()
         {

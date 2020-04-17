@@ -6,7 +6,11 @@ namespace CosmosApi.Models
 {
     public class BlockData
     {
-        public BlockData(IList<string>? transactions = default)
+        public BlockData()
+        {
+        }
+        
+        public BlockData(IList<string>? transactions)
         {
             Transactions = transactions;
         }

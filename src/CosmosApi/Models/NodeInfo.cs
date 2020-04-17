@@ -2,11 +2,11 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
-    public partial class NodeInfo
+    public class NodeInfo
     {
         /// <summary>
         /// Initializes a new instance of the
-        /// Paths15t60t2nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfo
+        /// NodeInfo
         /// class.
         /// </summary>
         public NodeInfo()
@@ -15,12 +15,12 @@ namespace CosmosApi.Models
 
         /// <summary>
         /// Initializes a new instance of the
-        /// Paths15t60t2nodeInfogetresponses200contentapplicationJsonschemapropertiesnodeInfo
+        /// NodeInfo
         /// class.
         /// </summary>
         /// <param name="version">Tendermint version</param>
         /// <param name="other">more information on versions</param>
-        public NodeInfo(string id = default(string), string moniker = default(string), ProtocolVersion protocolVersion = default(ProtocolVersion), string network = default(string), string channels = default(string), string listenAddr = default(string), string version = default(string), OtherVersionsInformation other = default(OtherVersionsInformation))
+        public NodeInfo(string id, string moniker, ProtocolVersion protocolVersion, string network, string channels, string listenAddr, string version, OtherVersionsInformation other)
         {
             Id = id;
             Moniker = moniker;
@@ -35,44 +35,44 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "moniker")]
-        public string Moniker { get; set; }
+        public string Moniker { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "protocol_version")]
-        public ProtocolVersion ProtocolVersion { get; set; }
+        public ProtocolVersion ProtocolVersion { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "network")]
-        public string Network { get; set; }
+        public string Network { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "channels")]
-        public string Channels { get; set; }
+        public string Channels { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "listen_addr")]
-        public string ListenAddr { get; set; }
+        public string ListenAddr { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets tendermint version
         /// </summary>
         [JsonProperty(PropertyName = "version")]
-        public string Version { get; set; }
+        public string Version { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets more information on versions
         /// </summary>
         [JsonProperty(PropertyName = "other")]
-        public OtherVersionsInformation Other { get; set; }
+        public OtherVersionsInformation Other { get; set; } = null!;
 
     }
 }
