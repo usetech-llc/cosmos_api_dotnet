@@ -61,12 +61,9 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient();
 
-            for (int i = 1; i < 5; i++)
-            {
-                var block = await client.TendermintRpc.GetBlockByHeightAsync(i);
-                OutputHelper.WriteLine("Deserialized into");
-                Dump(block);
-            }
+            var block = await client.TendermintRpc.GetBlockByHeightAsync(5);
+            OutputHelper.WriteLine("Deserialized into");
+            Dump(block);
         }
 
         //[Fact]
