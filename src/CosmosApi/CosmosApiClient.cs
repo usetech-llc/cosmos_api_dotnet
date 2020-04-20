@@ -12,9 +12,9 @@ using CosmosApi.Extensions;
 using CosmosApi.Flurl;
 using CosmosApi.Models;
 using CosmosApi.Serialization;
-using Cryptography.ECDSA;
 using Flurl.Http;
 using Flurl.Http.Configuration;
+using NBitcoin.Secp256k1;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -67,8 +67,7 @@ namespace CosmosApi
             };
             var bytesToSign = GetSignBytes(signMsg);
             var key = KeysParser.Parse(privateKey, passphrase);
-            var data = Sha256Manager.GetHash(bytesToSign);
-            var signed = Secp256K1Manager.SignCompact(data, key, out var recoveryId);
+            var signedBytes = Sign(bytesToSign, key);
             var tx = new StdTx()
             {
                 Msg = new List<TypeValue<IMsg>>() { new TypeValue<IMsg>(msg) },
@@ -78,15 +77,25 @@ namespace CosmosApi
                 {
                     new StdSignature()
                     {
-                        Signature = signed,
+                        Signature = signedBytes,
                         PubKey = account.Result.Value.GetPublicKey()
                     }
                 },
-                
             };
             
             cancellationToken.ThrowIfCancellationRequested();
             return await Transactions.PostBroadcastAsync(new BroadcastTxBody(tx, mode), cancellationToken);
+        }
+
+        internal byte[] Sign(byte[] bytesToSign, byte[] key)
+        {
+            using var sha = new SHA256Managed();
+            var hashed = sha.ComputeHash(bytesToSign);
+            var ecKey = Context.Instance.CreateECPrivKey(key);
+            var signature = ecKey.SignECDSARFC6979(hashed);
+            var signedBytes = new byte[64];
+            signature.WriteCompactToSpan(signedBytes);
+            return signedBytes;
         }
 
         internal byte[] GetSignBytes(StdSignDoc signMsg)
