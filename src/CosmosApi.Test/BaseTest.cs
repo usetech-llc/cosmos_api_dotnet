@@ -6,7 +6,7 @@ using CosmosApi.Callbacks;
 using CosmosApi.Models;
 using Xunit.Abstractions;
 
-namespace CosmosApi.Test.Endpoints
+namespace CosmosApi.Test
 {
     public class BaseTest
     {
@@ -78,7 +78,7 @@ namespace CosmosApi.Test.Endpoints
                 try
                 {
                     var contentString = await content.ReadAsStringAsync();
-                    OutputHelper.WriteLine(contentString);
+                    WriteLineCutIfTooLong(contentString, "Content is too long, cutting");
                 }
                 catch (ObjectDisposedException)
                 {
@@ -98,7 +98,21 @@ namespace CosmosApi.Test.Endpoints
         public void Dump(object o)
         {
             var dump = ObjectDumper.Dump(o, DumpStyle.CSharp);
-            OutputHelper.WriteLine(dump);
+            WriteLineCutIfTooLong(dump, "Object is too big, cutting.");
+        }
+
+        public void WriteLineCutIfTooLong(string message, string cutWarning)
+        {
+            var punchCardLength = 80 * 12;
+            if (message.Length > punchCardLength * 4)
+            {
+                OutputHelper.WriteLine(cutWarning);
+                OutputHelper.WriteLine(message[..(punchCardLength * 4 - 3)] + "...");
+            }
+            else
+            {
+                OutputHelper.WriteLine(message);
+            }
         }
     }
 }

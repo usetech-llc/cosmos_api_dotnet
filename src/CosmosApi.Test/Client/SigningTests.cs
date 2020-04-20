@@ -1,7 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
+using CosmosApi.Crypto;
 using CosmosApi.Extensions;
 using CosmosApi.Models;
 using CosmosApi.Test.Endpoints;
+using CosmosApi.Test.TestData;
+using NBitcoin.Secp256k1;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,30 +23,50 @@ namespace CosmosApi.Test.Client
         {
             using var client = CreateClient();
 
-            var bytes = client.GetSignBytes(new StdSignDoc()
-            {
-                Fee = new StdFee(100000, new List<Coin>()),
-                Memo = "test_memo",
-                Sequence = 17,
-                AccountNumber = 13,
-                ChainId = "test_chain",
-                Messages = new List<TypeValue<IMsg>>()
-                {
-                    new TypeValue<IMsg>(new MsgSend()
-                    {
-                        FromAddress = "cosmos1qypqxpq9qcuhfwyx",
-                        ToAddress = "cosmos1v4nxw5wt6j7",
-                        Amount = new List<Coin>()
-                        {
-                            new Coin("foocoin", 10)
-                        }
-                    })
-                }
-            });
+            var stdSignDoc = SigningData.StdSignDoc();
+            var bytes = client.GetSignBytes(stdSignDoc);
+
+            OutputHelper.WriteLine("StdSignDoc:");
+            Dump(stdSignDoc);
+
+            OutputHelper.WriteLine("SignBytes:");
+            OutputHelper.WriteLine(bytes.ToHexString());
+            OutputHelper.WriteLine("");
+            
+            var expectedBytes = SigningData.StdSignDocBytes();
+            OutputHelper.WriteLine("Expected SignBytes:");
+            OutputHelper.WriteLine(expectedBytes.ToHexString());
+            OutputHelper.WriteLine("");
 
             Assert.Equal( 
-                ByteArrayExtensions.ParseHexString("7b226163636f756e745f6e756d626572223a223133222c22636861696e5f6964223a22746573745f636861696e222c22666565223a7b22616d6f756e74223a5b5d2c22676173223a22313030303030227d2c226d656d6f223a22746573745f6d656d6f222c226d736773223a5b7b2274797065223a22636f736d6f732d73646b2f4d736753656e64222c2276616c7565223a7b22616d6f756e74223a5b7b22616d6f756e74223a223130222c2264656e6f6d223a22666f6f636f696e227d5d2c2266726f6d5f61646472657373223a22636f736d6f733171797071787071397163756866777978222c22746f5f61646472657373223a22636f736d6f733176346e7877357774366a37227d7d5d2c2273657175656e6365223a223137227d"),
+                expectedBytes,
                 bytes);
+        }
+
+        [Fact]
+        public void SignedBytesVerified()
+        {
+            using var client = CreateClient();
+            var random = new Random();
+            var bytesToSign = new byte[1024 * 8];
+            random.NextBytes(bytesToSign);
+            var keyBytes = KeysParser.Parse(Configuration.Validator1PrivateKey, Configuration.Validator1Passphrase);
+            var key = Context.Instance.CreateECPrivKey(keyBytes);
+            
+            OutputHelper.WriteLine("Signing random bytes:");
+            OutputHelper.WriteLine(bytesToSign.ToBase64String());
+            OutputHelper.WriteLine("");
+
+            var signedBytes = client.Sign(bytesToSign, keyBytes);
+            OutputHelper.WriteLine("Signed bytes:");
+            OutputHelper.WriteLine(signedBytes.ToBase64String());
+
+            var publicKey = key.CreatePubKey();
+            SecpECDSASignature.TryCreateFromCompact(signedBytes, out var sign);
+            using var sha = new SHA256Managed();
+            var verificationResult = publicKey.SigVerify(sign, sha.ComputeHash(bytesToSign));
+            OutputHelper.WriteLine($"Verification result: {verificationResult}");
+            Assert.True(verificationResult);
         }
     }
 }
