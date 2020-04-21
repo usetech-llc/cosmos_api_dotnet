@@ -7,25 +7,15 @@ namespace CosmosApi.Test
     {
         public string GlobalBaseUrl { get; set; } = null!;
         public string LocalBaseUrl { get; set; } = null!;
-        public string Validator1Address { get; set; } = null!;
-        public string Validator2Address { get; set; } = null!;
-        public string Validator1PrivateKey { get; set; } = null!;
-        public string Validator1Passphrase { get; set; } = null!;
+        public string LocalValidator1Address { get; set; } = null!;
+        public string LocalValidator2Address { get; set; } = null!;
+        public string LocalValidator1PrivateKey { get; set; } = null!;
+        public string LocalValidator1Passphrase { get; set; } = null!;
         public string LocalChainId { get; set; } = null!;
+        public string LocalDelegator1Address { get; set; } = null!;
 
         private TestConfiguration()
         {
-        }
-
-        private TestConfiguration(string globalBaseUrl, string localBaseUrl, string validator1Address, string validator2Address, string validator1PrivateKey, string validator1Passphrase, string localChainId)
-        {
-            GlobalBaseUrl = globalBaseUrl;
-            LocalBaseUrl = localBaseUrl;
-            Validator1Address = validator1Address;
-            Validator2Address = validator2Address;
-            Validator1PrivateKey = validator1PrivateKey;
-            Validator1Passphrase = validator1Passphrase;
-            LocalChainId = localChainId;
         }
 
         public static TestConfiguration Create()

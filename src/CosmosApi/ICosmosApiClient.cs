@@ -14,6 +14,7 @@ namespace CosmosApi
         ITransactions Transactions { get; }
         IAuth Auth { get; }
         IBank Bank { get; }
+        IStaking Staking { get; }
 
         /// <summary>
         /// Creates signed transaction and broadcasts it.

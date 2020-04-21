@@ -35,6 +35,7 @@ namespace CosmosApi
             Transactions = new Transactions(GetClient);
             Auth = new Auth(GetClient);
             Bank = new Bank(GetClient);
+            Staking = new Staking(GetClient);
         }
 
         public IGaiaREST GaiaRest { get; }
@@ -42,7 +43,8 @@ namespace CosmosApi
         public ITransactions Transactions { get; }
         public IAuth Auth { get; }
         public IBank Bank { get; }
-        
+        public IStaking Staking { get; }
+
         public async Task<BroadcastTxResult> SendAsync(string chainId, string fromAddress, string toAddress, IList<Coin> coins, BroadcastTxMode mode, StdFee fee, string privateKey, string passphrase, string memo = "" , CancellationToken cancellationToken = default)
         {
             var account = await Auth.GetAuthAccountByAddressAsync(fromAddress, cancellationToken);
@@ -191,6 +193,7 @@ namespace CosmosApi
             }
 
             jsonSerializerSettings.Converters.Add(_settings.TypeValueConverter);
+            jsonSerializerSettings.Converters.Add(new BigDecimalConverter());
             return jsonSerializerSettings;
         }
 

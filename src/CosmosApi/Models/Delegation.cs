@@ -1,3 +1,5 @@
+using System.Numerics;
+using ExtendedNumerics;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
@@ -14,7 +16,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the Delegation class.
         /// </summary>
-        public Delegation(string delegatorAddress, string validatorAddress, string shares, Coin balance)
+        public Delegation(string delegatorAddress, string validatorAddress, BigDecimal shares, BigInteger balance)
         {
             DelegatorAddress = delegatorAddress;
             ValidatorAddress = validatorAddress;
@@ -35,12 +37,12 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "shares")]
-        public string Shares { get; set; } = null!;
+        public BigDecimal Shares { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "balance")]
-        public Coin Balance { get; set; } = null!;
+        public BigInteger Balance { get; set; }
 
     }
 }
