@@ -67,6 +67,21 @@ namespace CosmosApi.Endpoints
             return PostDelegationsSimulationAsync(request)
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<Delegation>> GetDelegationByValidatorAsync(string delegatorAddr, string validatorAddr,
+            CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("staking", "delegators", delegatorAddr, "delegations", validatorAddr)
+                .GetJsonAsync<ResponseWithHeight<Delegation>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public ResponseWithHeight<Delegation> GetDelegationByValidator(string delegatorAddr, string validatorAddr)
+        {
+            return GetDelegationByValidatorAsync(delegatorAddr, validatorAddr)
+                .Sync();
+        }
     }
     
 }

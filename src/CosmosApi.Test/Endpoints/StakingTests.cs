@@ -97,5 +97,22 @@ namespace CosmosApi.Test.Endpoints
             Assert.Equal("stake", msgDelegate.Amount.Denom);
             Assert.Equal(10, msgDelegate.Amount.Amount);
         }
+
+        [Fact]
+        public async Task AsyncGetDelegationByValidatorCompletes()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var delegation = await client
+                .Staking
+                .GetDelegationByValidatorAsync(Configuration.LocalDelegator1Address,
+                    Configuration.LocalValidatorAddress);
+            OutputHelper.WriteLine("Deserialized delegation:");
+            Dump(delegation);
+            OutputHelper.WriteLine("");
+            
+            Assert.True(delegation.Result.Balance > 0);
+            Assert.True(delegation.Result.Shares > 0);
+        }
     }
 }

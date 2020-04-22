@@ -56,5 +56,22 @@ namespace CosmosApi.Endpoints
         /// <param name="request"></param>
         /// <returns></returns>
         GasEstimateResponse PostDelegationsSimulation(DelegateRequest request);
+
+        /// <summary>
+        /// Query the current delegation between a delegator and a validator.
+        /// </summary>
+        /// <param name="delegatorAddr">Bech32 AccAddress of Delegator</param>
+        /// <param name="validatorAddr">Bech32 OperatorAddress of validator</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<Delegation>> GetDelegationByValidatorAsync(string delegatorAddr, string validatorAddr, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Query the current delegation between a delegator and a validator.
+        /// </summary>
+        /// <param name="delegatorAddr">Bech32 AccAddress of Delegator</param>
+        /// <param name="validatorAddr">Bech32 OperatorAddress of validator</param>
+        /// <returns></returns>
+        ResponseWithHeight<Delegation> GetDelegationByValidator(string delegatorAddr, string validatorAddr);
     }
 }
