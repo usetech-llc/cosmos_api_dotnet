@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using CosmosApi.Models;
 using CosmosApi.Test.Endpoints;
@@ -20,9 +21,9 @@ namespace CosmosApi.Test.Client
         {
             using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var account1BeforeTransaction = ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalValidator1Address)).Result.Value as BaseAccount)!;
+            var account1BeforeTransaction = ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalAccount1Address)).Result.Value as BaseAccount)!;
             Assert.NotNull(account1BeforeTransaction);
-            var account2BeforeTransaction = ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalValidator2Address)).Result.Value as BaseAccount)!;
+            var account2BeforeTransaction = ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalAccount2Address)).Result.Value as BaseAccount)!;
             Assert.NotNull(account2BeforeTransaction);
 
             var denom = account1BeforeTransaction.Coins[0].Denom;
@@ -37,7 +38,7 @@ namespace CosmosApi.Test.Client
                 Amount = new List<Coin>(),
                 Gas = 300000,
             };
-            var result = await client.SendAsync(Configuration.LocalChainId, Configuration.LocalValidator1Address, Configuration.LocalValidator2Address, coinsToSend, BroadcastTxMode.Block, fee, Configuration.LocalValidator1PrivateKey, Configuration.LocalValidator1Passphrase, memo);
+            var result = await client.SendAsync(Configuration.LocalChainId, Configuration.LocalAccount1Address, Configuration.LocalAccount2Address, coinsToSend, BroadcastTxMode.Block, fee, Configuration.LocalAccount1PrivateKey, Configuration.LocalAccount1Passphrase, memo);
             OutputHelper.WriteLine("Deserialized broadcast result");
             Dump(result);
             OutputHelper.WriteLine("");
@@ -45,18 +46,18 @@ namespace CosmosApi.Test.Client
             Assert.True(result.TxHash.Length > 0);
             Assert.True(result.Logs.All(l => l.Success));
             var account1AfterTransaction =
-                ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalValidator1Address)).Result.Value as BaseAccount)!;
+                ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalAccount1Address)).Result.Value as BaseAccount)!;
             var account1CoinsBefore = GetAmount(account1BeforeTransaction, denom);
             var account1CoinsAfter = GetAmount(account1AfterTransaction, denom);
             Assert.Equal(account1CoinsBefore - amount, account1CoinsAfter);
             var account2AfterTransaction =
-                ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalValidator2Address)).Result.Value as BaseAccount)!;
+                ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalAccount2Address)).Result.Value as BaseAccount)!;
             var account2CoinsBefore = GetAmount(account2BeforeTransaction, denom);
             var account2CoinsAfter = GetAmount(account2AfterTransaction, denom);
             Assert.Equal(account2CoinsBefore + amount, account2CoinsAfter);
         }
 
-        private long GetAmount(BaseAccount account, string denom)
+        private BigInteger GetAmount(BaseAccount account, string denom)
         {
             return account
                 .Coins

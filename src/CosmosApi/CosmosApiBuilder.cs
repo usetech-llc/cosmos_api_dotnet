@@ -66,6 +66,15 @@ namespace CosmosApi
             return Configure(s => { s.TypeValueConverter.AddType<T>(jsonName); });
         }
 
+        public ICosmosApiBuilder RegisterStandartTypeValues()
+        {
+            return RegisterTypeValue<StdTx>("cosmos-sdk/StdTx")
+                .RegisterTypeValue<MsgMultiSend>("cosmos-sdk/MsgMultiSend")
+                .RegisterTypeValue<MsgSend>("cosmos-sdk/MsgSend")
+                .RegisterTypeValue<BaseAccount>("cosmos-sdk/Account")
+                .RegisterTypeValue<MsgDelegate>("cosmos-sdk/MsgDelegate");
+        }
+
         public ICosmosApiBuilder AddJsonConverterFactory(IConverterFactory factory)
         {
             return Configure(s => s.ConverterFactories.Add(factory));

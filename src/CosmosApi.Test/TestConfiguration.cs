@@ -7,12 +7,13 @@ namespace CosmosApi.Test
     {
         public string GlobalBaseUrl { get; set; } = null!;
         public string LocalBaseUrl { get; set; } = null!;
-        public string LocalValidator1Address { get; set; } = null!;
-        public string LocalValidator2Address { get; set; } = null!;
-        public string LocalValidator1PrivateKey { get; set; } = null!;
-        public string LocalValidator1Passphrase { get; set; } = null!;
+        public string LocalAccount1Address { get; set; } = null!;
+        public string LocalAccount2Address { get; set; } = null!;
+        public string LocalAccount1PrivateKey { get; set; } = null!;
+        public string LocalAccount1Passphrase { get; set; } = null!;
         public string LocalChainId { get; set; } = null!;
         public string LocalDelegator1Address { get; set; } = null!;
+        public string LocalValidatorAddress { get; set; } = null!;
 
         private TestConfiguration()
         {

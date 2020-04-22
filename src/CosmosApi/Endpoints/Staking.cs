@@ -30,5 +30,43 @@ namespace CosmosApi.Endpoints
             return GetDelegationsAsync(delegatorAddr)
                 .Sync();
         }
+
+        public Task<TypeValue<StdTx>> PostDelegationsAsync(DelegateRequest request, CancellationToken cancellationToken = default)
+        {
+            var baseRequest = new BaseReqWithSimulate(request.BaseReq, false);
+            request = new DelegateRequest(baseRequest, request.DelegatorAddress, request.ValidatorAddress, request.Amount);
+            return _clientGetter()
+                .Request("staking", "delegators", request.DelegatorAddress, "delegations")
+                .PostJsonAsync(request, cancellationToken)
+                .WrapExceptions()
+                .ReceiveJson<TypeValue<StdTx>>()
+                .WrapExceptions();
+        }
+
+        public TypeValue<StdTx> PostDelegations(DelegateRequest request)
+        {
+            return PostDelegationsAsync(request)
+                .Sync();
+        }
+
+        public Task<GasEstimateResponse> PostDelegationsSimulationAsync(DelegateRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            var baseRequest = new BaseReqWithSimulate(request.BaseReq, true);
+            request = new DelegateRequest(baseRequest, request.DelegatorAddress, request.ValidatorAddress, request.Amount);
+            return _clientGetter()
+                .Request("staking", "delegators", request.DelegatorAddress, "delegations")
+                .PostJsonAsync(request, cancellationToken)
+                .WrapExceptions()
+                .ReceiveJson<GasEstimateResponse>()
+                .WrapExceptions();
+        }
+
+        public GasEstimateResponse PostDelegationsSimulation(DelegateRequest request)
+        {
+            return PostDelegationsSimulationAsync(request)
+                .Sync();
+        }
     }
+    
 }

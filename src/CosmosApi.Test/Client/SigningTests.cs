@@ -50,7 +50,7 @@ namespace CosmosApi.Test.Client
             var random = new Random();
             var bytesToSign = new byte[1024 * 8];
             random.NextBytes(bytesToSign);
-            var keyBytes = KeysParser.Parse(Configuration.LocalValidator1PrivateKey, Configuration.LocalValidator1Passphrase);
+            var keyBytes = KeysParser.Parse(Configuration.LocalAccount1PrivateKey, Configuration.LocalAccount1Passphrase);
             var key = Context.Instance.CreateECPrivKey(keyBytes);
             
             OutputHelper.WriteLine("Signing random bytes:");

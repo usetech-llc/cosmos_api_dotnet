@@ -1,3 +1,4 @@
+using System.Numerics;
 using CosmosApi.Serialization;
 using Newtonsoft.Json;
 
@@ -20,7 +21,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the Coin class.
         /// </summary>
-        public Coin(string denom, int amount)
+        public Coin(string denom, BigInteger amount)
         {
             Denom = denom;
             Amount = amount;
@@ -35,7 +36,7 @@ namespace CosmosApi.Models
         /// </summary>
         [JsonProperty(PropertyName = "amount")]
         [JsonConverter(typeof(StringNumberConverter))]
-        public long Amount { get; set; }
+        public BigInteger Amount { get; set; }
 
     }
 }

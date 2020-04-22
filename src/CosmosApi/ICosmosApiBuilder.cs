@@ -49,6 +49,12 @@ namespace CosmosApi
         /// <param name="jsonName">Value of json discriminator.</param>
         /// <typeparam name="T">Type of TypeValue's Value.</typeparam>
         ICosmosApiBuilder RegisterTypeValue<T>(string jsonName);
+        
+        /// <summary>
+        /// Registers types of <see cref="TypeValue{TValue}"/> from cosmos sdk.
+        /// </summary>
+        /// <returns></returns>
+        ICosmosApiBuilder RegisterStandartTypeValues();
 
         /// <summary>
         /// Adds a converter factory to use for serialization and deserialization.
