@@ -2,51 +2,43 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
+    /// <summary>
+    /// Description - description fields for a validator.
+    /// </summary>
     public class ValidatorDescription
     {
         /// <summary>
-        /// Initializes a new instance of the ValidatorDescription class.
+        /// Name.
         /// </summary>
+        /// <returns></returns>
+        [JsonProperty("moniker")]
+        public string Moniker { get; set; } = null!;
+        /// <summary>
+        /// Optional identity signature (ex. UPort or Keybase).
+        /// </summary>
+        [JsonProperty("identity")]
+        public string Identity { get; set; } = null!;
+        /// <summary>
+        /// Optional website link.
+        /// </summary>
+        [JsonProperty("website")]
+        public string Website { get; set; } = null!;
+        /// <summary>
+        /// Optional details.
+        /// </summary>
+        [JsonProperty("details")]
+        public string Details { get; set; } = null!;
+
         public ValidatorDescription()
         {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the ValidatorDescription class.
-        /// </summary>
-        public ValidatorDescription(string moniker, string identity, string website, string securityContact, string details)
+        public ValidatorDescription(string moniker, string identity, string website, string details)
         {
             Moniker = moniker;
             Identity = identity;
             Website = website;
-            SecurityContact = securityContact;
             Details = details;
         }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "moniker")]
-        public string Moniker { get; set; } = null!;
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "identity")]
-        public string Identity { get; set; } = null!;
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "website")]
-        public string Website { get; set; } = null!;
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "security_contact")]
-        public string SecurityContact { get; set; } = null!;
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "details")]
-        public string Details { get; set; } = null!;
-
     }
 }

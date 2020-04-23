@@ -7,11 +7,11 @@ namespace CosmosApi.Models
     public class BaseReq
     {
         [JsonProperty("from")]
-        public string From { get; set; }
+        public string From { get; set; } = null!;
         [JsonProperty("memo")]
         public string? Memo { get; set; }
         [JsonProperty("chain_id")]
-        public string ChainId { get; set; }
+        public string ChainId { get; set; } = null!;
         [JsonProperty("account_number")]
         [JsonConverter(typeof(StringNumberConverter))]
         public ulong AccountNumber { get; set; }

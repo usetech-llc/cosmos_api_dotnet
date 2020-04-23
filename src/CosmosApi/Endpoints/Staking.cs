@@ -204,6 +204,25 @@ namespace CosmosApi.Endpoints
             return PostRedelegationAsync(request)
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<IList<Validator>>> GetValidatorsAsync(BondStatus? status = default, int? page = default, int? limit = default,
+            CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("staking", "validators")
+                .SetQueryParam("status", status?.ToString())
+                .SetQueryParam("page", page)
+                .SetQueryParam("limit", limit)
+                .GetJsonAsync<ResponseWithHeight<IList<Validator>>>(cancellationToken)
+                .WrapExceptions();
+
+        }
+
+        public ResponseWithHeight<IList<Validator>> GetValidators(BondStatus? status = default, int? page = default, int? limit = default)
+        {
+            return GetValidatorsAsync(status, page, limit)
+                .Sync();
+        }
     }
     
 }

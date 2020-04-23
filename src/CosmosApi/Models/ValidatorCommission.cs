@@ -1,46 +1,29 @@
+using System;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
+    /// <summary>
+    /// Commission defines a commission parameters for a given validator.
+    /// </summary>
     public class ValidatorCommission
     {
+        [JsonProperty("commission_rates")]
+        public CommissionRates CommissionRates { get; set; } = null!;
         /// <summary>
-        /// Initializes a new instance of the ValidatorCommission class.
+        /// The last time the commission rate was changed.
         /// </summary>
+        [JsonProperty("update_time")]
+        public DateTimeOffset UpdateTime { get; set; }
+
         public ValidatorCommission()
         {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the ValidatorCommission class.
-        /// </summary>
-        public ValidatorCommission(string rate, string maxRate, string maxChangeRate, string updateTime)
+        public ValidatorCommission(CommissionRates commissionRates, DateTimeOffset updateTime)
         {
-            Rate = rate;
-            MaxRate = maxRate;
-            MaxChangeRate = maxChangeRate;
+            CommissionRates = commissionRates;
             UpdateTime = updateTime;
         }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "rate")]
-        public string Rate { get; set; } = null!;
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "max_rate")]
-        public string MaxRate { get; set; } = null!;
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "max_change_rate")]
-        public string MaxChangeRate { get; set; } = null!;
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "update_time")]
-        public string UpdateTime { get; set; } = null!;
-
     }
 }

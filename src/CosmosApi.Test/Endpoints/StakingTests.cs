@@ -260,5 +260,36 @@ namespace CosmosApi.Test.Endpoints
             Assert.Equal(Configuration.GlobalValidator1Address, msgRedelegate.ValidatorSrcAddress);
             Assert.Equal(Configuration.GlobalValidator2Address, msgRedelegate.ValidatorDstAddress);
         }
+
+        [Fact]
+        public async Task AsyncGetValidatorsCompletes()
+        {
+            using var client = CreateClient();
+
+            var validators = await client
+                .Staking
+                .GetValidatorsAsync();
+            
+            OutputHelper.WriteLine("Deserialized validators:");
+            Dump(validators);
+            
+            Assert.NotEmpty(validators.Result);
+        }
+
+        [Fact]
+        public async Task AsyncGetValidatorsFilterAppliesCorrectly()
+        {
+            using var client = CreateClient();
+
+            var validators = await client
+                .Staking
+                .GetValidatorsAsync(BondStatus.Bonded, limit: 3);
+            
+            OutputHelper.WriteLine("Deserialized validators:");
+            Dump(validators);
+            
+            Assert.True(validators.Result.Count <= 3);
+            Assert.True(validators.Result.All(v => v.Status == BondStatus.Bonded));
+        }
     }
 }

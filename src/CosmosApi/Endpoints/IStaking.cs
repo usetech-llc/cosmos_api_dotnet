@@ -184,5 +184,24 @@ namespace CosmosApi.Endpoints
         /// <param name="request">The sender and tx information.</param>
         /// <returns></returns>
         TypeValue<StdTx> PostRedelegation(RedelegateRequest request);
+
+        /// <summary>
+        /// Get all validator candidates. By default it returns only the bonded validators.
+        /// </summary>
+        /// <param name="status">The validator bond status.</param>
+        /// <param name="page">The page number.</param>
+        /// <param name="limit">The maximum number of items per page.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<IList<Validator>>> GetValidatorsAsync(BondStatus? status = default, int? page = default, int? limit = default, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get all validator candidates. By default it returns only the bonded validators.
+        /// </summary>
+        /// <param name="status">The validator bond status.</param>
+        /// <param name="page">The page number.</param>
+        /// <param name="limit">The maximum number of items per page.</param>
+        /// <returns></returns>
+        ResponseWithHeight<IList<Validator>> GetValidators(BondStatus? status = default, int? page = default, int? limit = default);
     }
 }

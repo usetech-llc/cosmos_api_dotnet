@@ -64,7 +64,7 @@ namespace CosmosApi.Test.Client
             var publicKey = key.CreatePubKey();
             SecpECDSASignature.TryCreateFromCompact(signedBytes, out var sign);
             using var sha = new SHA256Managed();
-            var verificationResult = publicKey.SigVerify(sign, sha.ComputeHash(bytesToSign));
+            var verificationResult = publicKey.SigVerify(sign!, sha.ComputeHash(bytesToSign));
             OutputHelper.WriteLine($"Verification result: {verificationResult}");
             Assert.True(verificationResult);
         }
