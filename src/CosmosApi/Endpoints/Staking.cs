@@ -223,6 +223,20 @@ namespace CosmosApi.Endpoints
             return GetValidatorsAsync(status, page, limit)
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<IList<Validator>>> GetValidatorsAsync(string delegatorAddr, CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("staking", "delegators", delegatorAddr, "validators")
+                .GetJsonAsync<ResponseWithHeight<IList<Validator>>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public ResponseWithHeight<IList<Validator>> GetValidators(string delegatorAddr)
+        {
+            return GetValidatorsAsync(delegatorAddr)
+                .Sync();
+        }
     }
     
 }

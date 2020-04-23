@@ -203,5 +203,20 @@ namespace CosmosApi.Endpoints
         /// <param name="limit">The maximum number of items per page.</param>
         /// <returns></returns>
         ResponseWithHeight<IList<Validator>> GetValidators(BondStatus? status = default, int? page = default, int? limit = default);
+
+        /// <summary>
+        /// Query all validators that a delegator is bonded to.
+        /// </summary>
+        /// <param name="delegatorAddr">Bech32 AccAddress of Delegator.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<IList<Validator>>> GetValidatorsAsync(string delegatorAddr, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Query all validators that a delegator is bonded to.
+        /// </summary>
+        /// <param name="delegatorAddr">Bech32 AccAddress of Delegator.</param>
+        /// <returns></returns>
+        ResponseWithHeight<IList<Validator>> GetValidators(string delegatorAddr);
     }
 }

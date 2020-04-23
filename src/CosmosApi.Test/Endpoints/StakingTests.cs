@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using CosmosApi.Models;
 using Xunit;
@@ -290,6 +291,23 @@ namespace CosmosApi.Test.Endpoints
             
             Assert.True(validators.Result.Count <= 3);
             Assert.True(validators.Result.All(v => v.Status == BondStatus.Bonded));
+        }
+
+        [Fact]
+        public async Task AsyncGetValidatorsByDelegateReturnsKnownValue()
+        {
+            using var client = CreateClient();
+
+            var validators = await client
+                .Staking
+                .GetValidatorsAsync(Configuration.GlobalDelegator1Address);
+            
+            OutputHelper.WriteLine("Deserialized validators:");
+            Dump(validators);
+
+            Assert.NotEmpty(validators.Result);
+            var hasValidator1 = validators.Result.Any(v => string.Equals(v.OperatorAddress, Configuration.GlobalValidator1Address, StringComparison.Ordinal));
+            Assert.True(hasValidator1);
         }
     }
 }
