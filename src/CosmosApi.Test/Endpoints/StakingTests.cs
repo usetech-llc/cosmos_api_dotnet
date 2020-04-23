@@ -137,7 +137,7 @@ namespace CosmosApi.Test.Endpoints
         [Fact]
         public async Task AsyncPostUnbondingCompletes()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
             
             var account = (await client
                 .Auth
@@ -159,6 +159,23 @@ namespace CosmosApi.Test.Endpoints
             Assert.Equal(10, undelegateMessage.Amount.Amount);
             Assert.Equal(Configuration.LocalDelegator1Address, undelegateMessage.DelegatorAddress);
             Assert.Equal(Configuration.LocalValidatorAddress, undelegateMessage.ValidatorAddress);
+        }
+
+        [Fact]
+        public async Task AsyncGetUnbondingDelegationsByValidatorNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var result = await client
+                    .Staking
+                    .GetUnbondingDelegationsByValidatorAsync(Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress);
+            OutputHelper.WriteLine("Deserialized unbonding delegation:");
+            Dump(result);
+
+            var unbondingDelegation = result.Result;
+            Assert.Equal(Configuration.LocalValidatorAddress, unbondingDelegation.ValidatorAddress);
+            Assert.Equal(Configuration.LocalDelegator1Address, unbondingDelegation.DelegatorAddress);
+            Assert.True(unbondingDelegation.Entries[0].Balance > 0);
         }
     }
 }

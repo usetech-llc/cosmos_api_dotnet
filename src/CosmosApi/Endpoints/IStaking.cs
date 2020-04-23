@@ -118,5 +118,23 @@ namespace CosmosApi.Endpoints
         /// <param name="request"></param>
         /// <returns></returns>
         TypeValue<StdTx> PostUnbondingDelegation(UndelegateRequest request);
+        
+        /// <summary>
+        /// Query all unbonding delegations between a delegator and a validator.
+        /// </summary>
+        /// <param name="delegatorAddr">Bech32 AccAddress of Delegator</param>
+        /// <param name="validatorAddr">Bech32 OperatorAddress of validator</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<UnbondingDelegation>> GetUnbondingDelegationsByValidatorAsync(string delegatorAddr, string validatorAddr, CancellationToken cancellationToken = default);
+        
+        /// <summary>
+        /// Query all unbonding delegations between a delegator and a validator.
+        /// </summary>
+        /// <param name="delegatorAddr">Bech32 AccAddress of Delegator</param>
+        /// <param name="validatorAddr">Bech32 OperatorAddress of validator</param>
+        /// <returns></returns>
+        ResponseWithHeight<UnbondingDelegation> GetUnbondingDelegationsByValidator(string delegatorAddr, string validatorAddr);
+
     }
 }
