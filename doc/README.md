@@ -69,6 +69,7 @@ var balance =
 
 The interface `ICosmosApiBuilder` is created to help create the api client. [Above](#simple-connect) is the example how it can be used to build an api object. Below you will find details for each method.
 
+---
 #### CreateClient
 
 ```csharp
@@ -87,6 +88,7 @@ None
 
 An API object that is ready to be used with a node. See [ICosmosApiClient](#icosmosapiclient-interface) for details.
 
+---
 #### Configure
 
 ```csharp
@@ -105,6 +107,7 @@ Sets settings of created clients using Action.
 
 ICosmosApiBuilder for method chaining.
 
+---
 #### UseAuthorization
 
 ```csharp
@@ -122,6 +125,7 @@ Sets username and password authorization for created clients
 ##### Returns
 ICosmosApiBuilder for method chaining.
 
+---
 #### UseBaseUrl
 
 ```csharp
@@ -137,6 +141,7 @@ Sets the base url used by created clients.
 ##### Returns
 ICosmosApiBuilder for method chaining.
 
+---
 #### RegisterTxType
 
 ```csharp
@@ -152,6 +157,7 @@ Adds a possible subtype of the [ITx](#itx-interface) so it can be serialized and
 ##### Returns
 ICosmosApiBuilder for method chaining.
 
+---
 #### RegisterMsgType
 
 ```csharp
@@ -168,6 +174,7 @@ Adds a possible subtype of the [IMsg](#imsg-interface) so it can be serialized a
 ##### Returns
 ICosmosApiBuilder for method chaining.
 
+---
 #### RegisterTypeValue
 
 ```csharp
@@ -184,6 +191,7 @@ Adds a possible Value type of [TypeValue](#typevalue)
 ##### Returns
 ICosmosApiBuilder for method chaining.
 
+---
 #### AddJsonConverterFactory
 
 ```csharp
