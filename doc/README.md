@@ -71,6 +71,10 @@ The interface `ICosmosApiBuilder` is created to help create the api client. [Abo
 
 #### CreateClient
 
+```csharp
+ICosmosApiClient CreateClient();
+```
+
 ##### Description
 
 Creates a new instance of Cosmos Api Client
@@ -84,6 +88,10 @@ None
 An API object that is ready to be used with a node. See [ICosmosApiClient](#icosmosapiclient-interface) for details.
 
 #### Configure
+
+```csharp
+ICosmosApiBuilder Configure(Action<CosmosApiClientSettings> configurator);
+```
 
 ##### Description
 
@@ -99,6 +107,10 @@ ICosmosApiBuilder for method chaining.
 
 #### UseAuthorization
 
+```csharp
+ICosmosApiBuilder UseAuthorization(string username, string password);
+```
+
 ##### Description
 Sets username and password authorization for created clients
 
@@ -112,6 +124,10 @@ ICosmosApiBuilder for method chaining.
 
 #### UseBaseUrl
 
+```csharp
+ICosmosApiBuilder UseBaseUrl(string url);
+```
+
 ##### Description
 Sets the base url used by created clients.
 
@@ -123,6 +139,10 @@ ICosmosApiBuilder for method chaining.
 
 #### RegisterTxType
 
+```csharp
+ICosmosApiBuilder RegisterTxType<T>(string jsonName) where T : ITx;
+```
+
 ##### Description
 Adds a possible subtype of the [ITx](#itx-interface) so it can be serialized and deserialized properly.
 ##### Parameters
@@ -133,6 +153,10 @@ Adds a possible subtype of the [ITx](#itx-interface) so it can be serialized and
 ICosmosApiBuilder for method chaining.
 
 #### RegisterMsgType
+
+```csharp
+ICosmosApiBuilder RegisterMsgType<T>(string jsonName) where T : IMsg;
+```
 
 ##### Description
 Adds a possible subtype of the [IMsg](#imsg-interface) so it can be serialized and deserialized properly. 
@@ -146,6 +170,10 @@ ICosmosApiBuilder for method chaining.
 
 #### RegisterTypeValue
 
+```csharp
+ICosmosApiBuilder RegisterTypeValue<T>(string jsonName);
+```
+
 ##### Description
 Adds a possible Value type of [TypeValue](#typevalue)
 
@@ -157,6 +185,10 @@ Adds a possible Value type of [TypeValue](#typevalue)
 ICosmosApiBuilder for method chaining.
 
 #### AddJsonConverterFactory
+
+```csharp
+ICosmosApiBuilder AddJsonConverterFactory(IConverterFactory factory);
+```
 
 ##### Description
 Adds a converter factory to use for serialization and deserialization.
