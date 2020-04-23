@@ -133,5 +133,32 @@ namespace CosmosApi.Test.Endpoints
             Assert.Equal(Configuration.LocalValidatorAddress, delegations.Result[0].ValidatorAddress);
             Assert.True(delegations.Result[0].Entries[0].Balance > 0);
         }
+
+        [Fact]
+        public async Task AsyncPostUnbondingCompletes()
+        {
+            using var client = CreateClient();
+            
+            var account = (await client
+                .Auth
+                .GetAuthAccountByAddressAsync(Configuration.LocalDelegator1Address)).Result.Value;
+            
+            var baseRequest = new BaseReq(Configuration.LocalDelegator1Address, null, Configuration.LocalChainId, account.GetAccountNumber(), account.GetSequence(), null, null, null, null);
+            var undelegateRequest = new UndelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress, new Coin("stake", 10));
+            var tx = (await client
+                .Staking
+                .PostUnbondingDelegationAsync(undelegateRequest)).Value;
+
+            OutputHelper.WriteLine("Deserialized tx:");
+            Dump(undelegateRequest);
+            OutputHelper.WriteLine("");
+
+            var undelegateMessage = (MsgUndelegate)tx.Msg.First(m => m.Value is MsgUndelegate).Value; 
+            
+            Assert.Equal("stake", undelegateMessage.Amount.Denom);
+            Assert.Equal(10, undelegateMessage.Amount.Amount);
+            Assert.Equal(Configuration.LocalDelegator1Address, undelegateMessage.DelegatorAddress);
+            Assert.Equal(Configuration.LocalValidatorAddress, undelegateMessage.ValidatorAddress);
+        }
     }
 }

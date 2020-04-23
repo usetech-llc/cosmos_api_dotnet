@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Reflection;
 using CosmosApi.Models;
 using CosmosApi.Serialization;
 
@@ -72,7 +69,8 @@ namespace CosmosApi
                 .RegisterTypeValue<MsgMultiSend>("cosmos-sdk/MsgMultiSend")
                 .RegisterTypeValue<MsgSend>("cosmos-sdk/MsgSend")
                 .RegisterTypeValue<BaseAccount>("cosmos-sdk/Account")
-                .RegisterTypeValue<MsgDelegate>("cosmos-sdk/MsgDelegate");
+                .RegisterTypeValue<MsgDelegate>("cosmos-sdk/MsgDelegate")
+                .RegisterTypeValue<MsgUndelegate>("cosmos-sdk/MsgUndelegate");
         }
 
         public ICosmosApiBuilder AddJsonConverterFactory(IConverterFactory factory)

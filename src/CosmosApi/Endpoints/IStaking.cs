@@ -88,5 +88,35 @@ namespace CosmosApi.Endpoints
         /// <param name="delegatorAddr">Bech32 AccAddress of Delegator</param>
         /// <returns></returns>
         ResponseWithHeight<IList<UnbondingDelegation>> GetUnbondingDelegations(string delegatorAddr);
+        
+        /// <summary>
+        /// Submit an unbonding delegation
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<GasEstimateResponse> PostUnbondingDelegationSimulationAsync(UndelegateRequest request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Submit an unbonding delegation
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        GasEstimateResponse PostUnbondingDelegationSimulation(UndelegateRequest request);
+        
+        /// <summary>
+        /// Submit an unbonding delegation
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<TypeValue<StdTx>> PostUnbondingDelegationAsync(UndelegateRequest request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Submit an unbonding delegation
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        TypeValue<StdTx> PostUnbondingDelegation(UndelegateRequest request);
     }
 }

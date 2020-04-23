@@ -96,6 +96,42 @@ namespace CosmosApi.Endpoints
             return GetUnbondingDelegationsAsync(delegatorAddr)
                 .Sync();
         }
+
+        public Task<GasEstimateResponse> PostUnbondingDelegationSimulationAsync(UndelegateRequest request, CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, true);
+            request = new UndelegateRequest(baseReq, request.DelegatorAddress, request.ValidatorAddress, request.Amount);
+            return _clientGetter()
+                .Request("staking", "delegators", request.DelegatorAddress, "unbonding_delegations")
+                .PostJsonAsync(request, cancellationToken)
+                .WrapExceptions()
+                .ReceiveJson<GasEstimateResponse>()
+                .WrapExceptions();
+        }
+
+        public GasEstimateResponse PostUnbondingDelegationSimulation(UndelegateRequest request)
+        {
+            return PostUnbondingDelegationSimulationAsync(request)
+                .Sync();
+        }
+
+        public Task<TypeValue<StdTx>> PostUnbondingDelegationAsync(UndelegateRequest request, CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, false);
+            request = new UndelegateRequest(baseReq, request.DelegatorAddress, request.ValidatorAddress, request.Amount);
+            return _clientGetter()
+                .Request("staking", "delegators", request.DelegatorAddress, "unbonding_delegations")
+                .PostJsonAsync(request, cancellationToken)
+                .WrapExceptions()
+                .ReceiveJson<TypeValue<StdTx>>()
+                .WrapExceptions();
+        }
+
+        public TypeValue<StdTx> PostUnbondingDelegation(UndelegateRequest request)
+        {
+            return PostUnbondingDelegationAsync(request)
+                .Sync();
+        }
     }
     
 }
