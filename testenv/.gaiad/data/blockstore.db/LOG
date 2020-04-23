@@ -4,3 +4,13 @@
 15:27:28.123417 version@stat F·[] S·0B[] Sc·[]
 15:27:28.130862 db@janitor F·2 G·0
 15:27:28.130956 db@open done T·8.5412ms
+=============== Apr 22, 2020 (STD) ===============
+16:34:31.985615 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+16:34:31.987108 version@stat F·[] S·0B[] Sc·[]
+16:34:31.987189 db@open opening
+16:34:31.987493 journal@recovery F·1
+16:34:31.992541 journal@recovery recovering @1
+16:34:31.998803 memdb@flush created L0@2 N·24 S·2KiB ",v24":"blo..ore,v5"
+16:34:31.999705 version@stat F·[1] S·2KiB[2KiB] Sc·[0.25]
+16:34:32.022354 db@janitor F·3 G·0
+16:34:32.022405 db@open done T·35.0542ms

@@ -114,5 +114,24 @@ namespace CosmosApi.Test.Endpoints
             Assert.True(delegation.Result.Balance > 0);
             Assert.True(delegation.Result.Shares > 0);
         }
+
+        //There is a "Completion time" in response and it's 2020-05-13, wonder if it will be removed by that time and break this test.
+        [Fact]
+        public async Task AsyncGetUnbondingDelegationsNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var delegations = await client
+                .Staking
+                .GetUnbondingDelegationsAsync(Configuration.LocalDelegator1Address);
+            
+            OutputHelper.WriteLine("Deserialized delegations:");
+            Dump(delegations);
+
+            Assert.NotEmpty(delegations.Result);
+            Assert.Equal(Configuration.LocalDelegator1Address, delegations.Result[0].DelegatorAddress);
+            Assert.Equal(Configuration.LocalValidatorAddress, delegations.Result[0].ValidatorAddress);
+            Assert.True(delegations.Result[0].Entries[0].Balance > 0);
+        }
     }
 }

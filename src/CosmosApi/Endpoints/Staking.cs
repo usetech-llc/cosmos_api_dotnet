@@ -82,6 +82,20 @@ namespace CosmosApi.Endpoints
             return GetDelegationByValidatorAsync(delegatorAddr, validatorAddr)
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<IList<UnbondingDelegation>>> GetUnbondingDelegationsAsync(string delegatorAddr, CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("staking", "delegators", delegatorAddr, "unbonding_delegations")
+                .GetJsonAsync<ResponseWithHeight<IList<UnbondingDelegation>>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public ResponseWithHeight<IList<UnbondingDelegation>> GetUnbondingDelegations(string delegatorAddr)
+        {
+            return GetUnbondingDelegationsAsync(delegatorAddr)
+                .Sync();
+        }
     }
     
 }
