@@ -166,6 +166,44 @@ namespace CosmosApi.Endpoints
             return GetRedelegationsAsync(delegator, validatorFrom, validatorTo)
                 .Sync();
         }
+
+        public Task<GasEstimateResponse> PostRedelegationSimulationAsync(RedelegateRequest request, CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, true);
+            request = new RedelegateRequest(baseReq, request.DelegatorAddress, request.ValidatorSrcAddress, request.ValidatorDstAddress, request.Amount);
+
+            return _clientGetter()
+                .Request("staking", "delegators", request.DelegatorAddress, "redelegations")
+                .PostJsonAsync(request, cancellationToken)
+                .WrapExceptions()
+                .ReceiveJson<GasEstimateResponse>()
+                .WrapExceptions();
+        }
+
+        public GasEstimateResponse PostRedelegationSimulation(RedelegateRequest request)
+        {
+            return PostRedelegationSimulationAsync(request)
+                .Sync();
+        }
+
+        public Task<TypeValue<StdTx>> PostRedelegationAsync(RedelegateRequest request, CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, false);
+            request = new RedelegateRequest(baseReq, request.DelegatorAddress, request.ValidatorSrcAddress, request.ValidatorDstAddress, request.Amount);
+
+            return _clientGetter()
+                .Request("staking", "delegators", request.DelegatorAddress, "redelegations")
+                .PostJsonAsync(request, cancellationToken)
+                .WrapExceptions()
+                .ReceiveJson<TypeValue<StdTx>>()
+                .WrapExceptions();
+        }
+
+        public TypeValue<StdTx> PostRedelegation(RedelegateRequest request)
+        {
+            return PostRedelegationAsync(request)
+                .Sync();
+        }
     }
     
 }

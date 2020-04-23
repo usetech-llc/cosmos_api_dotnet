@@ -17,6 +17,7 @@ namespace CosmosApi.Test
         public string GlobalDelegator1Address { get; set; } = null!;
         public string GlobalValidator1Address { get; set; } = null!;
         public string GlobalValidator2Address { get; set; } = null!;
+        public string GlobalChainId { get; set; } = null!;
 
         private TestConfiguration()
         {

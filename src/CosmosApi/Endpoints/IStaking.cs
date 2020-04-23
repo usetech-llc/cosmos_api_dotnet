@@ -154,5 +154,35 @@ namespace CosmosApi.Endpoints
         /// <param name="validatorTo">Bech32 ValAddress of DstValidator.</param>
         /// <returns></returns>
         ResponseWithHeight<IList<Redelegation>> GetRedelegations(string? delegator = default, string? validatorFrom = default, string? validatorTo = default);
+
+        /// <summary>
+        /// Submit a redelegation.
+        /// </summary>
+        /// <param name="request">The sender and tx information.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<GasEstimateResponse> PostRedelegationSimulationAsync(RedelegateRequest request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Submit a redelegation.
+        /// </summary>
+        /// <param name="request">The sender and tx information.</param>
+        /// <returns></returns>
+        GasEstimateResponse PostRedelegationSimulation(RedelegateRequest request);
+
+        /// <summary>
+        /// Submit a redelegation.
+        /// </summary>
+        /// <param name="request">The sender and tx information.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<TypeValue<StdTx>> PostRedelegationAsync(RedelegateRequest request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Submit a redelegation.
+        /// </summary>
+        /// <param name="request">The sender and tx information.</param>
+        /// <returns></returns>
+        TypeValue<StdTx> PostRedelegation(RedelegateRequest request);
     }
 }

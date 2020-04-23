@@ -70,7 +70,8 @@ namespace CosmosApi
                 .RegisterTypeValue<MsgSend>("cosmos-sdk/MsgSend")
                 .RegisterTypeValue<BaseAccount>("cosmos-sdk/Account")
                 .RegisterTypeValue<MsgDelegate>("cosmos-sdk/MsgDelegate")
-                .RegisterTypeValue<MsgUndelegate>("cosmos-sdk/MsgUndelegate");
+                .RegisterTypeValue<MsgUndelegate>("cosmos-sdk/MsgUndelegate")
+                .RegisterTypeValue<MsgBeginRedelegate>("cosmos-sdk/MsgBeginRedelegate");
         }
 
         public ICosmosApiBuilder AddJsonConverterFactory(IConverterFactory factory)

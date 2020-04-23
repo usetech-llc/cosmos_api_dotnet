@@ -210,5 +210,55 @@ namespace CosmosApi.Test.Endpoints
                 Assert.Equal(Configuration.GlobalValidator2Address, redelegation.ValidatorDstAddress);
             }
         }
+
+        [Fact]
+        public async Task AsyncPostRedelegationSimulationCompletes()
+        {
+            using var client = CreateClient();
+            
+            var account = (await client
+                .Auth
+                .GetAuthAccountByAddressAsync(Configuration.GlobalDelegator1Address)).Result.Value;
+            var baseRequest = new BaseReq(Configuration.GlobalDelegator1Address, null, Configuration.GlobalChainId, account.GetAccountNumber(), account.GetSequence(), null, null, null, null);
+            var redelegationRequest = new RedelegateRequest(baseRequest, Configuration.GlobalDelegator1Address, Configuration.GlobalValidator1Address, Configuration.GlobalValidator2Address, new Coin("uatom", 10));
+
+            var gasEstimation = await client
+                .Staking
+                .PostRedelegationSimulationAsync(redelegationRequest);
+            
+            OutputHelper.WriteLine("Deserialized gas estimation:");
+            Dump(gasEstimation);
+            
+            Assert.NotNull(gasEstimation);
+        }
+
+        [Fact]
+        public async Task PostRedelegationCompletes()
+        {
+            using var client = CreateClient();
+            
+            var account = (await client
+                .Auth
+                .GetAuthAccountByAddressAsync(Configuration.GlobalDelegator1Address)).Result.Value;
+            var baseRequest = new BaseReq(Configuration.GlobalDelegator1Address, null, Configuration.GlobalChainId, account.GetAccountNumber(), account.GetSequence(), null, null, null, null);
+            var redelegationRequest = new RedelegateRequest(baseRequest, Configuration.GlobalDelegator1Address, Configuration.GlobalValidator1Address, Configuration.GlobalValidator2Address, new Coin("uatom", 10));
+
+            var tx = await client
+                .Staking
+                .PostRedelegationAsync(redelegationRequest);
+            
+            OutputHelper.WriteLine("Deserialized tx:");
+            Dump(tx);
+
+            var msgRedelegate = (MsgBeginRedelegate)tx
+                .Value
+                .Msg
+                .First(m => m.Value is MsgBeginRedelegate).Value;
+            Assert.Equal("uatom", msgRedelegate.Amount.Denom);
+            Assert.Equal(10, msgRedelegate.Amount.Amount);
+            Assert.Equal(Configuration.GlobalDelegator1Address, msgRedelegate.DelegatorAddress);
+            Assert.Equal(Configuration.GlobalValidator1Address, msgRedelegate.ValidatorSrcAddress);
+            Assert.Equal(Configuration.GlobalValidator2Address, msgRedelegate.ValidatorDstAddress);
+        }
     }
 }
