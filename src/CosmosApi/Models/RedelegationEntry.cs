@@ -1,52 +1,51 @@
+using System;
+using System.Numerics;
+using CosmosApi.Serialization;
+using ExtendedNumerics;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
+    /// <summary>
+    /// RedelegationEntry - entry to a Redelegation.
+    /// </summary>
     public class RedelegationEntry
     {
         /// <summary>
-        /// Initializes a new instance of the RedelegationEntry class.
+        /// Height at which the redelegation took place.
         /// </summary>
+        [JsonProperty(PropertyName = "creation_height")]
+        public long CreationHeight { get; set; }
+
+        /// <summary>
+        /// Time at which the redelegation will complete.
+        /// </summary>
+        [JsonProperty(PropertyName = "completion_time")]
+        public DateTimeOffset CompletionTime { get; set; }
+
+        /// <summary>
+        /// Initial balance when redelegation started.
+        /// </summary>
+        [JsonProperty(PropertyName = "initial_balance")]
+        [JsonConverter(typeof(StringNumberConverter))]
+        public BigInteger InitialBalance { get; set; }
+
+        /// <summary>
+        /// Amount of destination-validator shares created by redelegation.
+        /// </summary>
+        [JsonProperty(PropertyName = "shares_dst")]
+        public BigDecimal SharesDst { get; set; }
+
         public RedelegationEntry()
         {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the RedelegationEntry class.
-        /// </summary>
-        public RedelegationEntry(int? creationHeight, int? completionTime, string initialBalance, string balance, string sharesDst)
+        public RedelegationEntry(long creationHeight, DateTimeOffset completionTime, BigInteger initialBalance, BigDecimal sharesDst)
         {
             CreationHeight = creationHeight;
             CompletionTime = completionTime;
             InitialBalance = initialBalance;
-            Balance = balance;
             SharesDst = sharesDst;
         }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "creation_height")]
-        public int? CreationHeight { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "completion_time")]
-        public int? CompletionTime { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "initial_balance")]
-        public string InitialBalance { get; set; } = null!;
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "balance")]
-        public string Balance { get; set; } = null!;
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "shares_dst")]
-        public string SharesDst { get; set; } = null!;
-
     }
 }

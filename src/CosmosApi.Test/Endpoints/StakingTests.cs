@@ -177,5 +177,38 @@ namespace CosmosApi.Test.Endpoints
             Assert.Equal(Configuration.LocalDelegator1Address, unbondingDelegation.DelegatorAddress);
             Assert.True(unbondingDelegation.Entries[0].Balance > 0);
         }
+
+        [Fact]
+        public async Task AsyncGetRedelegationsAllRedelegationsNotEmpty()
+        {
+            using var client = CreateClient();
+
+            var result = await client
+                .Staking
+                .GetRedelegationsAsync();
+            OutputHelper.WriteLine("Deserialized redelegations:");
+            Dump(result);
+            
+            Assert.NotEmpty(result.Result);
+        }
+
+        [Fact]
+        public async Task AsyncGetRedelegationsReturnsKnownDelegatorsAndValidators()
+        {
+            using var client = CreateClient();
+
+            var result = await client
+                .Staking
+                .GetRedelegationsAsync(Configuration.GlobalDelegator1Address, Configuration.GlobalValidator1Address, Configuration.GlobalValidator2Address);
+            OutputHelper.WriteLine("Deserialized redelegations:");
+            Dump(result);
+
+            foreach (var redelegation in result.Result)
+            {
+                Assert.Equal(Configuration.GlobalDelegator1Address, redelegation.DelegatorAddress);
+                Assert.Equal(Configuration.GlobalValidator1Address, redelegation.ValidatorSrcAddress);
+                Assert.Equal(Configuration.GlobalValidator2Address, redelegation.ValidatorDstAddress);
+            }
+        }
     }
 }

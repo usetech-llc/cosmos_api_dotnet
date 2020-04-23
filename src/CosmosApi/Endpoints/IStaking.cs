@@ -136,5 +136,23 @@ namespace CosmosApi.Endpoints
         /// <returns></returns>
         ResponseWithHeight<UnbondingDelegation> GetUnbondingDelegationsByValidator(string delegatorAddr, string validatorAddr);
 
+        /// <summary>
+        /// Get all redelegations.
+        /// </summary>
+        /// <param name="delegator">Bech32 AccAddress of Delegator.</param>
+        /// <param name="validatorFrom">Bech32 ValAddress of SrcValidator.</param>
+        /// <param name="validatorTo">Bech32 ValAddress of DstValidator.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<IList<Redelegation>>> GetRedelegationsAsync(string? delegator = default, string? validatorFrom = default, string? validatorTo = default, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get all redelegations.
+        /// </summary>
+        /// <param name="delegator">Bech32 AccAddress of Delegator.</param>
+        /// <param name="validatorFrom">Bech32 ValAddress of SrcValidator.</param>
+        /// <param name="validatorTo">Bech32 ValAddress of DstValidator.</param>
+        /// <returns></returns>
+        ResponseWithHeight<IList<Redelegation>> GetRedelegations(string? delegator = default, string? validatorFrom = default, string? validatorTo = default);
     }
 }

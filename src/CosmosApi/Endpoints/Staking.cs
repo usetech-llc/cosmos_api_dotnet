@@ -147,6 +147,25 @@ namespace CosmosApi.Endpoints
             return GetUnbondingDelegationsByValidatorAsync(delegatorAddr, validatorAddr)
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<IList<Redelegation>>> GetRedelegationsAsync(string? delegator = default, string? validatorFrom = default, string? validatorTo = default,
+            CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("staking", "redelegations")
+                .SetQueryParam("delegator", delegator)
+                .SetQueryParam("validator_from", validatorFrom)
+                .SetQueryParam("validator_to", validatorTo)
+                .GetJsonAsync<ResponseWithHeight<IList<Redelegation>>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public ResponseWithHeight<IList<Redelegation>> GetRedelegations(string? delegator = default, string? validatorFrom = default,
+            string? validatorTo = default)
+        {
+            return GetRedelegationsAsync(delegator, validatorFrom, validatorTo)
+                .Sync();
+        }
     }
     
 }
