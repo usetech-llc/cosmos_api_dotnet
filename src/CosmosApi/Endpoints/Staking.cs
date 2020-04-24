@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using CosmosApi.Extensions;
@@ -249,6 +251,27 @@ namespace CosmosApi.Endpoints
         public ResponseWithHeight<Validator> GetValidator(string delegatorAddr, string validatorAddr)
         {
             return GetValidatorAsync(delegatorAddr, validatorAddr)
+                .Sync();
+        }
+
+        public Task<IList<PaginatedTxs>> GetTransactionsAsync(string delegatorAddr, IList<DelegatingTxType>? txTypes = default,
+            CancellationToken cancellationToken = default)
+        {
+            if (txTypes == null || txTypes.Count <= 0)
+            {
+                txTypes = (DelegatingTxType[]) Enum.GetValues(typeof(DelegatingTxType));
+            }
+
+            return _clientGetter()
+                .Request("staking", "delegators", delegatorAddr, "txs")
+                .SetQueryParam("type", txTypes.Select(type => type.EnumMember()))
+                .GetJsonAsync<IList<PaginatedTxs>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public IList<PaginatedTxs> GetTransactions(string delegatorAddr, IList<DelegatingTxType>? txTypes = default)
+        {
+            return GetTransactionsAsync(delegatorAddr, txTypes)
                 .Sync();
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CosmosApi.Models;
@@ -324,6 +325,25 @@ namespace CosmosApi.Test.Endpoints
             Dump(validator);
             
             Assert.Equal(Configuration.GlobalValidator1Address, validator.Result.OperatorAddress);
+        }
+
+        [Fact]
+        public async Task AsyncGetTransactionsReturnsTransactionsForKnownDelegate()
+        {
+            using var client = CreateClient();
+
+            var txs = await client
+                .Staking
+                .GetTransactionsAsync(Configuration.GlobalDelegator1Address);
+            
+            OutputHelper.WriteLine("Deserialized transactions:");
+            Dump(txs);
+            
+            Assert.NotEmpty(txs);
+            foreach (var tx in txs)
+            {
+                Assert.NotEmpty(tx.Txs);
+            }
         }
     }
 }

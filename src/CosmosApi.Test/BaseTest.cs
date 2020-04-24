@@ -101,7 +101,7 @@ namespace CosmosApi.Test
         public void WriteLineCutIfTooLong(string message, string cutWarning)
         {
             var punchCardLength = 80 * 12;
-            if (message.Length > punchCardLength * 2)
+            if (Configuration.CutLongOutput && message.Length > punchCardLength * 2)
             {
                 OutputHelper.WriteLine(cutWarning);
                 OutputHelper.WriteLine(message[..(punchCardLength * 2 - 3)] + "...");

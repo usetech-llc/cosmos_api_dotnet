@@ -19,4 +19,5 @@ GlobalDelegator1Address: cosmos14t3dh3ucxjfey6akem75q9atydz3zg5cynepds
 GlobalValidator1Address: cosmosvaloper1ey69r37gfxvxg62sh4r0ktpuc46pzjrm873ae8
 GlobalValidator2Address: cosmosvaloper156gqf9837u7d4c4678yt3rl4ls9c5vuursrrzf
 GlobalChainId: cosmoshub-3
+CutLongOutput: false
   
