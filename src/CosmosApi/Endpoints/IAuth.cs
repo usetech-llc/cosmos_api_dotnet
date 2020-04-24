@@ -19,7 +19,7 @@ namespace CosmosApi.Endpoints
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<ResponseWithHeight<TypeValue<IAccount>>> GetAuthAccountByAddressAsync(string address, CancellationToken cancellationToken = default);
+        Task<ResponseWithHeight<IAccount>> GetAuthAccountByAddressAsync(string address, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get the account information on blockchain.
@@ -27,6 +27,6 @@ namespace CosmosApi.Endpoints
         /// <param name='address'>
         /// Account address.
         /// </param>
-        ResponseWithHeight<TypeValue<IAccount>> GetAuthAccountByAddress(string address);
+        ResponseWithHeight<IAccount> GetAuthAccountByAddress(string address);
     }
 }

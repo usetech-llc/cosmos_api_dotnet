@@ -5,68 +5,119 @@ using System.Reflection;
 using CosmosApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace CosmosApi.Serialization
 {
-    public class TypeValueConverter : JsonConverter
+    public class TypeValueConverter<TBaseType> : JsonConverter<TBaseType> where TBaseType: class
     {
-        private Dictionary<Type, string> _typeToJsonName = new Dictionary<Type, string>();
-        private Dictionary<string, Type> _jsonNameToType = new Dictionary<string, Type>();
+        private readonly bool _dontWriteTypeValue = false;
+        private string _registerTypeHint = "";
+        internal readonly Dictionary<Type, string> TypeToJsonName = new Dictionary<Type, string>();
+        internal readonly Dictionary<string, Type> JsonNameToType = new Dictionary<string, Type>();
+
+        public TypeValueConverter(bool dontWriteTypeValue = default)
+        {
+            _dontWriteTypeValue = dontWriteTypeValue;
+        }
+
+        public TypeValueConverter(string? registerTypeHint = null)
+        {
+            _registerTypeHint = registerTypeHint ?? "";
+        }
 
         public void AddType<T>(string jsonName)
         {
-            _jsonNameToType[jsonName] = typeof(T);
-            _typeToJsonName[typeof(T)] = jsonName;
+            JsonNameToType[jsonName] = typeof(T);
+            TypeToJsonName[typeof(T)] = jsonName;
         }
         
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, TBaseType value, JsonSerializer serializer)
         {
-            var converter = serializer.Converters.OfType<TypeValueConverter>().First();
             if (value == null)
             {
                 serializer.Serialize(writer, null);
                 return;
             }
 
-            var wrappedValue = value.GetType().GetProperty(nameof(TypeValue<object>.Value))?.GetValue(value);
-            if (wrappedValue == null)
+            var contract = (JsonObjectContract)serializer
+                .ContractResolver
+                .ResolveContract(value.GetType());
+            if (_dontWriteTypeValue == true)
             {
-                serializer.Serialize(writer, null);
+                WriteObject(writer, value, serializer, contract);
                 return;
             }
-            
-            serializer.Serialize(writer, new
+
+            if (!TypeToJsonName.TryGetValue(value.GetType(), out var jsonTypeName))
             {
-                type = converter._typeToJsonName[wrappedValue.GetType()],
-                value = wrappedValue
-            });
+                throw new CosmosSerializationException($"Unknown type {value.GetType()} for base type {typeof(TBaseType).Name}. {_registerTypeHint}");
+            }
+
+
+            writer.WriteStartObject();
+            writer.WritePropertyName("type");
+            writer.WriteValue(jsonTypeName);
+            writer.WritePropertyName("value");
+            WriteObject(writer, value, serializer, contract);
+            writer.WriteEndObject();
         }
 
-        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+        private static void WriteObject(JsonWriter writer, TBaseType value, JsonSerializer serializer,
+            JsonObjectContract contract)
         {
-            var converter = serializer.Converters.OfType<TypeValueConverter>().First();
+            writer.WriteStartObject();
+            foreach (var property in contract.Properties)
+            {
+                writer.WritePropertyName(property.PropertyName ??
+                                         throw new CosmosSerializationException(
+                                             $"Property name is null for type {value.GetType()}."));
+                serializer.Serialize(writer, property.ValueProvider!.GetValue(value));
+            }
+
+            writer.WriteEndObject();
+        }
+
+        public override TBaseType ReadJson(JsonReader reader, Type objectType, TBaseType existingValue, bool hasExistingValue,
+            JsonSerializer serializer)
+        {
             var jobject = serializer.Deserialize<JObject>(reader);
             if (jobject == null)
             {
-                return null;
+                return default!;
             }
 
-            var typeString = jobject["type"]!.Value<string>();
-            var type = converter._jsonNameToType[typeString];
-            var typeValue = objectType.GetConstructor(new Type[0])?.Invoke(new object?[0]);
-            if (typeValue == null)
+            var typeToken = jobject["type"];
+            if (typeToken == null)
             {
-                throw new CosmosSerializationException($"Type {objectType.FullName} doesn't have parameterless constructor.");
+                throw new CosmosSerializationException("Missing type discriminator in json.");
+            }
+            
+            var typeString = typeToken.Value<string>();
+            if (!JsonNameToType.TryGetValue(typeString, out var type))
+            {
+                throw new CosmosSerializationException($"Unknown json type discriminator {typeString} for base type {typeof(TBaseType).Name}. {_registerTypeHint}");
             }
 
-            var value = serializer.Deserialize(jobject["value"]!.CreateReader(), type);
-            typeValue.GetType().GetProperty(nameof(TypeValue<object>.Value))?.SetValue(typeValue, value);
-            return typeValue;
+            var jToken = jobject["value"];
+            if (jToken == null)
+            {
+                return default(TBaseType)!;
+            }
+            return Read(serializer, type, jToken);
         }
 
-        public override bool CanConvert(Type objectType)
+        private static TBaseType Read(JsonSerializer serializer, Type type, JToken jToken)
         {
-            return objectType.IsSubclassOf(typeof(TypeValue<>));
+            var constructorInfo = type.GetConstructor(Type.EmptyTypes);
+            if (constructorInfo == null)
+            {
+                throw new CosmosSerializationException($"Type {type.Name} doesn't have parameterless constructor.");
+            }
+
+            var value = constructorInfo.Invoke(Array.Empty<object>());
+            serializer.Populate(jToken!.CreateReader(), value);
+            return (TBaseType) value;
         }
     }
 }

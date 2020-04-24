@@ -70,7 +70,7 @@ namespace CosmosApi.Endpoints
         {
             return _clientGetter()
                 .Request("txs", "encode")
-                .PostJsonAsync(new TypeValue<ITx>(tx), cancellationToken)
+                .PostJsonAsync(tx, cancellationToken)
                 .WrapExceptions()
                 .ReceiveJson<EncodeTxResponse>()
                 .WrapExceptions();

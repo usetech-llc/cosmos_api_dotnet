@@ -57,12 +57,12 @@ namespace CosmosApi
             {
                 Fee = fee,
                 Memo = memo,
-                Messages = new List<TypeValue<IMsg>>
+                Messages = new List<IMsg>
                 {
-                    new TypeValue<IMsg>(msg), 
+                    msg, 
                 },
-                Sequence = account.Result.Value.GetSequence(),
-                AccountNumber = account.Result.Value.GetAccountNumber(),
+                Sequence = account.Result.GetSequence(),
+                AccountNumber = account.Result.GetAccountNumber(),
                 ChainId = chainId
             };
             var bytesToSign = GetSignBytes(signMsg);
@@ -70,7 +70,7 @@ namespace CosmosApi
             var signedBytes = Sign(bytesToSign, key);
             var tx = new StdTx()
             {
-                Msg = new List<TypeValue<IMsg>>() { new TypeValue<IMsg>(msg) },
+                Msg = new List<IMsg>() { msg },
                 Memo = memo,
                 Fee = fee,
                 Signatures = new List<StdSignature>()
@@ -78,7 +78,7 @@ namespace CosmosApi
                     new StdSignature()
                     {
                         Signature = signedBytes,
-                        PubKey = account.Result.Value.GetPublicKey()
+                        PubKey = account.Result.GetPublicKey()
                     }
                 },
             };
@@ -185,12 +185,23 @@ namespace CosmosApi
                 DateFormatHandling = DateFormatHandling.IsoDateFormat,
             };
 
-            foreach (var factory in _settings.ConverterFactories)
+            foreach (var converter in _settings.Converters)
             {
-                //jsonSerializerSettings.Converters.Add(factory.CreateConverter());
+                jsonSerializerSettings.Converters.Add(converter);
             }
 
-            jsonSerializerSettings.Converters.Add(_settings.TypeValueConverter);
+            if (_settings.MsgConverter.JsonNameToType.Any())
+            {
+                jsonSerializerSettings.Converters.Add(_settings.MsgConverter);
+            }
+            if (_settings.TxConverter.JsonNameToType.Any())
+            {
+                jsonSerializerSettings.Converters.Add(_settings.TxConverter);
+            }
+            if (_settings.AccountConverter.JsonNameToType.Any())
+            {
+                jsonSerializerSettings.Converters.Add(_settings.AccountConverter);
+            }
             return jsonSerializerSettings;
         }
 
