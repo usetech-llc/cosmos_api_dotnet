@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CosmosApi.Callbacks;
 using CosmosApi.Models;
 using CosmosApi.Serialization;
+using Newtonsoft.Json;
 
 namespace CosmosApi
 {
@@ -16,15 +17,6 @@ namespace CosmosApi
 
         public CosmosApiClientSettings()
         {
-            TxConverterFactory = new JsonTypeDiscriminatorConverterFactory(typeof(ITx), new List<(Type SubType, string DiscriminatorValue)>(), "type");
-            MsgConverterFactory = new JsonTypeDiscriminatorConverterFactory(typeof(IMsg), new List<(Type SubType, string DiscriminatorValue)>(), "type");
-            ConverterFactories = new List<IConverterFactory>()
-            {
-                TxConverterFactory,
-                MsgConverterFactory,
-            };
-            
-            TypeValueConverter = new TypeValueConverter();
         }
         
         /// <summary>
@@ -99,21 +91,12 @@ namespace CosmosApi
         /// <summary>
         /// List of custom json converters. 
         /// </summary>
-        public List<IConverterFactory> ConverterFactories { get; set; }
+        public List<JsonConverter> Converters { get; set; } = new List<JsonConverter>();
         
-        internal JsonTypeDiscriminatorConverterFactory TxConverterFactory { get; }
+        internal TypeValueConverter<ITx> TxConverter { get; } = new TypeValueConverter<ITx>($"Call {nameof(ICosmosApiBuilder)}.{nameof(ICosmosApiBuilder.RegisterTxType)} to register discriminator/type pair.");
         
-        internal JsonTypeDiscriminatorConverterFactory MsgConverterFactory { get; }
-        
-        /// <summary>
-        /// Serialization and deserialization of json values like
-        /// <example>
-        /// {
-        ///   "type": "cosmos-sdk/SomeType",
-        ///   "value": { properties of SomeType }
-        /// }
-        /// </example>>
-        /// </summary>
-        public TypeValueConverter TypeValueConverter { get; }
+        internal TypeValueConverter<IMsg> MsgConverter { get; } = new TypeValueConverter<IMsg>($"Call {nameof(ICosmosApiBuilder)}.{nameof(ICosmosApiBuilder.RegisterMsgType)} to register discriminator/type pair.");
+
+        internal TypeValueConverter<IAccount> AccountConverter { get; } = new TypeValueConverter<IAccount>($"Call {nameof(ICosmosApiBuilder)}.{nameof(ICosmosApiBuilder.RegisterAccountType)} to register discriminator/type pair.");
     }
 }

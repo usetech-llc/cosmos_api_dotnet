@@ -15,9 +15,9 @@ namespace CosmosApi.Test.TestData
                 Sequence = 17,
                 AccountNumber = 13,
                 ChainId = "test_chain",
-                Messages = new List<TypeValue<IMsg>>()
+                Messages = new List<IMsg>()
                 {
-                    new TypeValue<IMsg>(new MsgSend()
+                    new MsgSend()
                     {
                         FromAddress = "cosmos1qypqxpq9qcuhfwyx",
                         ToAddress = "cosmos1v4nxw5wt6j7",
@@ -25,7 +25,7 @@ namespace CosmosApi.Test.TestData
                         {
                             new Coin("foocoin", 10)
                         }
-                    })
+                    }
                 }
             };
         }

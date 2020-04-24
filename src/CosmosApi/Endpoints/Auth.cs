@@ -16,15 +16,15 @@ namespace CosmosApi.Endpoints
             _clientGetter = clientGetter;
         }
 
-        public Task<ResponseWithHeight<TypeValue<IAccount>>> GetAuthAccountByAddressAsync(string address, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ResponseWithHeight<IAccount>> GetAuthAccountByAddressAsync(string address, CancellationToken cancellationToken = default(CancellationToken))
         {
             return _clientGetter()
                 .Request("auth", "accounts", address)
-                .GetJsonAsync<ResponseWithHeight<TypeValue<IAccount>>>(cancellationToken: cancellationToken)
+                .GetJsonAsync<ResponseWithHeight<IAccount>>(cancellationToken: cancellationToken)
                 .WrapExceptions();
         }
 
-        public ResponseWithHeight<TypeValue<IAccount>> GetAuthAccountByAddress(string address)
+        public ResponseWithHeight<IAccount> GetAuthAccountByAddress(string address)
         {
             return GetAuthAccountByAddressAsync(address)
                 .Sync();

@@ -28,10 +28,7 @@ namespace CosmosApi.Test
                     s.OnAfterCallAsync = OnAfterCall;
                     s.OnBeforeCallAsync = OnBeforeCall;
                 })
-                .RegisterTypeValue<StdTx>("cosmos-sdk/StdTx")
-                .RegisterTypeValue<MsgMultiSend>("cosmos-sdk/MsgMultiSend")
-                .RegisterTypeValue<MsgSend>("cosmos-sdk/MsgSend")
-                .RegisterTypeValue<BaseAccount>("cosmos-sdk/Account")
+                .RegisterCosmosSdkTypeConverters()
                 .CreateClient() as CosmosApiClient)!;
         }
 
