@@ -31,7 +31,7 @@ namespace CosmosApi.Endpoints
                 .Sync();
         }
 
-        public Task<TypeValue<StdTx>> PostDelegationsAsync(DelegateRequest request, CancellationToken cancellationToken = default)
+        public Task<StdTx> PostDelegationsAsync(DelegateRequest request, CancellationToken cancellationToken = default)
         {
             var baseRequest = new BaseReqWithSimulate(request.BaseReq, false);
             request = new DelegateRequest(baseRequest, request.DelegatorAddress, request.ValidatorAddress, request.Amount);
@@ -39,11 +39,11 @@ namespace CosmosApi.Endpoints
                 .Request("staking", "delegators", request.DelegatorAddress, "delegations")
                 .PostJsonAsync(request, cancellationToken)
                 .WrapExceptions()
-                .ReceiveJson<TypeValue<StdTx>>()
+                .ReceiveJson<StdTx>()
                 .WrapExceptions();
         }
 
-        public TypeValue<StdTx> PostDelegations(DelegateRequest request)
+        public StdTx PostDelegations(DelegateRequest request)
         {
             return PostDelegationsAsync(request)
                 .Sync();
@@ -115,7 +115,7 @@ namespace CosmosApi.Endpoints
                 .Sync();
         }
 
-        public Task<TypeValue<StdTx>> PostUnbondingDelegationAsync(UndelegateRequest request, CancellationToken cancellationToken = default)
+        public Task<StdTx> PostUnbondingDelegationAsync(UndelegateRequest request, CancellationToken cancellationToken = default)
         {
             var baseReq = new BaseReqWithSimulate(request.BaseReq, false);
             request = new UndelegateRequest(baseReq, request.DelegatorAddress, request.ValidatorAddress, request.Amount);
@@ -123,11 +123,11 @@ namespace CosmosApi.Endpoints
                 .Request("staking", "delegators", request.DelegatorAddress, "unbonding_delegations")
                 .PostJsonAsync(request, cancellationToken)
                 .WrapExceptions()
-                .ReceiveJson<TypeValue<StdTx>>()
+                .ReceiveJson<StdTx>()
                 .WrapExceptions();
         }
 
-        public TypeValue<StdTx> PostUnbondingDelegation(UndelegateRequest request)
+        public StdTx PostUnbondingDelegation(UndelegateRequest request)
         {
             return PostUnbondingDelegationAsync(request)
                 .Sync();
@@ -186,7 +186,7 @@ namespace CosmosApi.Endpoints
                 .Sync();
         }
 
-        public Task<TypeValue<StdTx>> PostRedelegationAsync(RedelegateRequest request, CancellationToken cancellationToken = default)
+        public Task<StdTx> PostRedelegationAsync(RedelegateRequest request, CancellationToken cancellationToken = default)
         {
             var baseReq = new BaseReqWithSimulate(request.BaseReq, false);
             request = new RedelegateRequest(baseReq, request.DelegatorAddress, request.ValidatorSrcAddress, request.ValidatorDstAddress, request.Amount);
@@ -195,11 +195,11 @@ namespace CosmosApi.Endpoints
                 .Request("staking", "delegators", request.DelegatorAddress, "redelegations")
                 .PostJsonAsync(request, cancellationToken)
                 .WrapExceptions()
-                .ReceiveJson<TypeValue<StdTx>>()
+                .ReceiveJson<StdTx>()
                 .WrapExceptions();
         }
 
-        public TypeValue<StdTx> PostRedelegation(RedelegateRequest request)
+        public StdTx PostRedelegation(RedelegateRequest request)
         {
             return PostRedelegationAsync(request)
                 .Sync();
@@ -235,6 +235,20 @@ namespace CosmosApi.Endpoints
         public ResponseWithHeight<IList<Validator>> GetValidators(string delegatorAddr)
         {
             return GetValidatorsAsync(delegatorAddr)
+                .Sync();
+        }
+
+        public Task<ResponseWithHeight<Validator>> GetValidatorAsync(string delegatorAddr, string validatorAddr, CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("staking", "delegators", delegatorAddr, "validators", validatorAddr)
+                .GetJsonAsync<ResponseWithHeight<Validator>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public ResponseWithHeight<Validator> GetValidator(string delegatorAddr, string validatorAddr)
+        {
+            return GetValidatorAsync(delegatorAddr, validatorAddr)
                 .Sync();
         }
     }

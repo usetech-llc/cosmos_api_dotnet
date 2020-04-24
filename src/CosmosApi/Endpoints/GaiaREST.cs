@@ -20,7 +20,8 @@ namespace CosmosApi.Endpoints
         {
             var client = _clientGetter();
             return client.Request("node_info")
-                .GetJsonAsync<NodeStatus>(cancellationToken: cancellationToken);
+                .GetJsonAsync<NodeStatus>(cancellationToken: cancellationToken)
+                .WrapExceptions();
         }
         
         public Task<NodeStatus> GetNodeInfoAsync(CancellationToken cancellationToken = default(CancellationToken))

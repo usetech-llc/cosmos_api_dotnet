@@ -31,14 +31,14 @@ namespace CosmosApi.Endpoints
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<TypeValue<StdTx>> PostDelegationsAsync(DelegateRequest request, CancellationToken cancellationToken = default);
+        Task<StdTx> PostDelegationsAsync(DelegateRequest request, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Submit delegation.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        TypeValue<StdTx> PostDelegations(DelegateRequest request);
+        StdTx PostDelegations(DelegateRequest request);
 
         /// <summary>
         /// Submit delegation.
@@ -110,14 +110,14 @@ namespace CosmosApi.Endpoints
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<TypeValue<StdTx>> PostUnbondingDelegationAsync(UndelegateRequest request, CancellationToken cancellationToken = default);
+        Task<StdTx> PostUnbondingDelegationAsync(UndelegateRequest request, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Submit an unbonding delegation
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        TypeValue<StdTx> PostUnbondingDelegation(UndelegateRequest request);
+        StdTx PostUnbondingDelegation(UndelegateRequest request);
         
         /// <summary>
         /// Query all unbonding delegations between a delegator and a validator.
@@ -176,14 +176,14 @@ namespace CosmosApi.Endpoints
         /// <param name="request">The sender and tx information.</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<TypeValue<StdTx>> PostRedelegationAsync(RedelegateRequest request, CancellationToken cancellationToken = default);
+        Task<StdTx> PostRedelegationAsync(RedelegateRequest request, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Submit a redelegation.
         /// </summary>
         /// <param name="request">The sender and tx information.</param>
         /// <returns></returns>
-        TypeValue<StdTx> PostRedelegation(RedelegateRequest request);
+        StdTx PostRedelegation(RedelegateRequest request);
 
         /// <summary>
         /// Get all validator candidates. By default it returns only the bonded validators.
@@ -218,5 +218,22 @@ namespace CosmosApi.Endpoints
         /// <param name="delegatorAddr">Bech32 AccAddress of Delegator.</param>
         /// <returns></returns>
         ResponseWithHeight<IList<Validator>> GetValidators(string delegatorAddr);
+        
+        /// <summary>
+        /// Query a validator that a delegator is bonded to.
+        /// </summary>
+        /// <param name="delegatorAddr">Bech32 AccAddress of Delegator.</param>
+        /// <param name="validatorAddr">Bech32 ValAddress of Delegator</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<Validator>> GetValidatorAsync(string delegatorAddr, string validatorAddr, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Query a validator that a delegator is bonded to.
+        /// </summary>
+        /// <param name="delegatorAddr">Bech32 AccAddress of Delegator.</param>
+        /// <param name="validatorAddr">Bech32 ValAddress of Delegator</param>
+        /// <returns></returns>
+        ResponseWithHeight<Validator> GetValidator(string delegatorAddr, string validatorAddr);
     }
 }

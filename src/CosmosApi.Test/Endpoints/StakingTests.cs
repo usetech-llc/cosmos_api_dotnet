@@ -55,7 +55,7 @@ namespace CosmosApi.Test.Endpoints
 
             var account = (await client
                 .Auth
-                .GetAuthAccountByAddressAsync(Configuration.LocalDelegator1Address)).Result.Value;
+                .GetAuthAccountByAddressAsync(Configuration.LocalDelegator1Address)).Result;
             
             var baseRequest = new BaseReq(Configuration.LocalDelegator1Address, null, Configuration.LocalChainId, account.GetAccountNumber(), account.GetSequence(), null, null, null, null);
             var delegateRequest = new DelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress, new Coin("stake", 10));
@@ -77,7 +77,7 @@ namespace CosmosApi.Test.Endpoints
 
             var account = (await client
                 .Auth
-                .GetAuthAccountByAddressAsync(Configuration.LocalDelegator1Address)).Result.Value;
+                .GetAuthAccountByAddressAsync(Configuration.LocalDelegator1Address)).Result;
             
             var baseRequest = new BaseReq(Configuration.LocalDelegator1Address, null, Configuration.LocalChainId, account.GetAccountNumber(), account.GetSequence(), null, null, null, null);
             var delegateRequest = new DelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress, new Coin("stake", 10));
@@ -89,12 +89,11 @@ namespace CosmosApi.Test.Endpoints
             Dump(postResult);
             OutputHelper.WriteLine("");
             
-            Assert.True(postResult.Value.Msg.Count > 0);
-            var msgDelegate = (MsgDelegate)postResult
-                .Value
+            Assert.True(postResult.Msg.Count > 0);
+            var msgDelegate = postResult
                 .Msg
-                .First(m => m.Value is MsgDelegate)
-                .Value;
+                .OfType<MsgDelegate>()
+                .First();
             Assert.Equal("stake", msgDelegate.Amount.Denom);
             Assert.Equal(10, msgDelegate.Amount.Amount);
         }
@@ -142,19 +141,21 @@ namespace CosmosApi.Test.Endpoints
             
             var account = (await client
                 .Auth
-                .GetAuthAccountByAddressAsync(Configuration.LocalDelegator1Address)).Result.Value;
+                .GetAuthAccountByAddressAsync(Configuration.LocalDelegator1Address)).Result;
             
             var baseRequest = new BaseReq(Configuration.LocalDelegator1Address, null, Configuration.LocalChainId, account.GetAccountNumber(), account.GetSequence(), null, null, null, null);
             var undelegateRequest = new UndelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress, new Coin("stake", 10));
             var tx = (await client
                 .Staking
-                .PostUnbondingDelegationAsync(undelegateRequest)).Value;
+                .PostUnbondingDelegationAsync(undelegateRequest));
 
             OutputHelper.WriteLine("Deserialized tx:");
             Dump(undelegateRequest);
             OutputHelper.WriteLine("");
 
-            var undelegateMessage = (MsgUndelegate)tx.Msg.First(m => m.Value is MsgUndelegate).Value; 
+            var undelegateMessage = tx.Msg
+                .OfType<MsgUndelegate>()
+                .First(); 
             
             Assert.Equal("stake", undelegateMessage.Amount.Denom);
             Assert.Equal(10, undelegateMessage.Amount.Amount);
@@ -219,7 +220,7 @@ namespace CosmosApi.Test.Endpoints
             
             var account = (await client
                 .Auth
-                .GetAuthAccountByAddressAsync(Configuration.GlobalDelegator1Address)).Result.Value;
+                .GetAuthAccountByAddressAsync(Configuration.GlobalDelegator1Address)).Result;
             var baseRequest = new BaseReq(Configuration.GlobalDelegator1Address, null, Configuration.GlobalChainId, account.GetAccountNumber(), account.GetSequence(), null, null, null, null);
             var redelegationRequest = new RedelegateRequest(baseRequest, Configuration.GlobalDelegator1Address, Configuration.GlobalValidator1Address, Configuration.GlobalValidator2Address, new Coin("uatom", 10));
 
@@ -240,7 +241,7 @@ namespace CosmosApi.Test.Endpoints
             
             var account = (await client
                 .Auth
-                .GetAuthAccountByAddressAsync(Configuration.GlobalDelegator1Address)).Result.Value;
+                .GetAuthAccountByAddressAsync(Configuration.GlobalDelegator1Address)).Result;
             var baseRequest = new BaseReq(Configuration.GlobalDelegator1Address, null, Configuration.GlobalChainId, account.GetAccountNumber(), account.GetSequence(), null, null, null, null);
             var redelegationRequest = new RedelegateRequest(baseRequest, Configuration.GlobalDelegator1Address, Configuration.GlobalValidator1Address, Configuration.GlobalValidator2Address, new Coin("uatom", 10));
 
@@ -251,10 +252,10 @@ namespace CosmosApi.Test.Endpoints
             OutputHelper.WriteLine("Deserialized tx:");
             Dump(tx);
 
-            var msgRedelegate = (MsgBeginRedelegate)tx
-                .Value
+            var msgRedelegate = tx
                 .Msg
-                .First(m => m.Value is MsgBeginRedelegate).Value;
+                .OfType<MsgBeginRedelegate>()
+                .First();
             Assert.Equal("uatom", msgRedelegate.Amount.Denom);
             Assert.Equal(10, msgRedelegate.Amount.Amount);
             Assert.Equal(Configuration.GlobalDelegator1Address, msgRedelegate.DelegatorAddress);
@@ -308,6 +309,21 @@ namespace CosmosApi.Test.Endpoints
             Assert.NotEmpty(validators.Result);
             var hasValidator1 = validators.Result.Any(v => string.Equals(v.OperatorAddress, Configuration.GlobalValidator1Address, StringComparison.Ordinal));
             Assert.True(hasValidator1);
+        }
+
+        [Fact]
+        public async Task AsyncGetValidatorByDelegatorAndValidatorAddressReturnsQueriedValidator()
+        {
+            using var client = CreateClient();
+
+            var validator = await client
+                .Staking
+                .GetValidatorAsync(Configuration.GlobalDelegator1Address, Configuration.GlobalValidator1Address);
+            
+            OutputHelper.WriteLine("Deserialized validator:");
+            Dump(validator);
+            
+            Assert.Equal(Configuration.GlobalValidator1Address, validator.Result.OperatorAddress);
         }
     }
 }
