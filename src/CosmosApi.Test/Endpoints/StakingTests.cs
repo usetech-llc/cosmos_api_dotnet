@@ -345,5 +345,32 @@ namespace CosmosApi.Test.Endpoints
                 Assert.NotEmpty(tx.Txs);
             }
         }
+
+        [Fact]
+        public async Task AsyncGetTransactionsBondFilterReturnsOnlyBondingTransactions()
+        {
+            using var client = CreateClient();
+
+            var txTypes = new List<DelegatingTxType>()
+            {
+                DelegatingTxType.Bond
+            };
+            var txs = await client
+                .Staking
+                .GetTransactionsAsync(Configuration.GlobalDelegator1Address, txTypes);
+            
+            OutputHelper.WriteLine("Deserialized transactions:");
+            Dump(txs);
+
+            var allTxsAreBond = txs
+                .All(paginatedTx =>
+                {
+                    return paginatedTx.Txs.All(t =>
+                    {
+                        return t.Tx.GetMsgs().Any(msg => msg is MsgDelegate);
+                    });
+                });
+            Assert.True(allTxsAreBond);
+        }
     }
 }

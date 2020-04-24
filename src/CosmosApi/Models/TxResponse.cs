@@ -46,8 +46,8 @@ namespace CosmosApi.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "txs")]
-        public IList<ITx> Tx { get; set; } = null!;
+        [JsonProperty(PropertyName = "tx")]
+        public ITx Tx { get; set; } = null!;
 
         /// <summary>
         /// </summary>
@@ -58,7 +58,7 @@ namespace CosmosApi.Models
         {
         }
 
-        public TxResponse(long height, string txHash, uint code, string data, string rawLog, IList<ABCIMessageLog> logs, string info, long gasWanted, long gasUsed, string codespace, IList<ITx> tx, DateTimeOffset timestamp)
+        public TxResponse(long height, string txHash, uint code, string data, string rawLog, IList<ABCIMessageLog> logs, string info, long gasWanted, long gasUsed, string codespace, ITx tx, DateTimeOffset timestamp)
         {
             Height = height;
             TxHash = txHash;
