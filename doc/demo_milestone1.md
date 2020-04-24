@@ -173,4 +173,4 @@ $ docker-compose run cosmos-api-test dotnet test -l "console;verbosity=detailed"
 
 ### Usage example is provided
 
-Any unit test can provide an example
+All examples are provided in the [README](../README.md) also any unit test can provide an additional example.
