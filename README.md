@@ -136,6 +136,7 @@ Sets username and password authorization for created clients
 ##### Parameters
 
 **username** string - User name
+
 **password** string - Password
 
 ##### Returns
@@ -200,6 +201,7 @@ using var client = new CosmosApiBuilder()
 
 ##### Parameters
 **T** Type Parameter - Type which might be used where ITx Interface is used. In the example StdTx represents the standard transaction structure that is already implemented in the API in `CosmosApi.Models` namespace. Custom module transactions need to be implemented as similar structures that inherit from ITx Interface.  
+
 **jsonName** string - Value of the type discriminator. I.e. JSON value field name, as it comes in the response from the node.
 
 ##### Returns
@@ -231,6 +233,7 @@ This method should be used to add custom module transactions if the module has i
 
 ##### Parameters
 **T** Type Parameter - Type which might be used where IMsg Interface is used. In the example MsgSend represents the standard message structure that is already implemented in the API in `CosmosApi.Models` namespace. Custom module messages need to be implemented as similar structures that inherit from IMsg Interface.   
+
 **jsonName** string - Value of the type discriminator. I.e. JSON value field name, as it comes in the response from the node.
 
 ##### Returns
@@ -261,6 +264,7 @@ This method should be used to add custom module transactions if the module has i
 
 ##### Parameters
 **T** Type Parameter - Type which might be used where BaseAccount class is used. In the example BaseAccount represents the standard message structure that is already implemented in the API in `CosmosApi.Models` namespace. Custom module messages need to be implemented as similar structures that inherit from BaseAccount class.   
+
 **jsonName** string - Value of the type discriminator. I.e. JSON value field name, as it comes in the response from the node.
 
 ##### Returns
@@ -312,14 +316,23 @@ Creates signed transaction and broadcasts it.
 ##### Parameters
 
 **chainId** string - Chain ID
+
 **fromAddress** string - Address that signs transaction
+
 **toAddress** string - Address that receives transaction
+
 **coins** IList<Coin> - List of token entries (Denomination and Amount) to send in this transaction
+
 **mode** BroadcastTxMode - Defines when this call will complete (Block: Return after tx commit, Sync: Return afer CheckTx, Async: Return right away).
+
 **fee** StdFee - includes the amount of coins paid in fees and the maximum gas to be used by the transaction. The ratio yields an effective "gasprice", which must be above some miminum to be accepted into the mempool.
+
 **privateKey** string - Sender address private key
+
 **passphrase** string - Sender passphrase to decode private key
+
 **memo** string - Memo to include in transaction data
+
 **cancellationToken** - CancellationToken 
 
 ##### Returns
@@ -330,17 +343,29 @@ BroadcastTxResult structure
 All fields in this structure are nullable.
 
 **BaseUrl** - string - Base url of cosmos api rest server.
+
 **Username** - string - Specifies the username to use for the authorization.
+
 **Password** - string - Specifies the password to use for the authorization.
+
 **ConnectionLeaseTimeout** - TimeSpan - Specifies the time to keep the underlying HTTP/TCP conneciton open. When expired, a Connection: close header is sent with the next request, which should force a new connection and DSN lookup to occur on the next call. Default is null, effectively disabling the behavior.
+
 **HttpClientFactory** - Func<HttpMessageHandler, HttpClient> - Defines how HttpClient should be instantiated and configured by default. Default is null, creating default HttpClient.
+
 **CreateMessageHandlerFactory** - Func<HttpMessageHandler> - Defines how HttpMessageHandler should be instantiated and configured by default. Default is null, creating default HttpMessageHandler. 
+
 **Timeout** - TimeSpan - The HTTP request timeout.
+
 **OnBeforeCall** - Action<BeforeCall> - Callback that is called immediately before every HTTP request is sent.
+
 **OnBeforeCallAsync** - Func<BeforeCall, Task> - Callback that is asynchronously called immediately before every HTTP request is sent.
+
 **OnAfterCall** - Action<AfterCall> - Callback that is called immediately after every HTTP response is received.
+
 **OnAfterCallAsync** - Func<AfterCall, Task> - Callback that is asynchronously called immediately after every HTTP response is received.
+
 **OnError** - Action<Error> - Callback that is called when an error occurs during any HTTP call, including when any non-success HTTP status code is returned in the response.
+
 **OnErrorAsync** - Func<Error, Task> - Callback that is asynchronously called when an error occurs during any HTTP call, including when any non-success HTTP status code is returned in the response.
 
 # Gaia API
@@ -372,6 +397,7 @@ None
 NodeStatus structure:
 
 **ApplicationVersion** - Application version
+
 **NodeInfo** - Node Information (Id, Moniker, ProtocolVersion, Network, Channels, ListenAddr, Version, Other)
 
 # Tendermint API
@@ -650,10 +676,15 @@ Paginated method for searching transactions.
 
 #### Parameters
 **messageAction** - string - Transaction events such as ‘send’. Note that each module documents its own events. look for xx_events.md in the corresponding cosmos-sdk/docs/spec directory.
+
 **messageSender** - string - Transaction tags with sender.
+
 **page** - int - Page number.
+
 **limit** - int - Maximum number of items per page
+
 **minHeight** - int - Transactions on blocks with height greater or equal this value
+
 **maxHeight** - int - transactions on blocks with height less than or equal this value
 
 #### Returns
