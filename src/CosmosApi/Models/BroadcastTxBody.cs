@@ -1,3 +1,4 @@
+using CosmosApi.Serialization;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
@@ -25,6 +26,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "tx")]
+        [JsonConverter(typeof(TypeValueConverter<ITx>), true)]
         public ITx Tx { get; set; } = null!;
 
         /// <summary>

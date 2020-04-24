@@ -20,7 +20,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the StdTx class.
         /// </summary>
-        public StdTx(IList<TypeValue<IMsg>> msg, StdFee fee, string memo, IList<StdSignature> signature)
+        public StdTx(IList<IMsg> msg, StdFee fee, string memo, IList<StdSignature> signature)
         {
             Msg = msg;
             Fee = fee;
@@ -31,7 +31,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "msg")]
-        public IList<TypeValue<IMsg>> Msg { get; set; } = null!;
+        public IList<IMsg> Msg { get; set; } = null!;
 
         /// <summary>
         /// </summary>

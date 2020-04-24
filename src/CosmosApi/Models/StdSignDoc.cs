@@ -12,7 +12,7 @@ namespace CosmosApi.Models
             
         }
         
-        public StdSignDoc(ulong accountNumber, string chainId, StdFee fee, string memo, IList<TypeValue<IMsg>> messages, ulong sequence)
+        public StdSignDoc(ulong accountNumber, string chainId, StdFee fee, string memo, IList<IMsg> messages, ulong sequence)
         {
             AccountNumber = accountNumber;
             ChainId = chainId;
@@ -32,7 +32,7 @@ namespace CosmosApi.Models
         [JsonProperty("memo")]
         public string Memo { get; set; } = null!;
         [JsonProperty("msgs")]
-        public IList<TypeValue<IMsg>> Messages { get; set; } = null!;
+        public IList<IMsg> Messages { get; set; } = null!;
         [JsonProperty("sequence")]
         [JsonConverter(typeof(StringNumberConverter))]
         public ulong Sequence { get; set; }

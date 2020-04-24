@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Reflection;
 using CosmosApi.Models;
-using CosmosApi.Serialization;
+using Newtonsoft.Json;
 
 namespace CosmosApi
 {
@@ -42,23 +41,23 @@ namespace CosmosApi
         /// <typeparam name="T">Type which might be used where <see cref="IMsg"/> is used.</typeparam>
         /// <param name="jsonName">Value of the type discriminator.</param>
         ICosmosApiBuilder RegisterMsgType<T>(string jsonName) where T : IMsg;
-        
-        /// <summary>
-        /// Adds a possible Value type of <see cref="TypeValue{TValue}"/>.
-        /// </summary>
-        /// <param name="jsonName">Value of json discriminator.</param>
-        /// <typeparam name="T">Type of TypeValue's Value.</typeparam>
-        ICosmosApiBuilder RegisterTypeValue<T>(string jsonName);
-        
-        /// <summary>
-        /// Registers types of <see cref="TypeValue{TValue}"/> from cosmos sdk.
-        /// </summary>
-        /// <returns></returns>
-        ICosmosApiBuilder RegisterStandartTypeValues();
 
+        /// <summary>
+        /// Adds a possible subtype of the <see cref="IAccount"/> so it can be serialized
+        /// and deserialized properly. 
+        /// </summary>
+        /// <typeparam name="T">Type which might be used where <see cref="IAccount"/> is used.</typeparam>
+        /// <param name="jsonName">Value of the type discriminator.</param>
+        ICosmosApiBuilder RegisterAccountType<T>(string jsonName) where T : IAccount;
+        
         /// <summary>
         /// Adds a converter factory to use for serialization and deserialization.
         /// </summary>
-        ICosmosApiBuilder AddJsonConverterFactory(IConverterFactory factory);
+        ICosmosApiBuilder AddJsonConverter(JsonConverter converter);
+
+        /// <summary>
+        /// Registers json converters for types declared in cosmos sdk. 
+        /// </summary>
+        ICosmosApiBuilder RegisterCosmosSdkTypeConverters();
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 using CosmosApi.Models;
-using CosmosApi.Serialization;
+using Newtonsoft.Json;
 
 namespace CosmosApi
 {
@@ -50,33 +50,38 @@ namespace CosmosApi
 
         public ICosmosApiBuilder RegisterTxType<T>(string jsonName) where T : ITx
         {
-            return Configure(s => { s.TxConverterFactory.Subtypes.Add((typeof(T), jsonName)); });
+            return Configure(s => s.TxConverter.AddType<T>(jsonName));
         }
 
         public ICosmosApiBuilder RegisterMsgType<T>(string jsonName) where T : IMsg
         {
-            return Configure(s => { s.MsgConverterFactory.Subtypes.Add((typeof(T), jsonName)); });
+            return Configure(s => s.MsgConverter.AddType<T>(jsonName));
         }
 
-        public ICosmosApiBuilder RegisterTypeValue<T>(string jsonName)
+        public ICosmosApiBuilder RegisterAccountType<T>(string jsonName) where T : IAccount
         {
-            return Configure(s => { s.TypeValueConverter.AddType<T>(jsonName); });
+            return Configure(s => s.AccountConverter.AddType<T>(jsonName));
         }
 
-        public ICosmosApiBuilder RegisterStandartTypeValues()
+        public ICosmosApiBuilder AddJsonConverter(JsonConverter converter)
         {
-            return RegisterTypeValue<StdTx>("cosmos-sdk/StdTx")
-                .RegisterTypeValue<MsgMultiSend>("cosmos-sdk/MsgMultiSend")
-                .RegisterTypeValue<MsgSend>("cosmos-sdk/MsgSend")
-                .RegisterTypeValue<BaseAccount>("cosmos-sdk/Account")
-                .RegisterTypeValue<MsgDelegate>("cosmos-sdk/MsgDelegate")
-                .RegisterTypeValue<MsgUndelegate>("cosmos-sdk/MsgUndelegate")
-                .RegisterTypeValue<MsgBeginRedelegate>("cosmos-sdk/MsgBeginRedelegate");
+            return Configure(configuration => configuration.Converters.Add(converter));
         }
 
-        public ICosmosApiBuilder AddJsonConverterFactory(IConverterFactory factory)
+        public ICosmosApiBuilder RegisterCosmosSdkTypeConverters()
         {
-            return Configure(s => s.ConverterFactories.Add(factory));
+            return Configure(configuration =>
+            {
+                configuration.TxConverter.AddType<StdTx>("cosmos-sdk/StdTx");
+                
+                configuration.MsgConverter.AddType<MsgMultiSend>("cosmos-sdk/MsgMultiSend");
+                configuration.MsgConverter.AddType<MsgSend>("cosmos-sdk/MsgSend");
+                configuration.MsgConverter.AddType<MsgDelegate>("cosmos-sdk/MsgDelegate");
+                configuration.MsgConverter.AddType<MsgUndelegate>("cosmos-sdk/MsgUndelegate");
+                configuration.MsgConverter.AddType<MsgBeginRedelegate>("cosmos-sdk/MsgBeginRedelegate");
+
+                configuration.AccountConverter.AddType<BaseAccount>("cosmos-sdk/Account");
+            });
         }
     }
 }

@@ -21,9 +21,9 @@ namespace CosmosApi.Test.Client
         {
             using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var account1BeforeTransaction = ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalAccount1Address)).Result.Value as BaseAccount)!;
+            var account1BeforeTransaction = ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalAccount1Address)).Result as BaseAccount)!;
             Assert.NotNull(account1BeforeTransaction);
-            var account2BeforeTransaction = ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalAccount2Address)).Result.Value as BaseAccount)!;
+            var account2BeforeTransaction = ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalAccount2Address)).Result as BaseAccount)!;
             Assert.NotNull(account2BeforeTransaction);
 
             var denom = account1BeforeTransaction.Coins[0].Denom;
@@ -46,12 +46,12 @@ namespace CosmosApi.Test.Client
             Assert.True(result.TxHash.Length > 0);
             Assert.True(result.Logs.All(l => l.Success));
             var account1AfterTransaction =
-                ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalAccount1Address)).Result.Value as BaseAccount)!;
+                ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalAccount1Address)).Result as BaseAccount)!;
             var account1CoinsBefore = GetAmount(account1BeforeTransaction, denom);
             var account1CoinsAfter = GetAmount(account1AfterTransaction, denom);
             Assert.Equal(account1CoinsBefore - amount, account1CoinsAfter);
             var account2AfterTransaction =
-                ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalAccount2Address)).Result.Value as BaseAccount)!;
+                ((await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalAccount2Address)).Result as BaseAccount)!;
             var account2CoinsBefore = GetAmount(account2BeforeTransaction, denom);
             var account2CoinsAfter = GetAmount(account2AfterTransaction, denom);
             Assert.Equal(account2CoinsBefore + amount, account2CoinsAfter);

@@ -28,7 +28,7 @@ namespace CosmosApi.Test
                     s.OnAfterCallAsync = OnAfterCall;
                     s.OnBeforeCallAsync = OnBeforeCall;
                 })
-                .RegisterStandartTypeValues()
+                .RegisterCosmosSdkTypeConverters()
                 .CreateClient() as CosmosApiClient)!;
         }
 
