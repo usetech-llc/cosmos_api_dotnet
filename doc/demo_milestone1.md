@@ -53,7 +53,7 @@ return client.Request("node_info")
 
 ### /version
 
-This endpoint does not exist in Cosmos API so it was not implemented. Most likely, all version information is returned by [Node Info](./README.md#node-info) method.
+This endpoint does not exist in Cosmos API so it was not implemented. Most likely, all version information is returned by [Node Info](../README.md#node-info) method.
 
 ### Endpoints /syncing, /blocks/latest, /blocks/{height}, /validatorsets/latest, /validatorsets/{height}
 
