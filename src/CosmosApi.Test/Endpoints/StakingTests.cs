@@ -394,5 +394,22 @@ namespace CosmosApi.Test.Endpoints
             Assert.NotNull(validatorResponse.Result);
             Assert.NotEmpty(validatorResponse.Result.ConsPubKey);
         }
+
+        //[Fact]
+        //Browser shows ERR_INCOMPLETE_CHUNKING_ENCODING for that method, unable to test.
+        public async Task GetDelegationsByValidatorHasKnownDelegator()
+        {
+            using var client = CreateClient();
+
+            var delegations = await client
+                .Staking
+                .GetDelegationsByValidatorAsync(Configuration.GlobalValidator1Address);
+            
+            OutputHelper.WriteLine("Deserialized Delegations:");
+            Dump(delegations);
+
+            Assert.Contains(delegations.Result,
+                d => string.Equals(Configuration.GlobalDelegator1Address, d.DelegatorAddress));
+        }
     }
 }

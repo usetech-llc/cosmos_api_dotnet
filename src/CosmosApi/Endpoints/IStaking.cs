@@ -267,5 +267,20 @@ namespace CosmosApi.Endpoints
         /// <param name="validatorAddr">Bech32 OperatorAddress of validator</param>
         /// <returns></returns>
         ResponseWithHeight<Validator> GetValidator(string validatorAddr);
+ 
+        /// <summary>
+        /// Get all delegations from a validator.
+        /// </summary>
+        /// <param name="validatorAddr">Bech32 OperatorAddress of validator</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<IList<Delegation>>> GetDelegationsByValidatorAsync(string validatorAddr, CancellationToken cancellationToken = default);
+ 
+        /// <summary>
+        /// Get all delegations from a validator.
+        /// </summary>
+        /// <param name="validatorAddr">Bech32 OperatorAddress of validator</param>
+        /// <returns></returns>
+        ResponseWithHeight<IList<Delegation>> GetDelegationsByValidator(string validatorAddr);
     }
 }
