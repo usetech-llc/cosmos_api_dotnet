@@ -11,7 +11,6 @@ namespace CosmosApi.Test
         public string Validator2Address { get; set; } = null!;
         public string Validator1PrivateKey { get; set; } = null!;
         public string Validator1Passphrase { get; set; } = null!;
-        public string LocalChainId { get; set; } = null!;
 
         private TestConfiguration()
         {
@@ -25,7 +24,6 @@ namespace CosmosApi.Test
             Validator2Address = validator2Address;
             Validator1PrivateKey = validator1PrivateKey;
             Validator1Passphrase = validator1Passphrase;
-            LocalChainId = localChainId;
         }
 
         public static TestConfiguration Create()
