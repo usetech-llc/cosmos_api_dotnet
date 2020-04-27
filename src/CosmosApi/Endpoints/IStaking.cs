@@ -252,5 +252,20 @@ namespace CosmosApi.Endpoints
         /// <param name="txTypes"></param>
         /// <returns></returns>
         IList<PaginatedTxs> GetTransactions(string delegatorAddr, IList<DelegatingTxType>? txTypes = default);
+
+        /// <summary>
+        /// Query the information from a single validator.
+        /// </summary>
+        /// <param name="validatorAddr">Bech32 OperatorAddress of validator</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<Validator>> GetValidatorAsync(string validatorAddr, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Query the information from a single validator.
+        /// </summary>
+        /// <param name="validatorAddr">Bech32 OperatorAddress of validator</param>
+        /// <returns></returns>
+        ResponseWithHeight<Validator> GetValidator(string validatorAddr);
     }
 }

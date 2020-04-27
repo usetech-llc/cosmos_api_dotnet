@@ -377,5 +377,22 @@ namespace CosmosApi.Test.Endpoints
                 });
             Assert.True(allTxsAreBond);
         }
+
+        [Fact]
+        public async Task GetValidatorByValidatorAddressNotEmpty()
+        {
+            using var client = CreateClient();
+
+            var validatorResponse = await client
+                .Staking
+                .GetValidatorAsync(Configuration.GlobalValidator1Address);
+            
+            OutputHelper.WriteLine("Deserialized Validator:");
+            Dump(validatorResponse);
+            
+            Assert.NotNull(validatorResponse);
+            Assert.NotNull(validatorResponse.Result);
+            Assert.NotEmpty(validatorResponse.Result.ConsPubKey);
+        }
     }
 }

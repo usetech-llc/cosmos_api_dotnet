@@ -274,6 +274,19 @@ namespace CosmosApi.Endpoints
             return GetTransactionsAsync(delegatorAddr, txTypes)
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<Validator>> GetValidatorAsync(string validatorAddr, CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("staking", "validators", validatorAddr)
+                .GetJsonAsync<ResponseWithHeight<Validator>>(cancellationToken);
+        }
+
+        public ResponseWithHeight<Validator> GetValidator(string validatorAddr)
+        {
+            return GetValidatorAsync(validatorAddr)
+                .Sync();
+        }
     }
     
 }
