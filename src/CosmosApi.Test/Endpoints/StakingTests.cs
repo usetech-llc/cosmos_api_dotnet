@@ -438,5 +438,23 @@ namespace CosmosApi.Test.Endpoints
                 }
             }
         }
+
+        [Fact]
+        public async Task GetStakingPoolNotEmpty()
+        {
+            using var client = CreateClient();
+
+            var pool = await client
+                .Staking
+                .GetStakingPoolAsync();
+            
+            OutputHelper.WriteLine("Deserialized Staking Pool:");
+            Dump(pool);
+            
+            Assert.NotNull(pool);
+            Assert.NotNull(pool.Result);
+            Assert.True(pool.Result.NotBondedTokens >= 0);
+            Assert.True(pool.Result.BondedTokens >= 0);
+        }
     }
 }
