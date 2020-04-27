@@ -12,4 +12,3 @@ Validator1PrivateKey: |-
   =K7Bt
   -----END TENDERMINT PRIVATE KEY-----
 Validator1Passphrase: 11111111
-LocalChainId: testing
