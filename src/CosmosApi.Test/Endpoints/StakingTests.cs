@@ -456,5 +456,25 @@ namespace CosmosApi.Test.Endpoints
             Assert.True(pool.Result.NotBondedTokens >= 0);
             Assert.True(pool.Result.BondedTokens >= 0);
         }
+
+        [Fact]
+        public async Task GetStakingParametersNotEmpty()
+        {
+            using var client = CreateClient();
+
+            var @params = await client
+                .Staking
+                .GetStakingParamsAsync();
+            
+            OutputHelper.WriteLine("Deserialized Staking Params:");
+            Dump(@params);
+            
+            Assert.NotNull(@params);
+            Assert.NotNull(@params.Result);
+            Assert.True(@params.Result.MaxEntries > 0);
+            Assert.True(@params.Result.MaxValidators > 0);
+            Assert.True(@params.Result.UnbondingTime > 0);
+            Assert.NotEmpty(@params.Result.BondDenom);
+        }
     }
 }

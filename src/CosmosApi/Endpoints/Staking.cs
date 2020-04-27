@@ -326,6 +326,19 @@ namespace CosmosApi.Endpoints
             return GetStakingPoolAsync()
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<StakingParams>> GetStakingParamsAsync(CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("staking", "parameters")
+                .GetJsonAsync<ResponseWithHeight<StakingParams>>(cancellationToken);
+        }
+
+        public ResponseWithHeight<StakingParams> GetStakingParams()
+        {
+            return GetStakingParamsAsync()
+                .Sync();
+        }
     }
     
 }

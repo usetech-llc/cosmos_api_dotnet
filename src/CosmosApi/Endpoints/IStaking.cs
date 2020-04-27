@@ -299,14 +299,29 @@ namespace CosmosApi.Endpoints
         ResponseWithHeight<IList<UnbondingDelegation>> GetUnbondingDelegationsByValidator(string validatorAddr);
 
         /// <summary>
+        /// Get the current state of the staking pool.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<ResponseWithHeight<StakingPool>> GetStakingPoolAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Get the current state of the staking pool.
         /// </summary>
         /// <returns></returns>
         ResponseWithHeight<StakingPool> GetStakingPool();
+
+        /// <summary>
+        /// Get the current staking parameter values.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<StakingParams>> GetStakingParamsAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get the current staking parameter values.
+        /// </summary>
+        /// <returns></returns>
+        ResponseWithHeight<StakingParams> GetStakingParams();
     }
 }
