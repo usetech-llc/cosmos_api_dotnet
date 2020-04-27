@@ -264,7 +264,7 @@ namespace CosmosApi.Endpoints
 
             return _clientGetter()
                 .Request("staking", "delegators", delegatorAddr, "txs")
-                .SetQueryParam("type", txTypes.Select(type => type.EnumMember()))
+                .SetQueryParam("type",  string.Join("+", txTypes.Select(type => type.EnumMember())), true)
                 .GetJsonAsync<IList<PaginatedTxs>>(cancellationToken)
                 .WrapExceptions();
         }
