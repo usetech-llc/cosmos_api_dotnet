@@ -1,6 +1,6 @@
 # Manual Demos - Milestone 1
 
-Milestone 1 deliverables are tagged as [milestone1](https://github.com/usetech-llc/cosmos_api_dotnet/tree/milestone1)
+Milestone 1 deliverables are tagged as [milestone1tag](https://github.com/usetech-llc/cosmos_api_dotnet/tree/milestone1tag)
 
 ## Deliverable 1
 
@@ -38,41 +38,35 @@ Certificate validation happens in package Flurl.Http for .NET
 
 ### /node_info
 
-Command for run test
+Command to run test
 ```
 $ docker-compose run cosmos-api-test dotnet test --filter GaiaRestTest -l "console;verbosity=detailed"
 ```
 
-Here is the code fragment from API code that demonstrates that it make request:
+This command executes test `AsyncGetNodeInfoCompletes()` in `GaiaRestTest.cs` file. 
+Here is the code fragment from the API implementation of `client.GaiaRest.GetNodeInfoAsync()` that demonstrates that API makes request to `/node_info` endpoint:
 ```csharp
-            var client = _clientGetter();
-            return client.Request("node_info")
-                .GetJsonAsync<NodeStatus>(cancellationToken: cancellationToken);
+var client = _clientGetter();
+return client.Request("node_info")
+    .GetJsonAsync<NodeStatus>(cancellationToken: cancellationToken);
 ```
 
 ### /version
 
-This endpoint not exists in Cosmos API as result it is not realized
+This endpoint does not exist in Cosmos API so it was not implemented. Most likely, all version information is returned by [Node Info](../README.md#node-info) method.
 
-### /syncing
+### Endpoints /syncing, /blocks/latest, /blocks/{height}, /validatorsets/latest, /validatorsets/{height}
 
-### /blocks/latest
+That group of endpoints is located in TendermintRpcTest test group
 
-### /blocks/{height}
-
-### /validatorsets/latest
-
-### /validatorsets/{height}
-
-That group endpoints present in TendermintRpcTest test group
-Command for run test
+Command to run tests:
 ```
 $ docker-compose run cosmos-api-test dotnet test --filter TendermintRpcTest -l "console;verbosity=detailed"
 ```
 
 ### /node_version
 
-Command for run test
+Command to run test
 ```
 $ docker-compose run cosmos-api-test dotnet test --filter GaiaRestTest -l "console;verbosity=detailed"
 ```
@@ -83,14 +77,14 @@ $ docker-compose run cosmos-api-test dotnet test --filter GaiaRestTest -l "conso
 
 ### /auth/accounts/{address}
 
-Command for run test
+Command to run test
 ```
 $ docker-compose run cosmos-api-test dotnet test --filter AuthTests -l "console;verbosity=detailed"
 ```
 
 ### Command line is provided to execute all milestone deliverables
 
-Command for run test
+Command to run test
 ```
 $ docker-compose run cosmos-api-test dotnet test -l "console;verbosity=detailed"
 ```
@@ -105,14 +99,14 @@ Documentation provided in the project root
 
 ### Balances can be read using /bank/balances/{address} endpoint
 
-Command for run test
+Command to run test
 ```
 $ docker-compose run cosmos-api-test dotnet test --filter BankTests -l "console;verbosity=detailed"
 ```
 
 ### Transaction can be created and signed offline without connecting to a node with either signing algorithm: Secp256r1 (Reference: https://kjur.github.io/jsrsasign/sample/sample-ecdsa.html), Sr25519
 
-Command for run test
+Command to run test
 ```
 $ docker-compose run cosmos-api-test dotnet test --filter ClientTests -l "console;verbosity=detailed"
 ```
@@ -160,7 +154,7 @@ This code fragment demonstrates transaction signing
 
 ### Transaction is published on chain using POST /txs endpoint
 
-Command for run test
+Command to run test
 ```
 $ docker-compose run cosmos-api-test dotnet test --filter ClientTests -l "console;verbosity=detailed"
 ```
@@ -179,4 +173,4 @@ $ docker-compose run cosmos-api-test dotnet test -l "console;verbosity=detailed"
 
 ### Usage example is provided
 
-Any unit test can provide an example
+All examples are provided in the [README](../README.md) also any unit test can provide an additional example.

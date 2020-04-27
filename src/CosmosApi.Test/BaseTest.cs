@@ -19,6 +19,15 @@ namespace CosmosApi.Test
             Configuration = TestConfiguration.Create();
         }
 
+        public async Task<string> GetChainId(ICosmosApiClient cosmosApiClient)
+        {
+            return (await cosmosApiClient
+                    .GaiaRest
+                    .GetNodeInfoAsync())
+                .NodeInfo
+                .Network;
+        }
+
         public CosmosApiClient CreateClient(string? baseUrl = default)
         {
             return (new CosmosApiBuilder()
