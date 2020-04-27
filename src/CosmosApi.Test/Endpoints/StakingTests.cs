@@ -411,5 +411,32 @@ namespace CosmosApi.Test.Endpoints
             Assert.Contains(delegations.Result,
                 d => string.Equals(Configuration.GlobalDelegator1Address, d.DelegatorAddress));
         }
+
+        [Fact]
+        public async Task GetUnbondingDelegationsByValidatorCompletes()
+        {    
+            using var client = CreateClient();
+
+            var unbondingDelegations = await client
+                .Staking
+                .GetUnbondingDelegationsByValidatorAsync(Configuration.GlobalValidator1Address);
+            
+            OutputHelper.WriteLine("Deserialized Unbonding Delegations:");
+            Dump(unbondingDelegations);
+
+            Assert.NotNull(unbondingDelegations);
+            Assert.NotNull(unbondingDelegations.Result);
+            foreach (var unbondingDelegation in unbondingDelegations.Result)
+            {
+                Assert.NotEmpty(unbondingDelegation.DelegatorAddress);
+                Assert.NotEmpty(unbondingDelegation.ValidatorAddress);
+                foreach (var entry in unbondingDelegation.Entries)
+                {
+                    Assert.True(entry.Balance >= 0);
+                    Assert.True(entry.CreationHeight > 0);
+                    Assert.True(entry.InitialBalance >= 0);
+                }
+            }
+        }
     }
 }
