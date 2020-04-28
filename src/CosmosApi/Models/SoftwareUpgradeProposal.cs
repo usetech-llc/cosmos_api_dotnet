@@ -2,19 +2,18 @@
 
 namespace CosmosApi.Models
 {
-    public class TextProposal : IProposalContent
+    public class SoftwareUpgradeProposal : IProposalContent
     {
         [JsonProperty("title")]
         public string Title { get; set; } = null!;
-        
         [JsonProperty("description")]
         public string Description { get; set; } = null!;
 
-        public TextProposal()
+        public SoftwareUpgradeProposal()
         {
         }
 
-        public TextProposal(string title, string description)
+        public SoftwareUpgradeProposal(string title, string description)
         {
             Title = title;
             Description = description;

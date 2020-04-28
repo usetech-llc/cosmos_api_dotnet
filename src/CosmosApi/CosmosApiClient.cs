@@ -36,6 +36,7 @@ namespace CosmosApi
             Auth = new Auth(GetClient);
             Bank = new Bank(GetClient);
             Staking = new Staking(GetClient);
+            Governance = new Governance(GetClient);
         }
 
         public IGaiaREST GaiaRest { get; }
@@ -44,6 +45,7 @@ namespace CosmosApi
         public IAuth Auth { get; }
         public IBank Bank { get; }
         public IStaking Staking { get; }
+        public IGovernance Governance { get; }
 
         public async Task<BroadcastTxResult> SendAsync(string chainId, string fromAddress, string toAddress, IList<Coin> coins, BroadcastTxMode mode, StdFee fee, string privateKey, string passphrase, string memo = "" , CancellationToken cancellationToken = default)
         {
@@ -204,6 +206,10 @@ namespace CosmosApi
             if (_settings.AccountConverter.JsonNameToType.Any())
             {
                 jsonSerializerSettings.Converters.Add(_settings.AccountConverter);
+            }
+            if (_settings.ProposalContentConverter.JsonNameToType.Any())
+            {
+                jsonSerializerSettings.Converters.Add(_settings.ProposalContentConverter);
             }
             return jsonSerializerSettings;
         }

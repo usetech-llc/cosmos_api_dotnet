@@ -2,6 +2,9 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Models
 {
+    /// <summary>
+    /// ParamChange defines a parameter change.
+    /// </summary>
     public class ParamChange
     {
         /// <summary>
@@ -14,7 +17,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the ParamChange class.
         /// </summary>
-        public ParamChange(string subspace, string key, string subkey, object value)
+        public ParamChange(string subspace, string key, string subkey, string value)
         {
             Subspace = subspace;
             Key = key;
@@ -40,7 +43,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "value")]
-        public object Value { get; set; } = null!;
+        public string Value { get; set; } = null!;
 
     }
 }

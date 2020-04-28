@@ -98,5 +98,7 @@ namespace CosmosApi
         internal TypeValueConverter<IMsg> MsgConverter { get; } = new TypeValueConverter<IMsg>($"Call {nameof(ICosmosApiBuilder)}.{nameof(ICosmosApiBuilder.RegisterMsgType)} to register discriminator/type pair.");
 
         internal TypeValueConverter<IAccount> AccountConverter { get; } = new TypeValueConverter<IAccount>($"Call {nameof(ICosmosApiBuilder)}.{nameof(ICosmosApiBuilder.RegisterAccountType)} to register discriminator/type pair.");
+        
+        internal TypeValueConverter<IProposalContent> ProposalContentConverter { get; } = new TypeValueConverter<IProposalContent>($"Call {nameof(ICosmosApiBuilder)}.{nameof(ICosmosApiBuilder.RegisterAccountType)} to register discriminator/type pair.");
     }
 }

@@ -63,6 +63,11 @@ namespace CosmosApi
             return Configure(s => s.AccountConverter.AddType<T>(jsonName));
         }
 
+        public ICosmosApiBuilder RegisterProposalContentType<T>(string jsonName) where T : IProposalContent
+        {
+            return Configure(s => s.ProposalContentConverter.AddType<T>(jsonName));
+        }
+
         public ICosmosApiBuilder AddJsonConverter(JsonConverter converter)
         {
             return Configure(configuration => configuration.Converters.Add(converter));
@@ -81,6 +86,11 @@ namespace CosmosApi
                 configuration.MsgConverter.AddType<MsgBeginRedelegate>("cosmos-sdk/MsgBeginRedelegate");
 
                 configuration.AccountConverter.AddType<BaseAccount>("cosmos-sdk/Account");
+                
+                configuration.ProposalContentConverter.AddType<TextProposal>("cosmos-sdk/TextProposal");
+                configuration.ProposalContentConverter.AddType<CommunityPoolSpendProposal>("cosmos-sdk/CommunityPoolSpendProposal");
+                configuration.ProposalContentConverter.AddType<SoftwareUpgradeProposal>("cosmos-sdk/SoftwareUpgradeProposal");
+                configuration.ProposalContentConverter.AddType<ParameterChangeProposal>("cosmos-sdk/ParameterChangeProposal");
             });
         }
     }

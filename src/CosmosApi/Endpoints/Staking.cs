@@ -279,7 +279,8 @@ namespace CosmosApi.Endpoints
         {
             return _clientGetter()
                 .Request("staking", "validators", validatorAddr)
-                .GetJsonAsync<ResponseWithHeight<Validator>>(cancellationToken);
+                .GetJsonAsync<ResponseWithHeight<Validator>>(cancellationToken)
+                .WrapExceptions();
         }
 
         public ResponseWithHeight<Validator> GetValidator(string validatorAddr)
@@ -292,7 +293,8 @@ namespace CosmosApi.Endpoints
         {
             return _clientGetter()
                 .Request("staking", "validators", validatorAddr, "delegations")
-                .GetJsonAsync<ResponseWithHeight<IList<Delegation>>>(cancellationToken);
+                .GetJsonAsync<ResponseWithHeight<IList<Delegation>>>(cancellationToken)
+                .WrapExceptions();
         }
 
         public ResponseWithHeight<IList<Delegation>> GetDelegationsByValidator(string validatorAddr)
@@ -305,7 +307,8 @@ namespace CosmosApi.Endpoints
         {
             return _clientGetter()
                 .Request("staking", "validators", validatorAddr, "unbonding_delegations")
-                .GetJsonAsync<ResponseWithHeight<IList<UnbondingDelegation>>>(cancellationToken);
+                .GetJsonAsync<ResponseWithHeight<IList<UnbondingDelegation>>>(cancellationToken)
+                .WrapExceptions();
         }
 
         public ResponseWithHeight<IList<UnbondingDelegation>> GetUnbondingDelegationsByValidator(string validatorAddr)
@@ -318,7 +321,8 @@ namespace CosmosApi.Endpoints
         {
             return _clientGetter()
                 .Request("staking", "pool")
-                .GetJsonAsync<ResponseWithHeight<StakingPool>>(cancellationToken);
+                .GetJsonAsync<ResponseWithHeight<StakingPool>>(cancellationToken)
+                .WrapExceptions();
         }
 
         public ResponseWithHeight<StakingPool> GetStakingPool()
@@ -331,7 +335,8 @@ namespace CosmosApi.Endpoints
         {
             return _clientGetter()
                 .Request("staking", "parameters")
-                .GetJsonAsync<ResponseWithHeight<StakingParams>>(cancellationToken);
+                .GetJsonAsync<ResponseWithHeight<StakingParams>>(cancellationToken)
+                .WrapExceptions();
         }
 
         public ResponseWithHeight<StakingParams> GetStakingParams()
