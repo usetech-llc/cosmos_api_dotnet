@@ -157,5 +157,29 @@ namespace CosmosApi.Test.Endpoints
             Assert.Equal(23UL, proposer.Result.ProposalId);
             Assert.NotEmpty(proposer.Result.ProposerAddress);
         }
+
+        [Fact]
+        public async Task GetDepositsByProposalIdNotEmpty()
+        {
+            using var client = CreateClient();
+
+            var deposits = await client
+                .Governance
+                .GetDepositsByProposalIdAsync(23);
+            
+            OutputHelper.WriteLine("Deserialized Deposits:");
+            Dump(deposits);
+            
+            Assert.All(deposits.Result, d =>
+            {
+                Assert.Equal(23UL, d.ProposalId);
+                Assert.NotEmpty(d.Depositor);
+                Assert.All(d.Amount, c =>
+                {
+                    Assert.True(c.Amount >= 0);
+                    Assert.NotEmpty(c.Denom);
+                });
+            });
+        }
     }
 }
