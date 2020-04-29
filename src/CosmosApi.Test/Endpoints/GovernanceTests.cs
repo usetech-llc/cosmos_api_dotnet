@@ -120,5 +120,24 @@ namespace CosmosApi.Test.Endpoints
                 Assert.Equal("uatom", coin.Denom, StringComparer.OrdinalIgnoreCase);
             });
         }
+
+        [Fact]
+        public async Task GetProposalWithId1NotEmpty()
+        {
+            using var client = CreateClient();
+
+            var proposal = await client
+                .Governance
+                .GetProposalAsync(1);
+            
+            OutputHelper.WriteLine("Deserialized Proposal:");
+            Dump(proposal);
+            
+            Assert.NotNull(proposal);
+            Assert.NotNull(proposal.Result);
+            Assert.NotNull(proposal.Result.Content);
+            Assert.NotNull(proposal.Result.FinalTallyResult);
+            Assert.Equal(1UL, proposal.Result.ProposalId);
+        }
     }
 }

@@ -112,5 +112,19 @@ namespace CosmosApi.Endpoints
         /// <returns></returns>
         StdTx PostProposal<TContentType>(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit) where TContentType : IProposalContent;
 
+        /// <summary>
+        /// Query a proposal.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<Proposal>> GetProposalAsync(ulong id, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Query a proposal.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        ResponseWithHeight<Proposal> GetProposal(ulong id);
     }
 }
