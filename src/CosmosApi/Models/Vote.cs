@@ -1,3 +1,4 @@
+using CosmosApi.Serialization;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
@@ -14,7 +15,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the Vote class.
         /// </summary>
-        public Vote(string voter, string proposalId, string option)
+        public Vote(string voter, ulong proposalId, string option)
         {
             Voter = voter;
             ProposalId = proposalId;
@@ -29,7 +30,8 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "proposal_id")]
-        public string ProposalId { get; set; } = null!;
+        [JsonConverter(typeof(StringNumberConverter))]
+        public ulong ProposalId { get; set; }
 
         /// <summary>
         /// </summary>

@@ -139,5 +139,23 @@ namespace CosmosApi.Test.Endpoints
             Assert.NotNull(proposal.Result.FinalTallyResult);
             Assert.Equal(1UL, proposal.Result.ProposalId);
         }
+
+        [Fact]
+        public async Task GetProposerByProposalIdNotEmpty()
+        {
+            using var client = CreateClient();
+
+            var proposer = await client
+                .Governance
+                .GetProposerByProposalIdAsync(23);
+
+            OutputHelper.WriteLine("Deserialized Proposer:");
+            Dump(proposer);
+
+            Assert.NotNull(proposer);
+            Assert.NotNull(proposer.Result);
+            Assert.Equal(23UL, proposer.Result.ProposalId);
+            Assert.NotEmpty(proposer.Result.ProposerAddress);
+        }
     }
 }

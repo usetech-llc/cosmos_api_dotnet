@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CosmosApi.Serialization;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
@@ -10,6 +11,7 @@ namespace CosmosApi.Models
         public IProposalContent Content { get; set; } = null!;
 
         [JsonProperty("id")]
+        [JsonConverter(typeof(StringNumberConverter))]
         public ulong ProposalId { get; set; }
 
         [JsonProperty("proposal_status")]

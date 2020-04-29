@@ -151,5 +151,18 @@ namespace CosmosApi.Endpoints
             return GetProposalAsync(id)
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<Proposer>> GetProposerByProposalIdAsync(ulong proposalId, CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("gov", "proposals", proposalId, "proposer")
+                .GetJsonAsync<ResponseWithHeight<Proposer>>(cancellationToken);
+        }
+
+        public ResponseWithHeight<Proposer> GetProposerByProposalId(ulong proposalId)
+        {
+            return GetProposerByProposalIdAsync(proposalId)
+                .Sync();
+        }
     }
 }

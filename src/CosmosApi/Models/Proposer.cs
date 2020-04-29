@@ -1,3 +1,4 @@
+using CosmosApi.Serialization;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
@@ -14,21 +15,22 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the Proposer class.
         /// </summary>
-        public Proposer(string proposalId, string proposerProperty)
+        public Proposer(ulong proposalId, string proposerAddress)
         {
             ProposalId = proposalId;
-            ProposerProperty = proposerProperty;
+            ProposerAddress = proposerAddress;
         }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "proposal_id")]
-        public string ProposalId { get; set; } = null!;
+        [JsonConverter(typeof(StringNumberConverter))]
+        public ulong ProposalId { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "proposer")]
-        public string ProposerProperty { get; set; } = null!;
+        public string ProposerAddress { get; set; } = null!;
 
     }
 }
