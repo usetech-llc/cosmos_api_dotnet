@@ -177,5 +177,43 @@ namespace CosmosApi.Endpoints
             return GetDepositsByProposalIdAsync(proposalId)
                 .Sync();
         }
+
+        public Task<GasEstimateResponse> PostDepositSimulationAsync(ulong proposalId, DepositReq request, CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, true);
+            request = new DepositReq(baseReq, request.Depositor, request.Amount);
+
+            return _clientGetter()
+                .Request("gov", "proposals", proposalId, "deposits")
+                .PostJsonAsync(request, cancellationToken)
+                .WrapExceptions()
+                .ReceiveJson<GasEstimateResponse>()
+                .WrapExceptions();
+        }
+
+        public GasEstimateResponse PostDepositSimulation(ulong proposalId, DepositReq request)
+        {
+            return PostDepositSimulationAsync(proposalId, request)
+                .Sync();
+        }
+
+        public Task<StdTx> PostDepositAsync(ulong proposalId, DepositReq request, CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, false);
+            request = new DepositReq(baseReq, request.Depositor, request.Amount);
+
+            return _clientGetter()
+                .Request("gov", "proposals", proposalId, "deposits")
+                .PostJsonAsync(request, cancellationToken)
+                .WrapExceptions()
+                .ReceiveJson<StdTx>()
+                .WrapExceptions();
+        }
+
+        public StdTx PostDeposit(ulong proposalId, DepositReq request)
+        {
+            return PostDepositAsync(proposalId, request)
+                .Sync();
+        }
     }
 }

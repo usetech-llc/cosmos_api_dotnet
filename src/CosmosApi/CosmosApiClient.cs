@@ -17,6 +17,7 @@ using Flurl.Http.Configuration;
 using NBitcoin.Secp256k1;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TaskTupleAwaiter;
 
 namespace CosmosApi
 {
@@ -89,6 +90,16 @@ namespace CosmosApi
             
             cancellationToken.ThrowIfCancellationRequested();
             return await Transactions.PostBroadcastAsync(new BroadcastTxBody(tx, mode), cancellationToken);
+        }
+
+        public async Task<BaseReq> CreateBaseReq(string @from, string? memo, IList<Coin>? fees, IList<DecCoin>? gasPrices, string? gas, string? gasAdjustment, CancellationToken cancellationToken = default)
+        {
+            var chainTask = GaiaRest.GetNodeInfoAsync(cancellationToken);
+            var accountTask = Auth.GetAuthAccountByAddressAsync(from, cancellationToken);
+
+            var (nodeInfo, account) = await (chainTask, accountTask);
+            
+            return new BaseReq(from, memo, nodeInfo.NodeInfo.Network, account.Result.GetAccountNumber(), account.Result.GetSequence(), fees, gasPrices, gas, gasAdjustment);
         }
 
         internal byte[] Sign(byte[] bytesToSign, byte[] key)

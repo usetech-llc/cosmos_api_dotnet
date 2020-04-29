@@ -54,12 +54,7 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var account = (await client
-                .Auth
-                .GetAuthAccountByAddressAsync(Configuration.LocalDelegator1Address)).Result;
-            
-            var chainId = await GetChainId(client);
-            var baseRequest = new BaseReq(Configuration.LocalDelegator1Address, null, chainId, account.GetAccountNumber(), account.GetSequence(), null, null, null, null);
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, null, null, null, null, null);
             var delegateRequest = new DelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress, new Coin("stake", 10));
 
             var postResult = await client
@@ -77,12 +72,7 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var account = (await client
-                .Auth
-                .GetAuthAccountByAddressAsync(Configuration.LocalDelegator1Address)).Result;
-            
-            var chainId = await GetChainId(client);
-            var baseRequest = new BaseReq(Configuration.LocalDelegator1Address, null, chainId, account.GetAccountNumber(), account.GetSequence(), null, null, null, null);
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, null, null, null, null, null);
             var delegateRequest = new DelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress, new Coin("stake", 10));
 
             var postResult = await client
@@ -142,12 +132,7 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient(Configuration.LocalBaseUrl);
             
-            var account = (await client
-                .Auth
-                .GetAuthAccountByAddressAsync(Configuration.LocalDelegator1Address)).Result;
-            
-            var chainId = await GetChainId(client);
-            var baseRequest = new BaseReq(Configuration.LocalDelegator1Address, null, chainId, account.GetAccountNumber(), account.GetSequence(), null, null, null, null);
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, null, null, null, null, null);
             var undelegateRequest = new UndelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress, new Coin("stake", 10));
             var tx = (await client
                 .Staking
@@ -222,11 +207,7 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient();
             
-            var account = (await client
-                .Auth
-                .GetAuthAccountByAddressAsync(Configuration.GlobalDelegator1Address)).Result;
-            var chainId = await GetChainId(client);
-            var baseRequest = new BaseReq(Configuration.GlobalDelegator1Address, null, chainId, account.GetAccountNumber(), account.GetSequence(), null, null, null, null);
+            var baseRequest = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, null, null, null, null, null);
             var redelegationRequest = new RedelegateRequest(baseRequest, Configuration.GlobalDelegator1Address, Configuration.GlobalValidator1Address, Configuration.GlobalValidator2Address, new Coin("uatom", 10));
 
             var gasEstimation = await client
@@ -244,11 +225,7 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient();
             
-            var account = (await client
-                .Auth
-                .GetAuthAccountByAddressAsync(Configuration.GlobalDelegator1Address)).Result;
-            var chainId = await GetChainId(client);
-            var baseRequest = new BaseReq(Configuration.GlobalDelegator1Address, null, chainId, account.GetAccountNumber(), account.GetSequence(), null, null, null, null);
+            var baseRequest = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, null, null, null, null, null);
             var redelegationRequest = new RedelegateRequest(baseRequest, Configuration.GlobalDelegator1Address, Configuration.GlobalValidator1Address, Configuration.GlobalValidator2Address, new Coin("uatom", 10));
 
             var tx = await client

@@ -58,11 +58,7 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient();
 
-            var account = await client
-                .Auth
-                .GetAuthAccountByAddressAsync(Configuration.GlobalDelegator1Address);
-
-            var baseReq = new BaseReq(Configuration.GlobalDelegator1Address, "", await GetChainId(client), account.Result.GetAccountNumber(), account.Result.GetSequence(), null, null, null, null);
+            var baseReq = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, "", null, null, null, null);
             var initialDeposit = new List<Coin>()
             {
                 new Coin()
@@ -86,11 +82,7 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient();
 
-            var account = await client
-                .Auth
-                .GetAuthAccountByAddressAsync(Configuration.GlobalDelegator1Address);
-
-            var baseReq = new BaseReq(Configuration.GlobalDelegator1Address, "", await GetChainId(client), account.Result.GetAccountNumber(), account.Result.GetSequence(), null, null, null, null);
+            var baseReq = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, "", null, null, null, null);
             var initialDeposit = new List<Coin>()
             {
                 new Coin()
@@ -179,6 +171,64 @@ namespace CosmosApi.Test.Endpoints
                     Assert.True(c.Amount >= 0);
                     Assert.NotEmpty(c.Denom);
                 });
+            });
+        }
+
+        [Fact]
+        public async Task PostDepositSimulationNotEmpty()
+        {
+            using var client = CreateClient();
+
+            var baseReq = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, "", null, null, null, null);
+            var amount = new List<Coin>()
+            {
+                new Coin()
+                {
+                    Amount = 10,
+                    Denom = "uatom"
+                }
+            };
+            var depositReq = new DepositReq(baseReq, Configuration.GlobalDelegator1Address, amount);
+            var estimation = await client
+                .Governance
+                .PostDepositSimulationAsync(23, depositReq);
+            
+            OutputHelper.WriteLine("Deserialized Gas Estimation:");
+            Dump(estimation);
+            
+            Assert.True(estimation.GasEstimate > 0);
+        }
+
+        [Fact]
+        public async Task PostDepositNotEmpty()
+        {
+            using var client = CreateClient();
+
+            var baseReq = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, "memo", null, null, null, null);
+            var amount = new List<Coin>()
+            {
+                new Coin()
+                {
+                    Amount = 10,
+                    Denom = "uatom"
+                }
+            };
+            var depositReq = new DepositReq(baseReq, Configuration.GlobalDelegator1Address, amount);
+            var tx = await client
+                .Governance
+                .PostDepositAsync(23, depositReq);
+            
+            OutputHelper.WriteLine("Deserialized StdTx:");
+            Dump(tx);
+            
+            Assert.Equal("memo", tx.Memo);
+            var msgDeposit = tx.Msg.OfType<MsgDeposit>().First();
+            Assert.Equal(Configuration.GlobalDelegator1Address, msgDeposit.Depositor, StringComparer.Ordinal);
+            Assert.Equal(23UL, msgDeposit.ProposalId);
+            Assert.Collection(msgDeposit.Amount, c =>
+            {
+                Assert.Equal(10, c.Amount);
+                Assert.Equal("uatom", c.Denom, StringComparer.OrdinalIgnoreCase);
             });
         }
     }

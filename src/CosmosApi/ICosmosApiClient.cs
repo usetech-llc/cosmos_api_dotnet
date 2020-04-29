@@ -31,5 +31,7 @@ namespace CosmosApi
         /// <param name="memo"></param>
         /// <param name="cancellationToken"></param>
         Task<BroadcastTxResult> SendAsync(string chainId, string fromAddress, string toAddress, IList<Coin> coins, BroadcastTxMode mode, StdFee fee, string privateKey, string passphrase, string memo = "", CancellationToken cancellationToken = default);
+
+        Task<BaseReq> CreateBaseReq(string @from, string? memo, IList<Coin>? fees, IList<DecCoin>? gasPrices, string? gas, string? gasAdjustment, CancellationToken cancellationToken = default);
     }
 }

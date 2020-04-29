@@ -156,5 +156,43 @@ namespace CosmosApi.Endpoints
         /// <param name="proposalId"></param>
         /// <returns></returns>
         ResponseWithHeight<IList<Deposit>> GetDepositsByProposalId(ulong proposalId);
+
+        /// <summary>
+        /// Deposit tokens to a proposal.
+        /// Send transaction to deposit tokens to a proposal.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<GasEstimateResponse> PostDepositSimulationAsync(ulong proposalId, DepositReq request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Deposit tokens to a proposal.
+        /// Send transaction to deposit tokens to a proposal.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        GasEstimateResponse PostDepositSimulation(ulong proposalId, DepositReq request);
+
+        /// <summary>
+        /// Deposit tokens to a proposal.
+        /// Send transaction to deposit tokens to a proposal.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<StdTx> PostDepositAsync(ulong proposalId, DepositReq request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Deposit tokens to a proposal.
+        /// Send transaction to deposit tokens to a proposal.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        StdTx PostDeposit(ulong proposalId, DepositReq request);
     }
 }
