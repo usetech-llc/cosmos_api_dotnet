@@ -18,5 +18,10 @@ namespace CosmosApi.Models
             Title = title;
             Description = description;
         }
+
+        public string GetProposalType()
+        {
+            return "SoftwareUpgrade";
+        }
     }
 }

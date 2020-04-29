@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using CosmosApi.Models;
@@ -30,5 +31,86 @@ namespace CosmosApi.Endpoints
         /// <param name="limit">Maximum number of items.</param>
         /// <returns></returns>
         ResponseWithHeight<IList<Proposal>> GetProposals(string? voter = default, string? depositor = default, ProposalStatus? status = default, ulong? limit = default);
+
+        /// <summary>
+        /// Submit a proposal.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<GasEstimateResponse> PostProposalSimulationAsync(PostProposalReq request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Submit a proposal.
+        /// </summary>
+        /// <returns></returns>
+        Task<GasEstimateResponse> PostProposalSimulationAsync(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit, Type proposalContentType, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Submit a proposal.
+        /// </summary>
+        /// <returns></returns>
+        Task<GasEstimateResponse> PostProposalSimulationAsync<TContentType>(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit, CancellationToken cancellationToken = default) where TContentType : IProposalContent;
+ 
+        /// <summary>
+        /// Submit a proposal.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        GasEstimateResponse PostProposalSimulation(PostProposalReq request);
+
+        /// <summary>
+        /// Submit a proposal.
+        /// </summary>
+        /// <returns></returns>
+        GasEstimateResponse PostProposalSimulation(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit, Type proposalContentType);
+
+        /// <summary>
+        /// Submit a proposal.
+        /// </summary>
+        /// <returns></returns>
+        GasEstimateResponse PostProposalSimulation<TContentType>(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit) where TContentType : IProposalContent;
+        
+        /// <summary>
+        /// Submit a proposal.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<StdTx> PostProposalAsync(PostProposalReq request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Submit a proposal.
+        /// </summary>
+        /// <returns></returns>
+        Task<StdTx> PostProposalAsync(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit, Type proposalContentType, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Submit a proposal.
+        /// </summary>
+        /// <returns></returns>
+        Task<StdTx> PostProposalAsync<TContentType>(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit, CancellationToken cancellationToken = default) where TContentType : IProposalContent;
+ 
+        /// <summary>
+        /// Submit a proposal.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        StdTx PostProposal(PostProposalReq request);
+
+        /// <summary>
+        /// Submit a proposal.
+        /// </summary>
+        /// <returns></returns>
+        StdTx PostProposal(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit, Type proposalContentType);
+
+        /// <summary>
+        /// Submit a proposal.
+        /// </summary>
+        /// <returns></returns>
+        StdTx PostProposal<TContentType>(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit) where TContentType : IProposalContent;
+
     }
 }

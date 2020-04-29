@@ -26,5 +26,10 @@ namespace CosmosApi.Models
             Description = description;
             Changes = changes;
         }
+
+        public string GetProposalType()
+        {
+            return "ParameterChange";
+        }
     }
 }

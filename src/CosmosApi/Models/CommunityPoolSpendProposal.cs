@@ -28,5 +28,10 @@ namespace CosmosApi.Models
             Recipient = recipient;
             Amount = amount;
         }
+
+        public string GetProposalType()
+        {
+            return "CommunityPoolSpend";
+        }
     }
 }
