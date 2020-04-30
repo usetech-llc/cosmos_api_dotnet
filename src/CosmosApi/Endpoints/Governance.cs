@@ -165,16 +165,16 @@ namespace CosmosApi.Endpoints
                 .Sync();
         }
 
-        public Task<ResponseWithHeight<IList<Deposit>>> GetDepositsByProposalIdAsync(ulong proposalId, CancellationToken cancellationToken = default)
+        public Task<ResponseWithHeight<IList<Deposit>>> GetDepositsAsync(ulong proposalId, CancellationToken cancellationToken = default)
         {
             return _clientGetter()
                 .Request("gov", "proposals", proposalId, "deposits")
                 .GetJsonAsync<ResponseWithHeight<IList<Deposit>>>(cancellationToken);
         }
 
-        public ResponseWithHeight<IList<Deposit>> GetDepositsByProposalId(ulong proposalId)
+        public ResponseWithHeight<IList<Deposit>> GetDeposits(ulong proposalId)
         {
-            return GetDepositsByProposalIdAsync(proposalId)
+            return GetDepositsAsync(proposalId)
                 .Sync();
         }
 
@@ -213,6 +213,19 @@ namespace CosmosApi.Endpoints
         public StdTx PostDeposit(ulong proposalId, DepositReq request)
         {
             return PostDepositAsync(proposalId, request)
+                .Sync();
+        }
+
+        public Task<ResponseWithHeight<Deposit>> GetDepositAsync(ulong proposalId, string depositor, CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("gov", "proposals", proposalId, "deposits", depositor)
+                .GetJsonAsync<ResponseWithHeight<Deposit>>(cancellationToken);
+        }
+
+        public ResponseWithHeight<Deposit> GetDeposit(ulong proposalId, string depositor)
+        {
+            return GetDepositAsync(proposalId, depositor)
                 .Sync();
         }
     }

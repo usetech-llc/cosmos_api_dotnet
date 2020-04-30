@@ -148,14 +148,14 @@ namespace CosmosApi.Endpoints
         /// <param name="proposalId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ResponseWithHeight<IList<Deposit>>> GetDepositsByProposalIdAsync(ulong proposalId, CancellationToken cancellationToken = default);
+        Task<ResponseWithHeight<IList<Deposit>>> GetDepositsAsync(ulong proposalId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Query deposits.
         /// </summary>
         /// <param name="proposalId"></param>
         /// <returns></returns>
-        ResponseWithHeight<IList<Deposit>> GetDepositsByProposalId(ulong proposalId);
+        ResponseWithHeight<IList<Deposit>> GetDeposits(ulong proposalId);
 
         /// <summary>
         /// Deposit tokens to a proposal.
@@ -194,5 +194,22 @@ namespace CosmosApi.Endpoints
         /// <param name="request"></param>
         /// <returns></returns>
         StdTx PostDeposit(ulong proposalId, DepositReq request);
+
+        /// <summary>
+        /// Query deposits.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <param name="depositor"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<Deposit>> GetDepositAsync(ulong proposalId, string depositor, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Query deposits.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <param name="depositor"></param>
+        /// <returns></returns>
+        ResponseWithHeight<Deposit> GetDeposit(ulong proposalId, string depositor);
     }
 }

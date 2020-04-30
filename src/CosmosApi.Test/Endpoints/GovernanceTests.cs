@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using CosmosApi.Models;
+using ExpectedObjects;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -157,7 +159,7 @@ namespace CosmosApi.Test.Endpoints
 
             var deposits = await client
                 .Governance
-                .GetDepositsByProposalIdAsync(23);
+                .GetDepositsAsync(23);
             
             OutputHelper.WriteLine("Deserialized Deposits:");
             Dump(deposits);
@@ -230,6 +232,27 @@ namespace CosmosApi.Test.Endpoints
                 Assert.Equal(10, c.Amount);
                 Assert.Equal("uatom", c.Denom, StringComparer.OrdinalIgnoreCase);
             });
+        }
+
+        [Fact]
+        public async Task GetDepositReturnsOneDepositFromList()
+        {
+            using var client = CreateClient();
+
+            var deposits = await client
+                .Governance
+                .GetDepositsAsync(23);
+            var expectedDeposit = deposits.Result.First();
+
+            var deposit = await client
+                .Governance
+                .GetDepositAsync(23, expectedDeposit.Depositor);
+            
+            OutputHelper.WriteLine("Deserialized Deposit:");
+            Dump(deposit);
+            
+            expectedDeposit.ToExpectedObject()
+                .ShouldMatch(deposit.Result);
         }
     }
 }
