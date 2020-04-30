@@ -362,5 +362,22 @@ namespace CosmosApi.Test.Endpoints
             Assert.True(tally.Result.Yes > 0);
             Assert.True(tally.Result.NoWithVeto > 0);
         }
+
+        [Fact]
+        public async Task GetDepositParamsNotEmpty()
+        {
+            using var client = CreateClient();
+
+            var depositParams = await client
+                .Governance
+                .GetDepositParamsAsync();
+            
+            OutputHelper.WriteLine("Deserialized Deposit Params:");
+            Dump(depositParams);
+            
+            Assert.True(depositParams.Result.MaxDepositPeriod > 0);
+            Assert.True(depositParams.Result.MinDeposit![0].Amount > 0);
+            Assert.NotEmpty(depositParams.Result.MinDeposit[0].Denom);
+        }
     }
 }

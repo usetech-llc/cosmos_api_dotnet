@@ -292,5 +292,18 @@ namespace CosmosApi.Endpoints
         /// <param name="proposalId"></param>
         /// <returns></returns>
         ResponseWithHeight<TallyResult> GetTally(ulong proposalId);
+
+        /// <summary>
+        /// Query governance deposit parameters.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<DepositParams>> GetDepositParamsAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Query governance deposit parameters.
+        /// </summary>
+        /// <returns></returns>
+        ResponseWithHeight<DepositParams> GetDepositParams();
     }
 }
