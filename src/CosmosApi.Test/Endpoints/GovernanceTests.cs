@@ -12,6 +12,8 @@ namespace CosmosApi.Test.Endpoints
 {
     public class GovernanceTests : BaseTest
     {
+        private const ulong ProposalId = 23;
+        
         public GovernanceTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
         }
@@ -141,14 +143,14 @@ namespace CosmosApi.Test.Endpoints
 
             var proposer = await client
                 .Governance
-                .GetProposerByProposalIdAsync(23);
+                .GetProposerByProposalIdAsync(ProposalId);
 
             OutputHelper.WriteLine("Deserialized Proposer:");
             Dump(proposer);
 
             Assert.NotNull(proposer);
             Assert.NotNull(proposer.Result);
-            Assert.Equal(23UL, proposer.Result.ProposalId);
+            Assert.Equal(ProposalId, proposer.Result.ProposalId);
             Assert.NotEmpty(proposer.Result.ProposerAddress);
         }
 
@@ -159,14 +161,14 @@ namespace CosmosApi.Test.Endpoints
 
             var deposits = await client
                 .Governance
-                .GetDepositsAsync(23);
+                .GetDepositsAsync(ProposalId);
             
             OutputHelper.WriteLine("Deserialized Deposits:");
             Dump(deposits);
             
             Assert.All(deposits.Result, d =>
             {
-                Assert.Equal(23UL, d.ProposalId);
+                Assert.Equal(ProposalId, d.ProposalId);
                 Assert.NotEmpty(d.Depositor);
                 Assert.All(d.Amount, c =>
                 {
@@ -193,7 +195,7 @@ namespace CosmosApi.Test.Endpoints
             var depositReq = new DepositReq(baseReq, Configuration.GlobalDelegator1Address, amount);
             var estimation = await client
                 .Governance
-                .PostDepositSimulationAsync(23, depositReq);
+                .PostDepositSimulationAsync(ProposalId, depositReq);
             
             OutputHelper.WriteLine("Deserialized Gas Estimation:");
             Dump(estimation);
@@ -218,7 +220,7 @@ namespace CosmosApi.Test.Endpoints
             var depositReq = new DepositReq(baseReq, Configuration.GlobalDelegator1Address, amount);
             var tx = await client
                 .Governance
-                .PostDepositAsync(23, depositReq);
+                .PostDepositAsync(ProposalId, depositReq);
             
             OutputHelper.WriteLine("Deserialized StdTx:");
             Dump(tx);
@@ -226,7 +228,7 @@ namespace CosmosApi.Test.Endpoints
             Assert.Equal("memo", tx.Memo);
             var msgDeposit = tx.Msg.OfType<MsgDeposit>().First();
             Assert.Equal(Configuration.GlobalDelegator1Address, msgDeposit.Depositor, StringComparer.Ordinal);
-            Assert.Equal(23UL, msgDeposit.ProposalId);
+            Assert.Equal(ProposalId, msgDeposit.ProposalId);
             Assert.Collection(msgDeposit.Amount, c =>
             {
                 Assert.Equal(10, c.Amount);
@@ -241,12 +243,12 @@ namespace CosmosApi.Test.Endpoints
 
             var deposits = await client
                 .Governance
-                .GetDepositsAsync(23);
+                .GetDepositsAsync(ProposalId);
             var expectedDeposit = deposits.Result.First();
 
             var deposit = await client
                 .Governance
-                .GetDepositAsync(23, expectedDeposit.Depositor);
+                .GetDepositAsync(ProposalId, expectedDeposit.Depositor);
             
             OutputHelper.WriteLine("Deserialized Deposit:");
             Dump(deposit);
@@ -262,7 +264,7 @@ namespace CosmosApi.Test.Endpoints
 
             var votes = await client
                 .Governance
-                .GetVotesAsync(23);
+                .GetVotesAsync(ProposalId);
             
             OutputHelper.WriteLine("Deserizalized Votes");
             Dump(votes);
@@ -271,9 +273,49 @@ namespace CosmosApi.Test.Endpoints
             Assert.All(votes.Result, v =>
             {
                 Assert.NotEmpty(v.Voter);
-                Assert.Equal(23UL, v.ProposalId);
+                Assert.Equal(ProposalId, v.ProposalId);
                 Assert.NotEqual(VoteOption.Empty, v.Option);
             });
+        }
+
+        [Fact]
+        public async Task PostVoteSimulationNotEmpty()
+        {
+            using var client = CreateClient();
+
+            var baseReq = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, "", null, null, null, null);
+            var voteReq = new VoteReq(baseReq, Configuration.GlobalDelegator1Address, VoteOption.Yes);
+
+            var gasEstimation = await client
+                .Governance
+                .PostVoteSimulationAsync(ProposalId, voteReq);
+            
+            OutputHelper.WriteLine("Deserialized Gas Estimation:");
+            Dump(gasEstimation);
+            
+            Assert.True(gasEstimation.GasEstimate > 0);
+        }
+ 
+        [Fact]
+        public async Task PostVoteNotEmpty()
+        {
+            using var client = CreateClient();
+
+            var baseReq = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, "memo", null, null, null, null);
+            var voteReq = new VoteReq(baseReq, Configuration.GlobalDelegator1Address, VoteOption.Yes);
+
+            var tx = await client
+                .Governance
+                .PostVoteAsync(ProposalId, voteReq);
+            
+            OutputHelper.WriteLine("Deserialized StdTx:");
+            Dump(tx);
+
+            Assert.Equal("memo", tx.Memo);
+            var msg = tx.Msg.OfType<MsgVote>().First();
+            Assert.Equal(VoteOption.Yes, msg.Option);
+            Assert.Equal(Configuration.GlobalDelegator1Address, msg.Voter);
+            Assert.Equal(ProposalId, msg.ProposalId);
         }
     }
 }

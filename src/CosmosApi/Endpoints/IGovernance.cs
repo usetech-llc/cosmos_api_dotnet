@@ -226,5 +226,39 @@ namespace CosmosApi.Endpoints
         /// <param name="proposalId"></param>
         /// <returns></returns>
         ResponseWithHeight<IList<Vote>> GetVotes(ulong proposalId);
+
+        /// <summary>
+        /// Send transaction to vote a proposal.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<GasEstimateResponse> PostVoteSimulationAsync(ulong proposalId, VoteReq request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Send transaction to vote a proposal.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        GasEstimateResponse PostVoteSimulation(ulong proposalId, VoteReq request);
+
+        /// <summary>
+        /// Send transaction to vote a proposal.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<StdTx> PostVoteAsync(ulong proposalId, VoteReq request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Send transaction to vote a proposal.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        StdTx PostVote(ulong proposalId, VoteReq request);
     }
 }

@@ -220,7 +220,8 @@ namespace CosmosApi.Endpoints
         {
             return _clientGetter()
                 .Request("gov", "proposals", proposalId, "deposits", depositor)
-                .GetJsonAsync<ResponseWithHeight<Deposit>>(cancellationToken);
+                .GetJsonAsync<ResponseWithHeight<Deposit>>(cancellationToken)
+                .WrapExceptions();
         }
 
         public ResponseWithHeight<Deposit> GetDeposit(ulong proposalId, string depositor)
@@ -233,12 +234,51 @@ namespace CosmosApi.Endpoints
         {
             return _clientGetter()
                 .Request("gov", "proposals", proposalId, "votes")
-                .GetJsonAsync<ResponseWithHeight<IList<Vote>>>(cancellationToken);
+                .GetJsonAsync<ResponseWithHeight<IList<Vote>>>(cancellationToken)
+                .WrapExceptions();
         }
 
         public ResponseWithHeight<IList<Vote>> GetVotes(ulong proposalId)
         {
             return GetVotesAsync(proposalId)
+                .Sync();
+        }
+
+        public Task<GasEstimateResponse> PostVoteSimulationAsync(ulong proposalId, VoteReq request, CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, true);
+            request = new VoteReq(baseReq, request.Voter, request.Option);
+
+            return _clientGetter()
+                .Request("gov", "proposals", proposalId, "votes")
+                .PostJsonAsync(request, cancellationToken)
+                .WrapExceptions()
+                .ReceiveJson<GasEstimateResponse>()
+                .WrapExceptions();
+        }
+
+        public GasEstimateResponse PostVoteSimulation(ulong proposalId, VoteReq request)
+        {
+            return PostVoteSimulationAsync(proposalId, request)
+                .Sync();
+        }
+
+        public Task<StdTx> PostVoteAsync(ulong proposalId, VoteReq request, CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, false);
+            request = new VoteReq(baseReq, request.Voter, request.Option);
+
+            return _clientGetter()
+                .Request("gov", "proposals", proposalId, "votes")
+                .PostJsonAsync(request, cancellationToken)
+                .WrapExceptions()
+                .ReceiveJson<StdTx>()
+                .WrapExceptions();
+        }
+
+        public StdTx PostVote(ulong proposalId, VoteReq request)
+        {
+            return PostVoteAsync(proposalId, request)
                 .Sync();
         }
     }

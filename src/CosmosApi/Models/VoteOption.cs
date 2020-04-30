@@ -1,10 +1,13 @@
 ﻿using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace CosmosApi.Models
 {
     /// <summary>
     /// Vote options.
     /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum VoteOption : byte
     {
         /// <summary>
