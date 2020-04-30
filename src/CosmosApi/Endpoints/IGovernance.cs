@@ -260,5 +260,22 @@ namespace CosmosApi.Endpoints
         /// <param name="request"></param>
         /// <returns></returns>
         StdTx PostVote(ulong proposalId, VoteReq request);
+
+        /// <summary>
+        /// Query vote information by proposal Id and voter address.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <param name="voter">Bech32 voter address.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<Vote>> GetVoteAsync(ulong proposalId, string voter, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Query vote information by proposal Id and voter address.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <param name="voter">Bech32 voter address.</param>
+        /// <returns></returns>
+        ResponseWithHeight<Vote> GetVote(ulong proposalId, string voter);
     }
 }

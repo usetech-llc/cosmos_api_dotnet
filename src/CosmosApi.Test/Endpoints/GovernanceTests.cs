@@ -317,5 +317,32 @@ namespace CosmosApi.Test.Endpoints
             Assert.Equal(Configuration.GlobalDelegator1Address, msg.Voter);
             Assert.Equal(ProposalId, msg.ProposalId);
         }
+
+        //[Fact]
+        //Some internal gaia issues. It awlays returns
+        ///{
+        ///    "error": "'' is not a valid vote option"
+        ///}
+        /// And that is because it cannot deserialize result from its internal call.
+        public async Task GetVoteReturnsOneFromTotalList()
+        {
+            using var client = CreateClient();
+
+            var votes = await client
+                .Governance
+                .GetVotesAsync(ProposalId);
+
+            var expectedVote = votes.Result.Last();
+
+            var vote = await client
+                .Governance
+                .GetVoteAsync(ProposalId, expectedVote.Voter);
+            
+            OutputHelper.WriteLine("Deserialized Vote");
+            Dump(vote);
+            
+            expectedVote.ToExpectedObject()
+                .ShouldMatch(vote.Result);
+        }
     }
 }
