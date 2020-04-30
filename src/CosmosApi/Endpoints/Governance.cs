@@ -337,5 +337,19 @@ namespace CosmosApi.Endpoints
             return GetTallyParamsAsync()
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<VotingParams>> GetVotingParamsAsync(CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("gov", "parameters", "voting")
+                .GetJsonAsync<ResponseWithHeight<VotingParams>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public ResponseWithHeight<VotingParams> GetVotingParams()
+        {
+            return GetVotingParamsAsync()
+                .Sync();
+        }
     }
 }

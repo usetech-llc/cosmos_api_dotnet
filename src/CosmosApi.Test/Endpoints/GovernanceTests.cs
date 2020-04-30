@@ -389,13 +389,28 @@ namespace CosmosApi.Test.Endpoints
                 .Governance
                 .GetTallyParamsAsync();
             
-            OutputHelper.WriteLine("Deserialized Deposit Params:");
+            OutputHelper.WriteLine("Deserialized Tally Params:");
             Dump(tallyParams);
             
             Assert.True(tallyParams.Result.Quorum > 0);
             Assert.True(tallyParams.Result.Threshold > 0);
             Assert.True(tallyParams.Result.Veto > 0);
             
+        }
+
+        [Fact]
+        public async Task GetVotingParamsNotEmpty()
+        {
+            using var client = CreateClient();
+
+            var votingParams = await client
+                .Governance
+                .GetVotingParamsAsync();
+            
+            OutputHelper.WriteLine("Deserialized Voting Params:");
+            Dump(votingParams);
+            
+            Assert.True(votingParams.Result.VotingPeriod > 0);
         }
     }
 }

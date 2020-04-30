@@ -318,5 +318,18 @@ namespace CosmosApi.Endpoints
         /// </summary>
         /// <returns></returns>
         ResponseWithHeight<TallyParams> GetTallyParams();
+
+        /// <summary>
+        /// Query governance voting parameters.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<VotingParams>> GetVotingParamsAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Query governance voting parameters.
+        /// </summary>
+        /// <returns></returns>
+        ResponseWithHeight<VotingParams> GetVotingParams();
     }
 }
