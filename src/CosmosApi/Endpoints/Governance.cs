@@ -323,5 +323,19 @@ namespace CosmosApi.Endpoints
             return GetDepositParamsAsync()
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<TallyParams>> GetTallyParamsAsync(CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("gov", "parameters", "tallying")
+                .GetJsonAsync<ResponseWithHeight<TallyParams>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public ResponseWithHeight<TallyParams> GetTallyParams()
+        {
+            return GetTallyParamsAsync()
+                .Sync();
+        }
     }
 }

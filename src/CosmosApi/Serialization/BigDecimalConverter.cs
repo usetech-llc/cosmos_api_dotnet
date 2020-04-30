@@ -5,18 +5,31 @@ using Newtonsoft.Json;
 
 namespace CosmosApi.Serialization
 {
-    public class BigDecimalConverter : JsonConverter<BigDecimal>
+    public class BigDecimalConverter : JsonConverter
     {
-        public override void WriteJson(JsonWriter writer, BigDecimal value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, value.ToString(CultureInfo.InvariantCulture));
+            if (value == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            serializer.Serialize(writer, ((BigDecimal)value).ToString(CultureInfo.InvariantCulture));
         }
 
-        public override BigDecimal ReadJson(JsonReader reader, Type objectType, BigDecimal existingValue, bool hasExistingValue,
-            JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             var str = serializer.Deserialize<string>(reader);
+            if (str == null)
+            {
+                return null;
+            }
             return BigDecimal.Parse(str);
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(BigDecimal) || objectType == typeof(BigDecimal?);
         }
     }
 }
