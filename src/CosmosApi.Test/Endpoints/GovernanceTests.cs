@@ -344,5 +344,23 @@ namespace CosmosApi.Test.Endpoints
             expectedVote.ToExpectedObject()
                 .ShouldMatch(vote.Result);
         }
+
+        [Fact]
+        public async Task GetTallyNotEmpty()
+        {
+            using var client = CreateClient();
+
+            var tally = await client
+                .Governance
+                .GetTallyAsync(ProposalId);
+            
+            OutputHelper.WriteLine("Deserialized Tally:");
+            Dump(tally);
+            
+            Assert.True(tally.Result.Abstain > 0);
+            Assert.True(tally.Result.No > 0);
+            Assert.True(tally.Result.Yes > 0);
+            Assert.True(tally.Result.NoWithVeto > 0);
+        }
     }
 }

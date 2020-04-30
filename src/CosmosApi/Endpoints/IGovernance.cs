@@ -277,5 +277,20 @@ namespace CosmosApi.Endpoints
         /// <param name="voter">Bech32 voter address.</param>
         /// <returns></returns>
         ResponseWithHeight<Vote> GetVote(ulong proposalId, string voter);
+
+        /// <summary>
+        /// Gets a proposal’s tally result at the current time. If the proposal is pending deposits (i.e status ‘DepositPeriod’) it returns an empty tally result.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<TallyResult>> GetTallyAsync(ulong proposalId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets a proposal’s tally result at the current time. If the proposal is pending deposits (i.e status ‘DepositPeriod’) it returns an empty tally result.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <returns></returns>
+        ResponseWithHeight<TallyResult> GetTally(ulong proposalId);
     }
 }
