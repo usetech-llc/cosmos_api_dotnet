@@ -228,5 +228,18 @@ namespace CosmosApi.Endpoints
             return GetDepositAsync(proposalId, depositor)
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<IList<Vote>>> GetVotesAsync(ulong proposalId, CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("gov", "proposals", proposalId, "votes")
+                .GetJsonAsync<ResponseWithHeight<IList<Vote>>>(cancellationToken);
+        }
+
+        public ResponseWithHeight<IList<Vote>> GetVotes(ulong proposalId)
+        {
+            return GetVotesAsync(proposalId)
+                .Sync();
+        }
     }
 }

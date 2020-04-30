@@ -254,5 +254,26 @@ namespace CosmosApi.Test.Endpoints
             expectedDeposit.ToExpectedObject()
                 .ShouldMatch(deposit.Result);
         }
+
+        [Fact]
+        public async Task GetVotesNotEmpty()
+        {
+            using var client = CreateClient();
+
+            var votes = await client
+                .Governance
+                .GetVotesAsync(23);
+            
+            OutputHelper.WriteLine("Deserizalized Votes");
+            Dump(votes);
+            
+            Assert.NotEmpty(votes.Result);
+            Assert.All(votes.Result, v =>
+            {
+                Assert.NotEmpty(v.Voter);
+                Assert.Equal(23UL, v.ProposalId);
+                Assert.NotEqual(VoteOption.Empty, v.Option);
+            });
+        }
     }
 }

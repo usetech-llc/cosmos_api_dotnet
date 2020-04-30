@@ -15,7 +15,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the Vote class.
         /// </summary>
-        public Vote(string voter, ulong proposalId, string option)
+        public Vote(string voter, ulong proposalId, VoteOption option)
         {
             Voter = voter;
             ProposalId = proposalId;
@@ -36,7 +36,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "option")]
-        public string Option { get; set; } = null!;
+        public VoteOption Option { get; set; }
 
     }
 }

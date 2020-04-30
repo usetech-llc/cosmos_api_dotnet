@@ -211,5 +211,20 @@ namespace CosmosApi.Endpoints
         /// <param name="depositor"></param>
         /// <returns></returns>
         ResponseWithHeight<Deposit> GetDeposit(ulong proposalId, string depositor);
+
+        /// <summary>
+        /// Query voters information by proposalId.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<IList<Vote>>> GetVotesAsync(ulong proposalId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Query voters information by proposalId.
+        /// </summary>
+        /// <param name="proposalId"></param>
+        /// <returns></returns>
+        ResponseWithHeight<IList<Vote>> GetVotes(ulong proposalId);
     }
 }
