@@ -2,3 +2,6 @@
 	path = gaia
 	url = https://github.com/cosmos/gaia.git
 	branch = release/v2.0.7
+[submodule "cosmos-sdk-tutorials"]
+	path = cosmos-sdk-tutorials
+	url = https://github.com/cosmos/sdk-tutorials.git

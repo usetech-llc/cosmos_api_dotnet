@@ -1,0 +1,15 @@
+FROM golang:latest
+
+COPY cosmos-sdk-tutorials/nameservice nameservice
+WORKDIR ./nameservice
+
+RUN make install
+
+COPY testenv/.nscli /root/.nscli
+COPY testenv/.nsd /root/.nsd
+COPY testenv/run_nameservice.sh .
+RUN chmod 777 ./run_nameservice.sh
+
+EXPOSE 26668 26667 26666 1327
+
+CMD ./run_nameservice.sh
