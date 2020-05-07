@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using CosmosApi.Endpoints;
 using CosmosApi.Models;
+using CosmosApi.Serialization;
 
 namespace CosmosApi
 {
@@ -16,6 +18,9 @@ namespace CosmosApi
         IBank Bank { get; }
         IStaking Staking { get; }
         IGovernance Governance { get; }
+        
+        HttpClient HttpClient { get; }
+        ISerializer Serializer { get; }
 
         /// <summary>
         /// Creates signed transaction and broadcasts it.

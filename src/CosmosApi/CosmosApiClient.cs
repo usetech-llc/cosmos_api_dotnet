@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -18,6 +19,7 @@ using NBitcoin.Secp256k1;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TaskTupleAwaiter;
+using ISerializer = CosmosApi.Serialization.ISerializer;
 
 namespace CosmosApi
 {
@@ -38,6 +40,7 @@ namespace CosmosApi
             Bank = new Bank(GetClient);
             Staking = new Staking(GetClient);
             Governance = new Governance(GetClient);
+            Serializer = new NewtownJsonSerializer(new NewtonsoftJsonSerializer(JsonSerializerSettings()));
         }
 
         public IGaiaREST GaiaRest { get; }
@@ -47,6 +50,11 @@ namespace CosmosApi
         public IBank Bank { get; }
         public IStaking Staking { get; }
         public IGovernance Governance { get; }
+
+        public HttpClient HttpClient =>
+            _flurlClient?.Value.HttpClient ?? throw new ObjectDisposedException(nameof(CosmosApiClient));
+
+        public ISerializer Serializer { get; }
 
         public async Task<BroadcastTxResult> SendAsync(string chainId, string fromAddress, string toAddress, IList<Coin> coins, BroadcastTxMode mode, StdFee fee, string privateKey, string passphrase, string memo = "" , CancellationToken cancellationToken = default)
         {
@@ -83,7 +91,7 @@ namespace CosmosApi
                     new StdSignature()
                     {
                         Signature = signedBytes,
-                        PubKey = account.Result.GetPublicKey()
+                        PubKey = null
                     }
                 },
             };
@@ -116,7 +124,7 @@ namespace CosmosApi
         internal byte[] GetSignBytes(StdSignDoc signMsg)
         {
             var jsonSerializerSettings = JsonSerializerSettings();
-            var jObject = JObject.FromObject(signMsg, JsonSerializer.Create(jsonSerializerSettings));
+            var jObject = JObject.FromObject(signMsg, Newtonsoft.Json.JsonSerializer.Create(jsonSerializerSettings));
             JsonSorting.SortJson(jObject);
             var json = jObject.ToString(Formatting.None, jsonSerializerSettings.Converters.ToArray());
             return Encoding.UTF8.GetBytes(json);
@@ -183,6 +191,7 @@ namespace CosmosApi
             if (_settings.BaseUrl != null)
             {
                 client.BaseUrl = _settings.BaseUrl;
+                client.HttpClient.BaseAddress = new Uri(_settings.BaseUrl);
             }
 
             if (_settings.Username != null && _settings.Password != null)

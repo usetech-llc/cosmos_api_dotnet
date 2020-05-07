@@ -30,15 +30,20 @@ namespace CosmosApi.Test
 
         public CosmosApiClient CreateClient(string? baseUrl = default)
         {
-            return (new CosmosApiBuilder()
+            return (ConfigureBuilder(baseUrl)
+                .CreateClient() as CosmosApiClient)!;
+        }
+
+        public ICosmosApiBuilder ConfigureBuilder(string? baseUrl)
+        {
+            return new CosmosApiBuilder()
                 .UseBaseUrl(baseUrl ?? Configuration.GlobalBaseUrl)
                 .Configure(s =>
                 {
                     s.OnAfterCallAsync = OnAfterCall;
                     s.OnBeforeCallAsync = OnBeforeCall;
                 })
-                .RegisterCosmosSdkTypeConverters()
-                .CreateClient() as CosmosApiClient)!;
+                .RegisterCosmosSdkTypeConverters();
         }
 
         private Task OnBeforeCall(BeforeCall beforeCall)

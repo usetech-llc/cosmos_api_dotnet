@@ -17,6 +17,9 @@ namespace CosmosApi.Test
         public string GlobalValidator1Address { get; set; } = null!;
         public string GlobalValidator2Address { get; set; } = null!;
         public bool CutLongOutput { get; set; } = false;
+        public string LocalNameserviceBaseUrl { get; set; } = null!;
+        public string LocalNameserviceOwner1 { get; set; } = null!;
+        
 
         private TestConfiguration()
         {

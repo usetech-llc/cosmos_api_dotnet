@@ -23,6 +23,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\CosmosApi\CosmosApi.csproj" />
+      <ProjectReference Include="..\NameserviceApi\NameserviceApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>

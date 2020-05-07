@@ -31,6 +31,6 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "pub_key")]
-        public PublicKey PubKey { get; set; } = null!;
+        public PublicKey? PubKey { get; set; }
     }
 }

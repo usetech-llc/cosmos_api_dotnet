@@ -25,4 +25,5 @@ services:
       dockerfile: Dockerfile.cosmos-api.test
     environment:
       - LocalBaseUrl=http://gaia-test:1317
+      - LocalNameserviceBaseUrl=http://nameservice:1327
       - CutLongOutput=true
