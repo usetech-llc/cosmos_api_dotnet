@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
-using CosmosApi.Crypto;
+using System.Text;
 using CosmosApi.Extensions;
-using CosmosApi.Models;
-using CosmosApi.Test.Endpoints;
 using CosmosApi.Test.TestData;
 using NBitcoin.Secp256k1;
 using Xunit;
@@ -24,7 +21,7 @@ namespace CosmosApi.Test.Client
             using var client = CreateClient();
 
             var stdSignDoc = SigningData.StdSignDoc();
-            var bytes = client.GetSignBytes(stdSignDoc);
+            var bytes = Encoding.UTF8.GetBytes(client.Serializer.SerializeSortedAndCompact(stdSignDoc));
 
             OutputHelper.WriteLine("StdSignDoc:");
             Dump(stdSignDoc);
@@ -50,14 +47,15 @@ namespace CosmosApi.Test.Client
             var random = new Random();
             var bytesToSign = new byte[1024 * 8];
             random.NextBytes(bytesToSign);
-            var keyBytes = KeysParser.Parse(Configuration.LocalAccount1PrivateKey, Configuration.LocalAccount1Passphrase);
+            var privateKey = client.CryptoService.ParsePrivateKey(Configuration.LocalAccount1PrivateKey, Configuration.LocalAccount1Passphrase);
+            var keyBytes = privateKey.Value;
             var key = Context.Instance.CreateECPrivKey(keyBytes);
             
             OutputHelper.WriteLine("Signing random bytes:");
             OutputHelper.WriteLine(bytesToSign.ToBase64String());
             OutputHelper.WriteLine("");
 
-            var signedBytes = client.Sign(bytesToSign, keyBytes);
+            var signedBytes = client.CryptoService.Sign(bytesToSign, keyBytes, privateKey.Type);
             OutputHelper.WriteLine("Signed bytes:");
             OutputHelper.WriteLine(signedBytes.ToBase64String());
 

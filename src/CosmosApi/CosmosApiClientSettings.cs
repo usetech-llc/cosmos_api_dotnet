@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CosmosApi.Callbacks;
+using CosmosApi.Crypto;
 using CosmosApi.Models;
 using CosmosApi.Serialization;
 using Newtonsoft.Json;
@@ -92,6 +93,11 @@ namespace CosmosApi
         /// List of custom json converters. 
         /// </summary>
         public List<JsonConverter> Converters { get; set; } = new List<JsonConverter>();
+
+        /// <summary>
+        /// Set of cryptography operations.
+        /// </summary>
+        public ICryptoService CryptoService { get; set; } = new CosmosCryptoService();
         
         internal TypeValueConverter<ITx> TxConverter { get; } = new TypeValueConverter<ITx>($"Call {nameof(ICosmosApiBuilder)}.{nameof(ICosmosApiBuilder.RegisterTxType)} to register discriminator/type pair.");
         

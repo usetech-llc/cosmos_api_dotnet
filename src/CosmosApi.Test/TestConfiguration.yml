@@ -21,3 +21,15 @@ GlobalValidator2Address: cosmosvaloper156gqf9837u7d4c4678yt3rl4ls9c5vuursrrzf
 CutLongOutput: false
 LocalNameserviceBaseUrl: http://localhost:1327
 LocalNameserviceOwner1: cosmos184xz9l8g5xrdz0klmnx0vapdmreenvhrgafspq
+LocalNameserviceOwner1PrivateKey: |-
+  -----BEGIN TENDERMINT PRIVATE KEY-----
+  kdf: bcrypt
+  salt: FA9B9991F8FF4DEA9153CEEB074C97D7
+  type: secp256k1
+
+  +K3HsI6HfdS7mGgdrn73jSKIGBgAwXx6gO/PvaJu+I9Wu6Ulwk/2zRYb4bsDRfIH
+  P59u/AdXatvFgl3PHi5liqGtEjCvTO3K+bFz7hw=
+  =EK4p
+  -----END TENDERMINT PRIVATE KEY-----
+LocalNameserviceOwner1Passphrase: 11111111
+  

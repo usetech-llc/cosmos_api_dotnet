@@ -16,7 +16,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the StdSignature class.
         /// </summary>
-        public StdSignature(byte[] signature, PublicKey pubKey)
+        public StdSignature(byte[] signature, PublicKey? pubKey)
         {
             Signature = signature;
             PubKey = pubKey;

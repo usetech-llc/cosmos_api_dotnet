@@ -21,5 +21,10 @@ namespace CosmosApi.Models
             Inputs = inputs;
             Outputs = outputs;
         }
+
+        public object SignBytesObject()
+        {
+            return this;
+        }
     }
 }

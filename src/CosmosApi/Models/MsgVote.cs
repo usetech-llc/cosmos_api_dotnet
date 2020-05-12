@@ -34,5 +34,10 @@ namespace CosmosApi.Models
             Voter = voter;
             Option = option;
         }
+
+        public object SignBytesObject()
+        {
+            return this;
+        }
     }
 }

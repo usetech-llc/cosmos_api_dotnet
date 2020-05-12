@@ -28,10 +28,10 @@ namespace CosmosApi.Test
                 .Network;
         }
 
-        public CosmosApiClient CreateClient(string? baseUrl = default)
+        public ICosmosApiClient CreateClient(string? baseUrl = default)
         {
-            return (ConfigureBuilder(baseUrl)
-                .CreateClient() as CosmosApiClient)!;
+            return ConfigureBuilder(baseUrl)
+                .CreateClient();
         }
 
         public ICosmosApiBuilder ConfigureBuilder(string? baseUrl)

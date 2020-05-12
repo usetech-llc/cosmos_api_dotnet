@@ -38,8 +38,7 @@ namespace CosmosApi.Test.Client
                 Amount = new List<Coin>(),
                 Gas = 300000,
             };
-            var chainId = await GetChainId(client);
-            var result = await client.SendAsync(chainId, Configuration.LocalAccount1Address, Configuration.LocalAccount2Address, coinsToSend, BroadcastTxMode.Block, fee, Configuration.LocalAccount1PrivateKey, Configuration.LocalAccount1Passphrase, memo);
+            var result = await ((ICosmosApiClient)client).SendAsync( Configuration.LocalAccount1Address, Configuration.LocalAccount2Address, coinsToSend, BroadcastTxMode.Block, fee, Configuration.LocalAccount1PrivateKey, Configuration.LocalAccount1Passphrase, memo);
             OutputHelper.WriteLine("Deserialized broadcast result");
             Dump(result);
             OutputHelper.WriteLine("");

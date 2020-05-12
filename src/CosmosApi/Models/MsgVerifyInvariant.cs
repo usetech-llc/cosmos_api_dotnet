@@ -26,5 +26,10 @@ namespace CosmosApi.Models
             InvariantModuleName = invariantModuleName;
             InvariantRoute = invariantRoute;
         }
+
+        public object SignBytesObject()
+        {
+            return this;
+        }
     }
 }

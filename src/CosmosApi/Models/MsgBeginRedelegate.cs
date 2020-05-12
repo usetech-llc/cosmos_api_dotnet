@@ -24,5 +24,10 @@ namespace CosmosApi.Models
             ValidatorDstAddress = validatorDstAddress;
             Amount = amount;
         }
+
+        public object SignBytesObject()
+        {
+            return this;
+        }
     }
 }

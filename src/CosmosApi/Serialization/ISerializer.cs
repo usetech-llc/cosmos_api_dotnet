@@ -9,5 +9,6 @@ namespace CosmosApi.Serialization
         T DeserializeJson<T>(string value);
         HttpContent SerializeJsonHttpContent<T>(T value);
         Task<T> DeserializeJson<T>(HttpContent content);
+        string SerializeSortedAndCompact<T>(T value);
     }
 }

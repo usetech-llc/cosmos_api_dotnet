@@ -9,5 +9,6 @@ namespace NameserviceApi
     {
         Task<GasEstimateResponse> PostBuyNameSimulationAsync(BuyNameReq request, CancellationToken cancellationToken = default);
         Task<StdTx> PostBuyNameAsync(BuyNameReq request, CancellationToken cancellationToken = default);
+        Task<ResponseWithHeight<WhoIs>> GetWhoIs(string name, CancellationToken cancellationToken = default);
     }
 }

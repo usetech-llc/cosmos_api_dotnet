@@ -23,5 +23,10 @@ namespace NameserviceApi.Models
             Bid = bid;
             Buyer = buyer;
         }
+
+        public object SignBytesObject()
+        {
+            return this;
+        }
     }
 }

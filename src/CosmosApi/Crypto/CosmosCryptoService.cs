@@ -6,14 +6,15 @@ using System.Security.Cryptography;
 using System.Text;
 using CosmosApi.Extensions;
 using NaCl;
+using NBitcoin.Secp256k1;
 
 namespace CosmosApi.Crypto
 {
-    public class KeysParser
+    public class CosmosCryptoService : ICryptoService
     {
-        public static byte[] Parse(string tendermintFormat, string passphrase)
+        public PrivateKey ParsePrivateKey(string encodedKey, string? passphrase)
         {
-            var (headers, encryptedBytes) = Unarmor(tendermintFormat);
+            var (headers, encryptedBytes) = Unarmor(encodedKey);
 
             if (!string.Equals("bcrypt", headers.TryGetOrDefault("kdf")))
             {
@@ -26,8 +27,30 @@ namespace CosmosApi.Crypto
                 throw new ArgumentException("Key must contain hex encoded salt.");
             }
 
-            var key = MakeKey(salt, passphrase);
-            return DecryptXsalsa20(encryptedBytes, key);
+            var key = MakeKeyEncryptionKey(salt, passphrase ?? throw new ArgumentNullException(nameof(passphrase)));
+            return new PrivateKey(headers.TryGetOrDefault("type"), DecryptXsalsa20(encryptedBytes, key));
+            
+        }
+
+        public byte[] Sign(byte[] bytesToSign, byte[] key, string? keyType)
+        {
+            if (keyType == null || string.Equals("secp256k1", keyType, StringComparison.OrdinalIgnoreCase))
+            {
+                return SignSecp256k1(bytesToSign, key);
+            }
+            
+            throw new NotSupportedException($"Unknown key type {keyType}");
+        }
+
+        internal byte[] SignSecp256k1(byte[] bytesToSign, byte[] key)
+        {
+            using var sha = new SHA256Managed();
+            var hashed = sha.ComputeHash(bytesToSign);
+            using var ecKey = Context.Instance.CreateECPrivKey(key);
+            var signature = ecKey.SignECDSARFC6979(hashed);
+            var signedBytes = new byte[64];
+            signature.WriteCompactToSpan(signedBytes);
+            return signedBytes;
         }
 
         private static byte[] DecryptXsalsa20(byte[] encryptedBytes, byte[] key)
@@ -43,8 +66,7 @@ namespace CosmosApi.Crypto
             return decrypted[^32..];
         }
 
-        
-        private static byte[] MakeKey(byte[] salt, string passphrase)
+        private static byte[] MakeKeyEncryptionKey(byte[] salt, string passphrase)
         {
             var bcrypted = 
                 Org.BouncyCastle.Crypto.Generators.OpenBsdBCrypt.Generate("2a", passphrase.ToCharArray(), salt, 12);
@@ -63,11 +85,11 @@ namespace CosmosApi.Crypto
             
             var headers = armor.GetArmorHeaders()
                 .Select(h => h.Split(": ", StringSplitOptions.RemoveEmptyEntries))
-                .ToDictionary(s => s[0], s => s[1], StringComparer.OrdinalIgnoreCase);
+                .ToDictionary(s => s[0], s => s[1], (IEqualityComparer<string>)StringComparer.OrdinalIgnoreCase);
             using var encryptedBytesStream = new MemoryStream();
             armor.CopyTo(encryptedBytesStream);
             var encryptedBytes = encryptedBytesStream.ToArray();
             return (headers, encryptedBytes);
         }
-    }
+   }
 }

@@ -35,5 +35,12 @@ namespace NameserviceApi
                 .EnsureSuccessStatusCode();
             return await _cosmosApiClient.Serializer.DeserializeJson<StdTx>(response.Content);
         }
+
+        public async Task<ResponseWithHeight<WhoIs>> GetWhoIs(string name, CancellationToken cancellationToken = default)
+        {
+            var response = (await _cosmosApiClient.HttpClient.GetAsync($"nameservice/names/{name}/whois"))
+                .EnsureSuccessStatusCode();
+            return await _cosmosApiClient.Serializer.DeserializeJson<ResponseWithHeight<WhoIs>>(response.Content);
+        }
     }
 }

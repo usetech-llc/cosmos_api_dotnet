@@ -41,5 +41,10 @@ namespace CosmosApi.Models
             PubKey = pubKey;
             Value = value;
         }
+
+        public object SignBytesObject()
+        {
+            return this;
+        }
     }
 }

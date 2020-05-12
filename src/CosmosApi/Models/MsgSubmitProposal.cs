@@ -30,5 +30,10 @@ namespace CosmosApi.Models
             InitialDeposit = initialDeposit;
             Proposer = proposer;
         }
+
+        public object SignBytesObject()
+        {
+            return this;
+        }
     }
 }

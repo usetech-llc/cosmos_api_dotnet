@@ -28,5 +28,10 @@ namespace CosmosApi.Models
         
         [JsonProperty("amount")]
         public IList<Coin> Amount { get; set; } = null!;
+
+        public object SignBytesObject()
+        {
+            return this;
+        }
     }
 }

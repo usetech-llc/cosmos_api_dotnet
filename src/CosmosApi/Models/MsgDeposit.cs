@@ -35,5 +35,10 @@ namespace CosmosApi.Models
             Depositor = depositor;
             Amount = amount;
         }
+
+        public object SignBytesObject()
+        {
+            return this;
+        }
     }
 }

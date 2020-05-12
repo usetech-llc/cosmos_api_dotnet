@@ -19,6 +19,8 @@ namespace CosmosApi.Test
         public bool CutLongOutput { get; set; } = false;
         public string LocalNameserviceBaseUrl { get; set; } = null!;
         public string LocalNameserviceOwner1 { get; set; } = null!;
+        public string LocalNameserviceOwner1PrivateKey { get; set; } = null!;
+        public string LocalNameserviceOwner1Passphrase { get; set; } = null!;
         
 
         private TestConfiguration()

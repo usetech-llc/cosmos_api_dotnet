@@ -21,5 +21,10 @@ namespace CosmosApi.Models
         {
             ValidatorAddr = validatorAddr;
         }
+
+        public object SignBytesObject()
+        {
+            return this;
+        }
     }
 }

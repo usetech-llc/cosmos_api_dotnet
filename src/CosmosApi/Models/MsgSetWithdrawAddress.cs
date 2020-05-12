@@ -22,5 +22,10 @@ namespace CosmosApi.Models
             DelegatorAddress = delegatorAddress;
             WithdrawAddress = withdrawAddress;
         }
+
+        public object SignBytesObject()
+        {
+            return this;
+        }
     }
 }
