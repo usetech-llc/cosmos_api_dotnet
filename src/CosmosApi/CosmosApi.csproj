@@ -7,12 +7,14 @@
 
     <ItemGroup>
       <PackageReference Include="BouncyCastle.NetCore" Version="1.8.6" />
+      <PackageReference Include="ExtendedNumerics.BigDecimal" Version="1.0.0" />
       <PackageReference Include="Flurl" Version="2.8.2" />
       <PackageReference Include="Flurl.Http" Version="2.4.2" />
       <PackageReference Include="JsonSubTypes" Version="1.7.0" />
       <PackageReference Include="NaCl.Net" Version="0.1.6-pre" />
       <PackageReference Include="NBitcoin.Secp256k1" Version="1.0.1" />
       <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+      <PackageReference Include="TaskTupleAwaiter" Version="1.2.0" />
     </ItemGroup>
 
 </Project>

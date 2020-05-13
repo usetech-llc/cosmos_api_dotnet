@@ -10,9 +10,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.gaia.testenv
+  nameservice:
+    ports:
+      - "26668:26668"
+      - "26667:26667"
+      - "26666:26666"
+      - "1327:1327"
+    build:
+      context: .
+      dockerfile: Dockerfile.nameservice.testenv
   cosmos-api-test:
     build:
       context: .
       dockerfile: Dockerfile.cosmos-api.test
     environment:
       - LocalBaseUrl=http://gaia-test:1317
+      - LocalNameserviceBaseUrl=http://nameservice:1327
+      - CutLongOutput=true

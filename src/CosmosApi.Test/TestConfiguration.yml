@@ -1,8 +1,8 @@
 ﻿GlobalBaseUrl: https://api.cosmos.network
 LocalBaseUrl:  http://localhost:1317
-Validator1Address: cosmos1ht7y9zx4n4wnvwmgyqm8309xj2yulwklj54h5j
-Validator2Address: cosmos1235em592dc22gehs9z44reqtuy2hqulndd54zt
-Validator1PrivateKey: |-
+LocalAccount1Address: cosmos1ht7y9zx4n4wnvwmgyqm8309xj2yulwklj54h5j
+LocalAccount2Address: cosmos1235em592dc22gehs9z44reqtuy2hqulndd54zt
+LocalAccount1PrivateKey: |-
   -----BEGIN TENDERMINT PRIVATE KEY-----
   kdf: bcrypt
   salt: C586A3498B0298905ABE7D6DBADBCB87
@@ -12,3 +12,24 @@ Validator1PrivateKey: |-
   =K7Bt
   -----END TENDERMINT PRIVATE KEY-----
 Validator1Passphrase: 11111111
+LocalAccount1Passphrase: 11111111
+LocalDelegator1Address: cosmos18cqk9yh9alcf54fvprqwaa96d4mu65c0aw4suv
+LocalValidatorAddress: cosmosvaloper1ht7y9zx4n4wnvwmgyqm8309xj2yulwklhqpzcp
+GlobalDelegator1Address: cosmos14t3dh3ucxjfey6akem75q9atydz3zg5cynepds
+GlobalValidator1Address: cosmosvaloper1ey69r37gfxvxg62sh4r0ktpuc46pzjrm873ae8
+GlobalValidator2Address: cosmosvaloper156gqf9837u7d4c4678yt3rl4ls9c5vuursrrzf
+CutLongOutput: false
+LocalNameserviceBaseUrl: http://localhost:1327
+LocalNameserviceOwner1: cosmos184xz9l8g5xrdz0klmnx0vapdmreenvhrgafspq
+LocalNameserviceOwner1PrivateKey: |-
+  -----BEGIN TENDERMINT PRIVATE KEY-----
+  kdf: bcrypt
+  salt: FA9B9991F8FF4DEA9153CEEB074C97D7
+  type: secp256k1
+
+  +K3HsI6HfdS7mGgdrn73jSKIGBgAwXx6gO/PvaJu+I9Wu6Ulwk/2zRYb4bsDRfIH
+  P59u/AdXatvFgl3PHi5liqGtEjCvTO3K+bFz7hw=
+  =EK4p
+  -----END TENDERMINT PRIVATE KEY-----
+LocalNameserviceOwner1Passphrase: 11111111
+  

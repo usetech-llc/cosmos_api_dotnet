@@ -1,2 +1,5 @@
 * text=auto
 *.sh text eol=lf
+/testenv/** text eol=lf
+/gaia/** text eol=lf
+/cosmos-sdk-tutorials/** text eol=lf

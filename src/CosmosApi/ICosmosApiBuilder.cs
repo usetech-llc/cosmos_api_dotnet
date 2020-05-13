@@ -49,6 +49,14 @@ namespace CosmosApi
         /// <typeparam name="T">Type which might be used where <see cref="IAccount"/> is used.</typeparam>
         /// <param name="jsonName">Value of the type discriminator.</param>
         ICosmosApiBuilder RegisterAccountType<T>(string jsonName) where T : IAccount;
+
+        /// <summary>
+        /// Adds a possible subtype of the <see cref="IProposalContent"/> so it can be serialized
+        /// and deserialized properly. 
+        /// </summary>
+        /// <typeparam name="T">Type which might be used where <see cref="IProposalContent"/> is used.</typeparam>
+        /// <param name="jsonName">Value of the type discriminator.</param>
+        ICosmosApiBuilder RegisterProposalContentType<T>(string jsonName) where T : IProposalContent;
         
         /// <summary>
         /// Adds a converter factory to use for serialization and deserialization.

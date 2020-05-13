@@ -7,23 +7,24 @@ namespace CosmosApi.Test
     {
         public string GlobalBaseUrl { get; set; } = null!;
         public string LocalBaseUrl { get; set; } = null!;
-        public string Validator1Address { get; set; } = null!;
-        public string Validator2Address { get; set; } = null!;
-        public string Validator1PrivateKey { get; set; } = null!;
-        public string Validator1Passphrase { get; set; } = null!;
+        public string LocalAccount1Address { get; set; } = null!;
+        public string LocalAccount2Address { get; set; } = null!;
+        public string LocalAccount1PrivateKey { get; set; } = null!;
+        public string LocalAccount1Passphrase { get; set; } = null!;
+        public string LocalDelegator1Address { get; set; } = null!;
+        public string LocalValidatorAddress { get; set; } = null!;
+        public string GlobalDelegator1Address { get; set; } = null!;
+        public string GlobalValidator1Address { get; set; } = null!;
+        public string GlobalValidator2Address { get; set; } = null!;
+        public bool CutLongOutput { get; set; } = false;
+        public string LocalNameserviceBaseUrl { get; set; } = null!;
+        public string LocalNameserviceOwner1 { get; set; } = null!;
+        public string LocalNameserviceOwner1PrivateKey { get; set; } = null!;
+        public string LocalNameserviceOwner1Passphrase { get; set; } = null!;
+        
 
         private TestConfiguration()
         {
-        }
-
-        private TestConfiguration(string globalBaseUrl, string localBaseUrl, string validator1Address, string validator2Address, string validator1PrivateKey, string validator1Passphrase, string localChainId)
-        {
-            GlobalBaseUrl = globalBaseUrl;
-            LocalBaseUrl = localBaseUrl;
-            Validator1Address = validator1Address;
-            Validator2Address = validator2Address;
-            Validator1PrivateKey = validator1PrivateKey;
-            Validator1Passphrase = validator1Passphrase;
         }
 
         public static TestConfiguration Create()

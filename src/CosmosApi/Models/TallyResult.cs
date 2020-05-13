@@ -1,3 +1,4 @@
+using ExtendedNumerics;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
@@ -14,7 +15,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the TallyResult class.
         /// </summary>
-        public TallyResult(string yes, string abstain, string no, string noWithVeto)
+        public TallyResult(BigDecimal yes, BigDecimal abstain, BigDecimal no, BigDecimal noWithVeto)
         {
             Yes = yes;
             Abstain = abstain;
@@ -25,22 +26,22 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "yes")]
-        public string Yes { get; set; } = null!;
+        public BigDecimal Yes { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "abstain")]
-        public string Abstain { get; set; } = null!;
+        public BigDecimal Abstain { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "no")]
-        public string No { get; set; } = null!;
+        public BigDecimal No { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "no_with_veto")]
-        public string NoWithVeto { get; set; } = null!;
+        public BigDecimal NoWithVeto { get; set; }
 
     }
 }

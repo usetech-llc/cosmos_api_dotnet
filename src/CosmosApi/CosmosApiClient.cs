@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using CosmosApi.Callbacks;
@@ -14,9 +13,9 @@ using CosmosApi.Models;
 using CosmosApi.Serialization;
 using Flurl.Http;
 using Flurl.Http.Configuration;
-using NBitcoin.Secp256k1;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using TaskTupleAwaiter;
+using ISerializer = CosmosApi.Serialization.ISerializer;
 
 namespace CosmosApi
 {
@@ -35,6 +34,10 @@ namespace CosmosApi
             Transactions = new Transactions(GetClient);
             Auth = new Auth(GetClient);
             Bank = new Bank(GetClient);
+            Staking = new Staking(GetClient);
+            Governance = new Governance(GetClient);
+            var jsonSerializerSettings = JsonSerializerSettings();
+            Serializer = new NewtownJsonSerializer(jsonSerializerSettings);
         }
 
         public IGaiaREST GaiaRest { get; }
@@ -42,70 +45,14 @@ namespace CosmosApi
         public ITransactions Transactions { get; }
         public IAuth Auth { get; }
         public IBank Bank { get; }
-        
-        public async Task<BroadcastTxResult> SendAsync(string chainId, string fromAddress, string toAddress, IList<Coin> coins, BroadcastTxMode mode, StdFee fee, string privateKey, string passphrase, string memo = "" , CancellationToken cancellationToken = default)
-        {
-            var account = await Auth.GetAuthAccountByAddressAsync(fromAddress, cancellationToken);
-            
-            var msg = new MsgSend()
-            {
-                FromAddress = fromAddress,
-                ToAddress = toAddress,
-                Amount = coins,
-            };
-            var signMsg = new StdSignDoc()
-            {
-                Fee = fee,
-                Memo = memo,
-                Messages = new List<IMsg>
-                {
-                    msg, 
-                },
-                Sequence = account.Result.GetSequence(),
-                AccountNumber = account.Result.GetAccountNumber(),
-                ChainId = chainId
-            };
-            var bytesToSign = GetSignBytes(signMsg);
-            var key = KeysParser.Parse(privateKey, passphrase);
-            var signedBytes = Sign(bytesToSign, key);
-            var tx = new StdTx()
-            {
-                Msg = new List<IMsg>() { msg },
-                Memo = memo,
-                Fee = fee,
-                Signatures = new List<StdSignature>()
-                {
-                    new StdSignature()
-                    {
-                        Signature = signedBytes,
-                        PubKey = account.Result.GetPublicKey()
-                    }
-                },
-            };
-            
-            cancellationToken.ThrowIfCancellationRequested();
-            return await Transactions.PostBroadcastAsync(new BroadcastTxBody(tx, mode), cancellationToken);
-        }
+        public IStaking Staking { get; }
+        public IGovernance Governance { get; }
 
-        internal byte[] Sign(byte[] bytesToSign, byte[] key)
-        {
-            using var sha = new SHA256Managed();
-            var hashed = sha.ComputeHash(bytesToSign);
-            var ecKey = Context.Instance.CreateECPrivKey(key);
-            var signature = ecKey.SignECDSARFC6979(hashed);
-            var signedBytes = new byte[64];
-            signature.WriteCompactToSpan(signedBytes);
-            return signedBytes;
-        }
+        public HttpClient HttpClient =>
+            _flurlClient?.Value.HttpClient ?? throw new ObjectDisposedException(nameof(CosmosApiClient));
 
-        internal byte[] GetSignBytes(StdSignDoc signMsg)
-        {
-            var jsonSerializerSettings = JsonSerializerSettings();
-            var jObject = JObject.FromObject(signMsg, JsonSerializer.Create(jsonSerializerSettings));
-            JsonSorting.SortJson(jObject);
-            var json = jObject.ToString(Formatting.None, jsonSerializerSettings.Converters.ToArray());
-            return Encoding.UTF8.GetBytes(json);
-        }
+        public ISerializer Serializer { get; }
+        public ICryptoService CryptoService => _settings.CryptoService;
 
         private IFlurlClient GetClient()
         {
@@ -168,6 +115,7 @@ namespace CosmosApi
             if (_settings.BaseUrl != null)
             {
                 client.BaseUrl = _settings.BaseUrl;
+                client.HttpClient.BaseAddress = new Uri(_settings.BaseUrl);
             }
 
             if (_settings.Username != null && _settings.Password != null)
@@ -190,6 +138,7 @@ namespace CosmosApi
                 jsonSerializerSettings.Converters.Add(converter);
             }
 
+            jsonSerializerSettings.Converters.Add(new BigDecimalConverter());
             if (_settings.MsgConverter.JsonNameToType.Any())
             {
                 jsonSerializerSettings.Converters.Add(_settings.MsgConverter);
@@ -201,6 +150,10 @@ namespace CosmosApi
             if (_settings.AccountConverter.JsonNameToType.Any())
             {
                 jsonSerializerSettings.Converters.Add(_settings.AccountConverter);
+            }
+            if (_settings.ProposalContentConverter.JsonNameToType.Any())
+            {
+                jsonSerializerSettings.Converters.Add(_settings.ProposalContentConverter);
             }
             return jsonSerializerSettings;
         }

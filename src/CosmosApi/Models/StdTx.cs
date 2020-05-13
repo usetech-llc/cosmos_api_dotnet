@@ -48,5 +48,9 @@ namespace CosmosApi.Models
         [JsonProperty(PropertyName = "signatures")]
         public IList<StdSignature> Signatures { get; set; } = null!;
 
+        public IList<IMsg> GetMsgs()
+        {
+            return Msg;
+        }
     }
 }

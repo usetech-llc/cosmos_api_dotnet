@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CosmosApi.Serialization;
 using Newtonsoft.Json;
 
 namespace CosmosApi.Models
@@ -15,7 +16,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the Deposit class.
         /// </summary>
-        public Deposit(IList<Coin> amount, string proposalId, string depositor)
+        public Deposit(IList<Coin> amount, ulong proposalId, string depositor)
         {
             Amount = amount;
             ProposalId = proposalId;
@@ -30,7 +31,8 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "proposal_id")]
-        public string ProposalId { get; set; } = null!;
+        [JsonConverter(typeof(StringNumberConverter))]
+        public ulong ProposalId { get; set; }
 
         /// <summary>
         /// </summary>

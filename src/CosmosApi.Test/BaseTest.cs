@@ -28,17 +28,22 @@ namespace CosmosApi.Test
                 .Network;
         }
 
-        public CosmosApiClient CreateClient(string? baseUrl = default)
+        public ICosmosApiClient CreateClient(string? baseUrl = default)
         {
-            return (new CosmosApiBuilder()
+            return ConfigureBuilder(baseUrl)
+                .CreateClient();
+        }
+
+        public ICosmosApiBuilder ConfigureBuilder(string? baseUrl)
+        {
+            return new CosmosApiBuilder()
                 .UseBaseUrl(baseUrl ?? Configuration.GlobalBaseUrl)
                 .Configure(s =>
                 {
                     s.OnAfterCallAsync = OnAfterCall;
                     s.OnBeforeCallAsync = OnBeforeCall;
                 })
-                .RegisterCosmosSdkTypeConverters()
-                .CreateClient() as CosmosApiClient)!;
+                .RegisterCosmosSdkTypeConverters();
         }
 
         private Task OnBeforeCall(BeforeCall beforeCall)
@@ -110,7 +115,7 @@ namespace CosmosApi.Test
         public void WriteLineCutIfTooLong(string message, string cutWarning)
         {
             var punchCardLength = 80 * 12;
-            if (message.Length > punchCardLength * 2)
+            if (Configuration.CutLongOutput && message.Length > punchCardLength * 2)
             {
                 OutputHelper.WriteLine(cutWarning);
                 OutputHelper.WriteLine(message[..(punchCardLength * 2 - 3)] + "...");
