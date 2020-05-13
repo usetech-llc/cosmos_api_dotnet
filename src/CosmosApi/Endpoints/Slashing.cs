@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using CosmosApi.Extensions;
@@ -27,6 +28,22 @@ namespace CosmosApi.Endpoints
         public ResponseWithHeight<ValidatorSigningInfo> GetSigningInfo(string publicKey)
         {
             return GetSigningInfoAsync(publicKey)
+                .Sync();
+        }
+
+        public Task<ResponseWithHeight<IList<ValidatorSigningInfo>>> GetSigningInfosAsync(int? page = default, int? limit = default, CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("slashing", "signing_infos")
+                .SetQueryParam("page", page)
+                .SetQueryParam("limit", limit)
+                .GetJsonAsync<ResponseWithHeight<IList<ValidatorSigningInfo>>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public ResponseWithHeight<IList<ValidatorSigningInfo>> GetSigningInfos(int? page = default, int? limit = default)
+        {
+            return GetSigningInfosAsync(page, limit)
                 .Sync();
         }
     }

@@ -25,5 +25,20 @@ namespace CosmosApi.Test.Endpoints
             
             Assert.NotEmpty(signingInfo.Result.Address);
         }
+
+        [Fact]
+        public async Task GetSigningInfosNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var signingInfos = await client
+                .Slashing
+                .GetSigningInfosAsync();
+            OutputHelper.WriteLine("Deserizalized ValidatorSigningInfos");
+            Dump(signingInfos);
+            
+            Assert.NotEmpty(signingInfos.Result);
+            Assert.All(signingInfos.Result, s => Assert.NotEmpty(s.Address));
+        }
     }
 }
