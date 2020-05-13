@@ -21,6 +21,7 @@ namespace CosmosApi
         IBank Bank { get; }
         IStaking Staking { get; }
         IGovernance Governance { get; }
+        ISlashing Slashing { get; }
         
         HttpClient HttpClient { get; }
         ISerializer Serializer { get; }
