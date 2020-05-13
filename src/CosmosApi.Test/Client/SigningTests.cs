@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
+using CosmosApi.Crypto;
 using CosmosApi.Extensions;
 using CosmosApi.Test.TestData;
 using NBitcoin.Secp256k1;
@@ -41,28 +43,24 @@ namespace CosmosApi.Test.Client
         }
 
         [Fact]
-        public void SignedBytesVerified()
+        public async Task SignedBytesVerified()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
             var random = new Random();
             var bytesToSign = new byte[1024 * 8];
             random.NextBytes(bytesToSign);
             var privateKey = client.CryptoService.ParsePrivateKey(Configuration.LocalAccount1PrivateKey, Configuration.LocalAccount1Passphrase);
-            var keyBytes = privateKey.Value;
-            var key = Context.Instance.CreateECPrivKey(keyBytes);
+            var account = await client.Auth.GetAuthAccountByAddressAsync(Configuration.LocalAccount1Address);
             
             OutputHelper.WriteLine("Signing random bytes:");
             OutputHelper.WriteLine(bytesToSign.ToBase64String());
             OutputHelper.WriteLine("");
 
-            var signedBytes = client.CryptoService.Sign(bytesToSign, keyBytes, privateKey.Type);
+            var signedBytes = client.CryptoService.Sign(bytesToSign, privateKey);
             OutputHelper.WriteLine("Signed bytes:");
             OutputHelper.WriteLine(signedBytes.ToBase64String());
 
-            var publicKey = key.CreatePubKey();
-            SecpECDSASignature.TryCreateFromCompact(signedBytes, out var sign);
-            using var sha = new SHA256Managed();
-            var verificationResult = publicKey.SigVerify(sign!, sha.ComputeHash(bytesToSign));
+            var verificationResult = client.CryptoService.VerifySign(bytesToSign, signedBytes, account.Result.GetPublicKey());
             OutputHelper.WriteLine($"Verification result: {verificationResult}");
             Assert.True(verificationResult);
         }

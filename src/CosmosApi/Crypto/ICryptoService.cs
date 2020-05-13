@@ -15,17 +15,43 @@ namespace CosmosApi.Crypto
         /// <param name="encodedKey"></param>
         /// <param name="passphrase"></param>
         /// <returns></returns>
-        PrivateKey ParsePrivateKey(string encodedKey, string? passphrase);
+        BinaryPrivateKey ParsePrivateKey(string encodedKey, string? passphrase);
+
+        /// <summary>
+        /// Parses public key.
+        /// </summary>
+        /// <param name="publicKey"></param>
+        /// <returns></returns>
+        BinaryPublicKey ParsePublicKey(PublicKey publicKey);
         
         /// <summary>
-        /// 
+        /// Creates a signature for given bytes.
         /// </summary>
         /// <param name="bytesToSign"></param>
         /// <param name="key"></param>
-        /// <param name="keyType"></param>
         /// <returns></returns>
-        byte[] Sign(byte[] bytesToSign, byte[] key, string? keyType);
+        byte[] Sign(byte[] bytesToSign, BinaryPrivateKey key);
 
+        /// <summary>
+        /// Verifies sign.
+        /// </summary>
+        /// <param name="message">Message which was signed.</param>
+        /// <param name="sign"></param>
+        /// <param name="key">Public key of private key used for signing.</param>
+        /// <returns>True if sign successfully verified with key.</returns>
+        bool VerifySign(byte[] message, byte[] sign, BinaryPublicKey key);
+
+        /// <summary>
+        /// Verifies sign.
+        /// </summary>
+        /// <param name="message">Message which was signed.</param>
+        /// <param name="sign"></param>
+        /// <param name="key">Public key of private key used for signing.</param>
+        /// <returns>True if sign successfully verified with key.</returns>
+        public bool VerifySign(byte[] message, byte[] sign, PublicKey key)
+        {
+            return VerifySign(message, sign, ParsePublicKey(key));
+        }
 
         public StdSignature MakeStdSignature(string chainId, ulong accountNumber, ulong sequence, StdFee fee, IList<IMsg> msgs, string memo,
             ISerializer serializer, string encodedPrivateKey, string passphrase, PublicKey? publicKey = default)
@@ -35,12 +61,12 @@ namespace CosmosApi.Crypto
         }
 
         public StdSignature MakeStdSignature(string chainId, ulong accountNumber, ulong sequence, StdFee fee, IList<IMsg> msgs, string memo,
-            ISerializer serializer, PrivateKey privateKey, PublicKey? publicKey = default)
+            ISerializer serializer, BinaryPrivateKey privateKey, PublicKey? publicKey = default)
         {
             var stdSignDoc = new StdSignDoc(accountNumber, chainId, fee, memo, msgs, sequence);
 
             var bytesToSign = Encoding.UTF8.GetBytes(serializer.SerializeSortedAndCompact(stdSignDoc));
-            byte[] signedBytes = Sign(bytesToSign, privateKey.Value, privateKey.Type);
+            byte[] signedBytes = Sign(bytesToSign, privateKey);
 
             if (publicKey?.Type == null ||
                 !string.Equals(privateKey.Type, publicKey.Type, StringComparison.OrdinalIgnoreCase))

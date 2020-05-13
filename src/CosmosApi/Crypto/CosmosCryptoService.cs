@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using CosmosApi.Extensions;
+using CosmosApi.Models;
 using NaCl;
 using NBitcoin.Secp256k1;
 
@@ -12,7 +13,8 @@ namespace CosmosApi.Crypto
 {
     public class CosmosCryptoService : ICryptoService
     {
-        public PrivateKey ParsePrivateKey(string encodedKey, string? passphrase)
+        private const string Secp256k1 = "secp256k1";
+        public BinaryPrivateKey ParsePrivateKey(string encodedKey, string? passphrase)
         {
             var (headers, encryptedBytes) = Unarmor(encodedKey);
 
@@ -28,18 +30,55 @@ namespace CosmosApi.Crypto
             }
 
             var key = MakeKeyEncryptionKey(salt, passphrase ?? throw new ArgumentNullException(nameof(passphrase)));
-            return new PrivateKey(headers.TryGetOrDefault("type"), DecryptXsalsa20(encryptedBytes, key));
-            
+            return new BinaryPrivateKey(headers.TryGetOrDefault("type"), DecryptXsalsa20(encryptedBytes, key));
         }
 
-        public byte[] Sign(byte[] bytesToSign, byte[] key, string? keyType)
+        public BinaryPublicKey ParsePublicKey(PublicKey publicKey)
         {
-            if (keyType == null || string.Equals("secp256k1", keyType, StringComparison.OrdinalIgnoreCase))
+            return new BinaryPublicKey(publicKey.Type, Convert.FromBase64String(publicKey.Value));
+        }
+
+
+        public byte[] Sign(byte[] bytesToSign, BinaryPrivateKey key)
+        {
+            
+            if (IsSecp256k1(key.Type))
             {
-                return SignSecp256k1(bytesToSign, key);
+                return SignSecp256k1(bytesToSign, key.Value);
             }
             
-            throw new NotSupportedException($"Unknown key type {keyType}");
+            throw new NotSupportedException($"Unknown key type {key.Type}");
+        }
+
+        public bool VerifySign(byte[] message, byte[] sign, BinaryPublicKey key)
+        {
+            if (IsSecp256k1(key.Type))
+            {
+                return IsValidSecp256k1(message, sign, key.Value);
+            }
+
+            throw new NotSupportedException($"Unknown key type {key.Type}");
+        }
+
+        private static bool IsSecp256k1(string? type)
+        {
+            return type == null || type.Contains(Secp256k1, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool IsValidSecp256k1(byte[] message, byte[] sign, byte[] keyValue)
+        {
+            if (!Context.Instance.TryCreatePubKey(keyValue, out var key))
+            {
+                throw new ArgumentException($"{Convert.ToBase64String(keyValue)} is not valid {Secp256k1} public key");
+            }
+
+            if (!SecpECDSASignature.TryCreateFromCompact(sign, out var secpEcdsaSignature))
+            {
+                throw new ArgumentException($"Sign parameter is not a valid compact {Secp256k1} signature.");
+            }
+
+            using var sha = new SHA256Managed();
+            return key!.SigVerify(secpEcdsaSignature!, sha.ComputeHash(message));
         }
 
         internal byte[] SignSecp256k1(byte[] bytesToSign, byte[] key)
@@ -91,5 +130,5 @@ namespace CosmosApi.Crypto
             var encryptedBytes = encryptedBytesStream.ToArray();
             return (headers, encryptedBytes);
         }
-   }
+    }
 }
