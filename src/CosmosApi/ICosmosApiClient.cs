@@ -22,6 +22,7 @@ namespace CosmosApi
         IStaking Staking { get; }
         IGovernance Governance { get; }
         ISlashing Slashing { get; }
+        IDistribution Distribution { get; }
         
         HttpClient HttpClient { get; }
         ISerializer Serializer { get; }

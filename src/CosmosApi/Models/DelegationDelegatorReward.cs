@@ -6,6 +6,16 @@ namespace CosmosApi.Models
     public class DelegationDelegatorReward
     {
         /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "validator_address")]
+        public string ValidatorAddress { get; set; } = null!;
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "reward")]
+        public IList<DecCoin> Reward { get; set; } = null!;
+
+        /// <summary>
         /// Initializes a new instance of the DelegationDelegatorReward class.
         /// </summary>
         public DelegationDelegatorReward()
@@ -15,21 +25,10 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the DelegationDelegatorReward class.
         /// </summary>
-        public DelegationDelegatorReward(string validatorAddress, IList<Coin> reward)
+        public DelegationDelegatorReward(string validatorAddress, IList<DecCoin> reward)
         {
             ValidatorAddress = validatorAddress;
             Reward = reward;
         }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "validator_address")]
-        public string ValidatorAddress { get; set; } = null!;
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "reward")]
-        public IList<Coin> Reward { get; set; } = null!;
-
     }
 }

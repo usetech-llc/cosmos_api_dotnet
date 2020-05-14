@@ -37,6 +37,7 @@ namespace CosmosApi
             Staking = new Staking(GetClient);
             Governance = new Governance(GetClient);
             Slashing = new Slashing(GetClient);
+            Distribution = new Distribution(GetClient);
             var jsonSerializerSettings = JsonSerializerSettings();
             Serializer = new NewtownJsonSerializer(jsonSerializerSettings);
         }
@@ -49,6 +50,7 @@ namespace CosmosApi
         public IStaking Staking { get; }
         public IGovernance Governance { get; }
         public ISlashing Slashing { get; }
+        public IDistribution Distribution { get; }
 
         public HttpClient HttpClient =>
             _flurlClient?.Value.HttpClient ?? throw new ObjectDisposedException(nameof(CosmosApiClient));
