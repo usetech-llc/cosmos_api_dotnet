@@ -46,5 +46,39 @@ namespace CosmosApi.Endpoints
             return GetSigningInfosAsync(page, limit)
                 .Sync();
         }
+
+        public Task<GasEstimateResponse> PostUnjailSimulationAsync(string validatorAddress, UnjailRequest request, CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, true);
+            request = new UnjailRequest(baseReq);
+            return _clientGetter()
+                .Request("slashing", "validators", validatorAddress, "unjail")
+                .PostJsonAsync(request, cancellationToken)
+                .ReceiveJson<GasEstimateResponse>()
+                .WrapExceptions();
+        }
+
+        public GasEstimateResponse PostUnjailSimulation(string validatorAddress, UnjailRequest request)
+        {
+            return PostUnjailSimulationAsync(validatorAddress, request)
+                .Sync();
+        }
+
+        public Task<StdTx> PostUnjailAsync(string validatorAddress, UnjailRequest request, CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, false);
+            request = new UnjailRequest(baseReq);
+            return _clientGetter()
+                .Request("slashing", "validators", validatorAddress, "unjail")
+                .PostJsonAsync(request, cancellationToken)
+                .ReceiveJson<StdTx>()
+                .WrapExceptions();
+        }
+
+        public StdTx PostUnjail(string validatorAddress, UnjailRequest request)
+        {
+            return PostUnjailAsync(validatorAddress, request)
+                .Sync();
+        }
     }
 }
