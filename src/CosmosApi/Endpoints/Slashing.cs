@@ -80,5 +80,19 @@ namespace CosmosApi.Endpoints
             return PostUnjailAsync(validatorAddress, request)
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<SlashingParams>> GetParametersAsync(CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("slashing", "parameters")
+                .GetJsonAsync<ResponseWithHeight<SlashingParams>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public ResponseWithHeight<SlashingParams> GetParameters()
+        {
+            return GetParametersAsync()
+                .Sync();
+        }
     }
 }

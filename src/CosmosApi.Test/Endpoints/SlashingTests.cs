@@ -75,5 +75,24 @@ namespace CosmosApi.Test.Endpoints
             Assert.Equal("memo", stdTx.Memo);
             Assert.Equal(Configuration.LocalValidatorAddress, unjailMsg.ValidatorAddr);
         }
+
+        [Fact]
+        public async Task GetParamsNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var slashingParams = await client
+                .Slashing
+                .GetParametersAsync();
+            OutputHelper.WriteLine("Deserialized Slashing Params:");
+            Dump(slashingParams);
+            
+            Assert.True(slashingParams.Result.DowntimeJailDuration > 0);
+            Assert.True(slashingParams.Result.MaxEvidenceAge > 0);
+            Assert.True(slashingParams.Result.SignedBlocksWindow > 0);
+            Assert.True(slashingParams.Result.SlashFractionDowntime > 0);
+            Assert.True(slashingParams.Result.MinSignedPerWindow > 0);
+            Assert.True(slashingParams.Result.SlashFractionDoubleSign > 0);
+        }
     }
 }

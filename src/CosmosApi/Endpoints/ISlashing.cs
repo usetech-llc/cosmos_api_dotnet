@@ -71,5 +71,17 @@ namespace CosmosApi.Endpoints
         /// <param name="request"></param>
         /// <returns></returns>
         StdTx PostUnjail(string validatorAddress, UnjailRequest request);
+
+        /// <summary>
+        /// Get the current slashing parameters.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<SlashingParams>> GetParametersAsync(CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Get the current slashing parameters.
+        /// </summary>
+        /// <returns></returns>
+        ResponseWithHeight<SlashingParams> GetParameters();
     }
 }
