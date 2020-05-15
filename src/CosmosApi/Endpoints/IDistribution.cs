@@ -113,5 +113,33 @@ namespace CosmosApi.Endpoints
         /// <param name="delegatorAddress"></param>
         /// <returns></returns>
         ResponseWithHeight<string> GetWithdrawAddress(string delegatorAddress);
+
+        /// <summary>
+        /// Post a simulation of a replace the delegations' rewards withdrawal address for a new one request.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<GasEstimateResponse> PostWithdrawAddressSimulationAsync(SetWithdrawalAddrRequest request, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Post a simulation of a replace the delegations' rewards withdrawal address for a new one request.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        GasEstimateResponse PostWithdrawAddressSimulation(SetWithdrawalAddrRequest request);
+
+        /// <summary>
+        /// Replace the delegations' rewards withdrawal address for a new one.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<StdTx> PostWithdrawAddressAsync(SetWithdrawalAddrRequest request, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Replace the delegations' rewards withdrawal address for a new one.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        StdTx PostWithdrawAddress(SetWithdrawalAddrRequest request);
     }
 }

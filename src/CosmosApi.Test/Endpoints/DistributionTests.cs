@@ -61,7 +61,7 @@ namespace CosmosApi.Test.Endpoints
             OutputHelper.WriteLine("Deserialized StdTx:");
             Dump(stdTx);
 
-            AssertStdTx(baseRequest, stdTx);
+            CheckStdTx(baseRequest, stdTx);
             var withdrawMsg = stdTx.Msg.OfType<MsgWithdrawDelegatorReward>(); 
             Assert.All(withdrawMsg, w =>
             {
@@ -113,7 +113,7 @@ namespace CosmosApi.Test.Endpoints
             OutputHelper.WriteLine("Deserialized StdTx:");
             Dump(stdTx);
 
-            AssertStdTx(baseRequest, stdTx);
+            CheckStdTx(baseRequest, stdTx);
             var withdrawMsg = stdTx.Msg.OfType<MsgWithdrawDelegatorReward>().First(); 
             Assert.Equal(Configuration.LocalDelegator1Address, withdrawMsg.DelegatorAddress);
             Assert.Equal(Configuration.LocalValidatorAddress, withdrawMsg.ValidatorAddress);
@@ -131,6 +131,45 @@ namespace CosmosApi.Test.Endpoints
             Dump(address);
             
             Assert.NotEmpty(address.Result);
+        }
+
+        [Fact]
+        public async Task PostWithdrawAddressSimulationNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, "memo", null, null, null, null);
+            var request = new SetWithdrawalAddrRequest(baseRequest, Configuration.GlobalDelegator1Address);
+            var gasEstimation = await client
+                .Distribution
+                .PostWithdrawAddressSimulationAsync(request);
+            OutputHelper.WriteLine("Deserialized Gas Estimation:");
+            Dump(gasEstimation);
+            
+            Assert.True(gasEstimation.GasEstimate > 0);
+        }
+
+        [Fact]
+        public async Task PostWithdrawAddressNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, "memo", null, null, null, null);
+            var request = new SetWithdrawalAddrRequest(baseRequest, Configuration.GlobalDelegator1Address);
+            var stdTx = await client
+                .Distribution
+                .PostWithdrawAddressAsync(request);
+            OutputHelper.WriteLine("Deserialized StdTx:");
+            Dump(stdTx);
+            
+            CheckStdTx(baseRequest, stdTx);
+            var msg = stdTx
+                .Msg
+                .OfType<MsgSetWithdrawAddress>()
+                .First();
+            
+            Assert.Equal(Configuration.LocalDelegator1Address, msg.DelegatorAddress);
+            Assert.Equal(Configuration.GlobalDelegator1Address, msg.WithdrawAddress);
         }
     }
 }

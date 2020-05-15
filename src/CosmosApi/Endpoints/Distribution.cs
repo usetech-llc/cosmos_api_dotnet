@@ -128,5 +128,42 @@ namespace CosmosApi.Endpoints
             return GetWithdrawAddressAsync(delegatorAddress)
                 .Sync();
         }
+
+        public Task<GasEstimateResponse> PostWithdrawAddressSimulationAsync(SetWithdrawalAddrRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, true);
+            request = new SetWithdrawalAddrRequest(baseReq, request.WithdrawAddress);
+
+            return _clientGetter()
+                .Request("distribution", "delegators", request.BaseReq.From, "withdraw_address")
+                .PostJsonAsync(request, cancellationToken)
+                .ReceiveJson<GasEstimateResponse>()
+                .WrapExceptions();
+        }
+
+        public GasEstimateResponse PostWithdrawAddressSimulation(SetWithdrawalAddrRequest request)
+        {
+            return PostWithdrawAddressSimulationAsync(request)
+                .Sync();
+        }
+
+        public Task<StdTx> PostWithdrawAddressAsync(SetWithdrawalAddrRequest request, CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, false);
+            request = new SetWithdrawalAddrRequest(baseReq, request.WithdrawAddress);
+
+            return _clientGetter()
+                .Request("distribution", "delegators", request.BaseReq.From, "withdraw_address")
+                .PostJsonAsync(request, cancellationToken)
+                .ReceiveJson<StdTx>()
+                .WrapExceptions();
+        }
+
+        public StdTx PostWithdrawAddress(SetWithdrawalAddrRequest request)
+        {
+            return PostWithdrawAddressAsync(request)
+                .Sync();
+        }
     }
 }

@@ -127,7 +127,7 @@ namespace CosmosApi.Test
             }
         }
 
-        protected void AssertStdTx(BaseReq baseRequest, StdTx stdTx)
+        protected void CheckStdTx(BaseReq baseRequest, StdTx stdTx)
         {
             Assert.Equal(baseRequest.Memo, stdTx.Memo);
         }
