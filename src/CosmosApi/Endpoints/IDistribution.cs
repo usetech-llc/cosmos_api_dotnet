@@ -169,5 +169,20 @@ namespace CosmosApi.Endpoints
         /// <param name="validatorAddress"></param>
         /// <returns></returns>
         ResponseWithHeight<IList<DecCoin>> GetValidatorOutstandingRewards(string validatorAddress);
+
+        /// <summary>
+        /// Query the commission and self-delegation rewards of validator.
+        /// </summary>
+        /// <param name="validatorAddress"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<IList<DecCoin>>> GetValidatorRewardsAsync(string validatorAddress, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Query the commission and self-delegation rewards of validator.
+        /// </summary>
+        /// <param name="validatorAddress"></param>
+        /// <returns></returns>
+        ResponseWithHeight<IList<DecCoin>> GetValidatorRewards(string validatorAddress);
+
     }
 }

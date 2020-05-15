@@ -203,5 +203,20 @@ namespace CosmosApi.Test.Endpoints
             Assert.NotEmpty(rewards.Result);
             Assert.All(rewards.Result, CoinNotEmpty);
         }
+
+        [Fact]
+        public async Task GetValidatorRewardsNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var rewards = await client
+                .Distribution
+                .GetValidatorRewardsAsync(Configuration.LocalValidatorAddress);
+            OutputHelper.WriteLine("Deserialized Rewards");
+            Dump(rewards);
+            
+            Assert.NotEmpty(rewards.Result);
+            Assert.All(rewards.Result, CoinNotEmpty);
+        }
     }
 }

@@ -193,5 +193,19 @@ namespace CosmosApi.Endpoints
             return GetValidatorOutstandingRewardsAsync(validatorAddress)
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<IList<DecCoin>>> GetValidatorRewardsAsync(string validatorAddress, CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("distribution", "validators", validatorAddress, "rewards")
+                .GetJsonAsync<ResponseWithHeight<IList<DecCoin>>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public ResponseWithHeight<IList<DecCoin>> GetValidatorRewards(string validatorAddress)
+        {
+            return GetValidatorRewardsAsync(validatorAddress)
+                .Sync();
+        }
     }
 }
