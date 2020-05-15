@@ -141,5 +141,19 @@ namespace CosmosApi.Endpoints
         /// <param name="request"></param>
         /// <returns></returns>
         StdTx PostWithdrawAddress(SetWithdrawalAddrRequest request);
+
+        /// <summary>
+        /// Query the distribution information of a single validator.
+        /// </summary>
+        /// <param name="validatorAddress"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<ValidatorDistInfo>> GetValidatorDistributionInfoAsync(string validatorAddress, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Query the distribution information of a single validator.
+        /// </summary>
+        /// <param name="validatorAddress"></param>
+        /// <returns></returns>
+        ResponseWithHeight<ValidatorDistInfo> GetValidatorDistributionInfo(string validatorAddress);
     }
 }

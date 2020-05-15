@@ -165,5 +165,19 @@ namespace CosmosApi.Endpoints
             return PostWithdrawAddressAsync(request)
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<ValidatorDistInfo>> GetValidatorDistributionInfoAsync(string validatorAddress, CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("distribution", "validators", validatorAddress)
+                .GetJsonAsync<ResponseWithHeight<ValidatorDistInfo>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public ResponseWithHeight<ValidatorDistInfo> GetValidatorDistributionInfo(string validatorAddress)
+        {
+            return GetValidatorDistributionInfoAsync(validatorAddress)
+                .Sync();
+        }
     }
 }

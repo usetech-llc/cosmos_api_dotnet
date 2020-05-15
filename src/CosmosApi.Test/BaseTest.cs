@@ -131,5 +131,17 @@ namespace CosmosApi.Test
         {
             Assert.Equal(baseRequest.Memo, stdTx.Memo);
         }
+
+        protected void CoinNotEmpty(DecCoin coin)
+        {
+            Assert.NotEmpty(coin.Denom);
+            Assert.True(coin.Amount > 0);
+        }
+
+        protected void CoinNotEmpty(Coin coin)
+        {
+            Assert.NotEmpty(coin.Denom);
+            Assert.True(coin.Amount > 0);
+        }
     }
 }

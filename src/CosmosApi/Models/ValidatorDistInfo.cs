@@ -15,7 +15,7 @@ namespace CosmosApi.Models
         /// <summary>
         /// Initializes a new instance of the ValidatorDistInfo class.
         /// </summary>
-        public ValidatorDistInfo(string operatorAddress, IList<Coin> selfBondRewards, IList<Coin> valCommission)
+        public ValidatorDistInfo(string operatorAddress, IList<DecCoin> selfBondRewards, IList<DecCoin> valCommission)
         {
             OperatorAddress = operatorAddress;
             SelfBondRewards = selfBondRewards;
@@ -30,12 +30,12 @@ namespace CosmosApi.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "self_bond_rewards")]
-        public IList<Coin> SelfBondRewards { get; set; } = null!;
+        public IList<DecCoin> SelfBondRewards { get; set; } = null!;
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "val_commission")]
-        public IList<Coin> ValCommission { get; set; } = null!;
+        public IList<DecCoin> ValCommission { get; set; } = null!;
 
     }
 }

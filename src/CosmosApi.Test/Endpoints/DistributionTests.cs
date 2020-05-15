@@ -171,5 +171,22 @@ namespace CosmosApi.Test.Endpoints
             Assert.Equal(Configuration.LocalDelegator1Address, msg.DelegatorAddress);
             Assert.Equal(Configuration.GlobalDelegator1Address, msg.WithdrawAddress);
         }
+
+        [Fact]
+        public async Task GetValidatorDistributionInfoNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var distributionInfo = await client
+                .Distribution
+                .GetValidatorDistributionInfoAsync(Configuration.LocalValidatorAddress);
+            OutputHelper.WriteLine("Deserialized Distribution Info:");
+            Dump(distributionInfo);
+            Assert.NotEmpty(distributionInfo.Result.OperatorAddress);
+            Assert.NotEmpty(distributionInfo.Result.ValCommission);
+            Assert.NotEmpty(distributionInfo.Result.SelfBondRewards);
+            Assert.All(distributionInfo.Result.ValCommission, CoinNotEmpty);
+            Assert.All(distributionInfo.Result.SelfBondRewards, CoinNotEmpty);
+        }
     }
 }
