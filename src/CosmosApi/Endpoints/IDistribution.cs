@@ -99,5 +99,19 @@ namespace CosmosApi.Endpoints
         /// <param name="request"></param>
         /// <returns></returns>
         StdTx PostWithdrawRewards(string validatorAddress, WithdrawRewardsRequest request);
+
+        /// <summary>
+        /// Get the delegations' rewards withdrawal address. This is the address in which the user will receive the reward funds.
+        /// </summary>
+        /// <param name="delegatorAddress"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<string>> GetWithdrawAddressAsync(string delegatorAddress, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Get the delegations' rewards withdrawal address. This is the address in which the user will receive the reward funds.
+        /// </summary>
+        /// <param name="delegatorAddress"></param>
+        /// <returns></returns>
+        ResponseWithHeight<string> GetWithdrawAddress(string delegatorAddress);
     }
 }

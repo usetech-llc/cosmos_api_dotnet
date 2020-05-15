@@ -114,5 +114,19 @@ namespace CosmosApi.Endpoints
             return PostWithdrawRewardsAsync(validatorAddress, request)
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<string>> GetWithdrawAddressAsync(string delegatorAddress, CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("distribution", "delegators", delegatorAddress, "withdraw_address")
+                .GetJsonAsync<ResponseWithHeight<string>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public ResponseWithHeight<string> GetWithdrawAddress(string delegatorAddress)
+        {
+            return GetWithdrawAddressAsync(delegatorAddress)
+                .Sync();
+        }
     }
 }

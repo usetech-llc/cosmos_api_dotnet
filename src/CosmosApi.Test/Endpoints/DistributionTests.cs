@@ -118,5 +118,19 @@ namespace CosmosApi.Test.Endpoints
             Assert.Equal(Configuration.LocalDelegator1Address, withdrawMsg.DelegatorAddress);
             Assert.Equal(Configuration.LocalValidatorAddress, withdrawMsg.ValidatorAddress);
         }
+
+        [Fact]
+        public async Task GetWithdrawAddressNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var address = await client
+                .Distribution
+                .GetWithdrawAddressAsync(Configuration.LocalDelegator1Address);
+            OutputHelper.WriteLine("Deserialized Address:");
+            Dump(address);
+            
+            Assert.NotEmpty(address.Result);
+        }
     }
 }
