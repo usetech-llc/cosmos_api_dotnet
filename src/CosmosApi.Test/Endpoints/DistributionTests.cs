@@ -85,5 +85,38 @@ namespace CosmosApi.Test.Endpoints
             Assert.All(rewards.Result, c => Assert.NotEmpty(c.Denom));
             Assert.All(rewards.Result, c => Assert.True(c.Amount > 0));
         }
+
+        [Fact]
+        public async Task PostWithdrawRewardsSimulationFromValidatorNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, "memo", null, null, null, null);
+            var gasEstimation = await client
+                .Distribution
+                .PostWithdrawRewardsSimulationAsync(Configuration.LocalValidatorAddress, new WithdrawRewardsRequest(baseRequest));
+            OutputHelper.WriteLine("Deserialized Gas Estimation:");
+            Dump(gasEstimation);
+            
+            Assert.True(gasEstimation.GasEstimate > 0);
+        }
+        
+        [Fact]
+        public async Task PostWithdrawRewardsFromValidatorNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, "memo", null, null, null, null);
+            var stdTx = await client
+                .Distribution
+                .PostWithdrawRewardsAsync(Configuration.LocalValidatorAddress, new WithdrawRewardsRequest(baseRequest));
+            OutputHelper.WriteLine("Deserialized StdTx:");
+            Dump(stdTx);
+
+            AssertStdTx(baseRequest, stdTx);
+            var withdrawMsg = stdTx.Msg.OfType<MsgWithdrawDelegatorReward>().First(); 
+            Assert.Equal(Configuration.LocalDelegator1Address, withdrawMsg.DelegatorAddress);
+            Assert.Equal(Configuration.LocalValidatorAddress, withdrawMsg.ValidatorAddress);
+        }
     }
 }

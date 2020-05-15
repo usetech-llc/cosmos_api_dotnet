@@ -79,5 +79,40 @@ namespace CosmosApi.Endpoints
             return GetDelegatorRewardsAsync(delegatorAddress, validatorAddress)
                 .Sync();
         }
+
+        public Task<GasEstimateResponse> PostWithdrawRewardsSimulationAsync(string validatorAddress, WithdrawRewardsRequest request, CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, true);
+
+            return _clientGetter()
+                .Request("distribution", "delegators", baseReq.From, "rewards", validatorAddress)
+                .PostJsonAsync(new WithdrawRewardsRequest(baseReq), cancellationToken)
+                .ReceiveJson<GasEstimateResponse>()
+                .WrapExceptions();
+        }
+
+        public GasEstimateResponse PostWithdrawRewardsSimulation(string validatorAddress, WithdrawRewardsRequest request)
+        {
+            return PostWithdrawRewardsSimulationAsync(validatorAddress, request)
+                .Sync();
+        }
+
+        public Task<StdTx> PostWithdrawRewardsAsync(string validatorAddress, WithdrawRewardsRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, false);
+
+            return _clientGetter()
+                .Request("distribution", "delegators", baseReq.From, "rewards", validatorAddress)
+                .PostJsonAsync(new WithdrawRewardsRequest(baseReq), cancellationToken)
+                .ReceiveJson<StdTx>()
+                .WrapExceptions();
+        }
+
+        public StdTx PostWithdrawRewards(string validatorAddress, WithdrawRewardsRequest request)
+        {
+            return PostWithdrawRewardsAsync(validatorAddress, request)
+                .Sync();
+        }
     }
 }
