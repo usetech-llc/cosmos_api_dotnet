@@ -188,5 +188,20 @@ namespace CosmosApi.Test.Endpoints
             Assert.All(distributionInfo.Result.ValCommission, CoinNotEmpty);
             Assert.All(distributionInfo.Result.SelfBondRewards, CoinNotEmpty);
         }
+
+        [Fact]
+        public async Task GetValidatorOutstandingRewardsNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var rewards = await client
+                .Distribution
+                .GetValidatorOutstandingRewardsAsync(Configuration.LocalValidatorAddress);
+            OutputHelper.WriteLine("Deserialized Rewards");
+            Dump(rewards);
+            
+            Assert.NotEmpty(rewards.Result);
+            Assert.All(rewards.Result, CoinNotEmpty);
+        }
     }
 }
