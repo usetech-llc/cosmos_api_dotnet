@@ -87,7 +87,7 @@ namespace CosmosApi
                 configuration.MsgConverter.AddType<MsgSubmitProposal>("cosmos-sdk/MsgSubmitProposal");
                 configuration.MsgConverter.AddType<MsgVerifyInvariant>("cosmos-sdk/MsgVerifyInvariant");
                 configuration.MsgConverter.AddType<MsgSetWithdrawAddress>("cosmos-sdk/MsgSetWithdrawAddress");
-                configuration.MsgConverter.AddType<MsgWithdrawDelegatorReward>("cosmos-sdk/MsgWithdrawDelegatorReward");
+                configuration.MsgConverter.AddType<MsgWithdrawDelegatorReward>("cosmos-sdk/MsgWithdrawDelegationReward");
                 configuration.MsgConverter.AddType<MsgWithdrawValidatorCommission>("cosmos-sdk/MsgWithdrawValidatorCommission");
                 configuration.MsgConverter.AddType<MsgDeposit>("cosmos-sdk/MsgDeposit");
                 configuration.MsgConverter.AddType<MsgVote>("cosmos-sdk/MsgVote");

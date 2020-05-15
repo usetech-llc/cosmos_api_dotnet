@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using CosmosApi.Callbacks;
 using CosmosApi.Models;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace CosmosApi.Test
@@ -124,6 +125,11 @@ namespace CosmosApi.Test
             {
                 OutputHelper.WriteLine(message);
             }
+        }
+
+        protected void AssertStdTx(BaseReq baseRequest, StdTx stdTx)
+        {
+            Assert.Equal(baseRequest.Memo, stdTx.Memo);
         }
     }
 }

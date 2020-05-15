@@ -22,5 +22,33 @@ namespace CosmosApi.Endpoints
         /// <param name="delegatorAddress"></param>
         /// <returns></returns>
         ResponseWithHeight<DelegatorTotalRewards> GetDelegatorRewards(string delegatorAddress);
+
+        /// <summary>
+        /// Post a simulation for a withdraw all delegator rewards request.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<GasEstimateResponse> PostWithdrawRewardsSimulationAsync(WithdrawRewardsRequest request, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Post a simulation for a withdraw all delegator rewards request.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        GasEstimateResponse PostWithdrawRewardsSimulation(WithdrawRewardsRequest request);
+ 
+        /// <summary>
+        /// Post a simulation for a withdraw all delegator rewards request.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<StdTx> PostWithdrawRewardsAsync(WithdrawRewardsRequest request, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Post a simulation for a withdraw all delegator rewards request.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        StdTx PostWithdrawRewards(WithdrawRewardsRequest request);
     }
 }
