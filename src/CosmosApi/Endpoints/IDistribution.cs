@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using CosmosApi.Models;
 
@@ -50,5 +51,21 @@ namespace CosmosApi.Endpoints
         /// <param name="request"></param>
         /// <returns></returns>
         StdTx PostWithdrawRewards(WithdrawRewardsRequest request);
+
+        /// <summary>
+        /// Get the total rewards balance from all delegations.
+        /// </summary>
+        /// <param name="delegatorAddress"></param>
+        /// <param name="validatorAddress"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<IList<DecCoin>>> GetDelegatorRewardsAsync(string delegatorAddress, string validatorAddress, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Get the total rewards balance from all delegations.
+        /// </summary>
+        /// <param name="delegatorAddress"></param>
+        /// <param name="validatorAddress"></param>
+        /// <returns></returns>
+        ResponseWithHeight<IList<DecCoin>> GetDelegatorRewards(string delegatorAddress, string validatorAddress);
     }
 }

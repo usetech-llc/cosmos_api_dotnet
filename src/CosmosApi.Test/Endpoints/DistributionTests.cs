@@ -69,5 +69,21 @@ namespace CosmosApi.Test.Endpoints
                 Assert.NotEmpty(w.ValidatorAddress);
             });
         }
+
+        [Fact]
+        public async Task GetDelegatorRewardsFromValidatorNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var rewards = await client
+                .Distribution
+                .GetDelegatorRewardsAsync(Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress);
+
+            OutputHelper.WriteLine("Deserialized Rewards:");
+            Dump(rewards);
+            Assert.NotEmpty(rewards.Result);
+            Assert.All(rewards.Result, c => Assert.NotEmpty(c.Denom));
+            Assert.All(rewards.Result, c => Assert.True(c.Amount > 0));
+        }
     }
 }
