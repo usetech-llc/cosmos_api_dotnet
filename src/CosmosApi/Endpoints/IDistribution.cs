@@ -234,5 +234,20 @@ namespace CosmosApi.Endpoints
         /// <param name="request"></param>
         /// <returns></returns>
         StdTx PostValidatorWithdrawRewards(string validatorAddress, WithdrawRewardsRequest request);
+
+        /// <summary>
+        /// Community pool parameters.
+        /// </summary>
+        /// <param name="height"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<IList<DecCoin>>> GetCommunityPoolAsync(long? height = default, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Community pool parameters.
+        /// </summary>
+        /// <param name="height"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        ResponseWithHeight<IList<DecCoin>> GetCommunityPool(long? height = default);
     }
 }

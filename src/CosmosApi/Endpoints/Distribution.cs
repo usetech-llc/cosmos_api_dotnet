@@ -242,5 +242,19 @@ namespace CosmosApi.Endpoints
             return PostValidatorWithdrawRewardsAsync(validatorAddress, request)
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<IList<DecCoin>>> GetCommunityPoolAsync(long? height = default, CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("distribution", "community_pool")
+                .SetQueryParam("height")
+                .GetJsonAsync<ResponseWithHeight<IList<DecCoin>>>(cancellationToken);
+        }
+
+        public ResponseWithHeight<IList<DecCoin>> GetCommunityPool(long? height = default)
+        {
+            return GetCommunityPoolAsync(height)
+                .Sync();
+        }
     }
 }

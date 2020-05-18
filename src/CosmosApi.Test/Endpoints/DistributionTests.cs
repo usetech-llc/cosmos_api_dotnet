@@ -255,5 +255,17 @@ namespace CosmosApi.Test.Endpoints
             });
         }
 
+        [Fact]
+        public async Task GetCommunityPoolNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var communityPool = await client
+                .Distribution
+                .GetCommunityPoolAsync();
+            
+            Assert.NotEmpty(communityPool.Result);
+            Assert.All(communityPool.Result, CoinNotEmpty);
+        }
     }
 }
