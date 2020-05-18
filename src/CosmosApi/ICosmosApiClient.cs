@@ -23,6 +23,7 @@ namespace CosmosApi
         IGovernance Governance { get; }
         ISlashing Slashing { get; }
         IDistribution Distribution { get; }
+        IMint Mint { get; }
         
         HttpClient HttpClient { get; }
         ISerializer Serializer { get; }

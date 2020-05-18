@@ -1,0 +1,32 @@
+﻿using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace CosmosApi.Test.Endpoints
+{
+    public class MintTests : BaseTest
+    {
+        public MintTests(ITestOutputHelper outputHelper) : base(outputHelper)
+        {
+        }
+
+        [Fact]
+        public async Task GetParamsNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var @params = await client
+                .Mint
+                .GetParamsAsync();
+            OutputHelper.WriteLine("Deserialized Mint Params:");
+            Dump(@params);
+            
+            Assert.NotEmpty(@params.Result.MintDenom);
+            Assert.True(@params.Result.GoalBonded > 0);
+            Assert.True(@params.Result.InflationMax > 0);
+            Assert.True(@params.Result.InflationMin > 0);
+            Assert.True(@params.Result.InflationRateChange > 0);
+            Assert.True(@params.Result.BlocksPerYear > 0);
+        }
+    }
+}
