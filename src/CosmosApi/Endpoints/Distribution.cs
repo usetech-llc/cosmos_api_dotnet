@@ -31,38 +31,38 @@ namespace CosmosApi.Endpoints
                 .Sync();
         }
 
-        public Task<GasEstimateResponse> PostWithdrawRewardsSimulationAsync(WithdrawRewardsRequest request,
+        public Task<GasEstimateResponse> PostWithdrawRewardsSimulationAsync(string delegatorAddress, WithdrawRewardsRequest request,
             CancellationToken cancellationToken = default)
         {
             var baseReq = new BaseReqWithSimulate(request.BaseReq, true);
 
             return _clientGetter()
-                .Request("distribution", "delegators", baseReq.From, "rewards")
+                .Request("distribution", "delegators", delegatorAddress, "rewards")
                 .PostJsonAsync(new WithdrawRewardsRequest(baseReq), cancellationToken)
                 .ReceiveJson<GasEstimateResponse>()
                 .WrapExceptions();
         }
 
-        public GasEstimateResponse PostWithdrawRewardsSimulation(WithdrawRewardsRequest request)
+        public GasEstimateResponse PostWithdrawRewardsSimulation(string delegatorAddress, WithdrawRewardsRequest request)
         {
-            return PostWithdrawRewardsSimulationAsync(request)
+            return PostWithdrawRewardsSimulationAsync(delegatorAddress, request)
                 .Sync();
         }
 
-        public Task<StdTx> PostWithdrawRewardsAsync(WithdrawRewardsRequest request, CancellationToken cancellationToken = default)
+        public Task<StdTx> PostWithdrawRewardsAsync(string delegatorAddress, WithdrawRewardsRequest request, CancellationToken cancellationToken = default)
         {
             var baseReq = new BaseReqWithSimulate(request.BaseReq, false);
 
             return _clientGetter()
-                .Request("distribution", "delegators", baseReq.From, "rewards")
+                .Request("distribution", "delegators", delegatorAddress, "rewards")
                 .PostJsonAsync(new WithdrawRewardsRequest(baseReq), cancellationToken)
                 .ReceiveJson<StdTx>()
                 .WrapExceptions();
         }
 
-        public StdTx PostWithdrawRewards(WithdrawRewardsRequest request)
+        public StdTx PostWithdrawRewards(string delegatorAddress, WithdrawRewardsRequest request)
         {
-            return PostWithdrawRewardsAsync(request)
+            return PostWithdrawRewardsAsync(delegatorAddress, request)
                 .Sync();
         }
 
@@ -80,38 +80,38 @@ namespace CosmosApi.Endpoints
                 .Sync();
         }
 
-        public Task<GasEstimateResponse> PostWithdrawRewardsSimulationAsync(string validatorAddress, WithdrawRewardsRequest request, CancellationToken cancellationToken = default)
+        public Task<GasEstimateResponse> PostWithdrawRewardsSimulationAsync(string delegatorAddress, string validatorAddress, WithdrawRewardsRequest request, CancellationToken cancellationToken = default)
         {
             var baseReq = new BaseReqWithSimulate(request.BaseReq, true);
 
             return _clientGetter()
-                .Request("distribution", "delegators", baseReq.From, "rewards", validatorAddress)
+                .Request("distribution", "delegators", delegatorAddress, "rewards", validatorAddress)
                 .PostJsonAsync(new WithdrawRewardsRequest(baseReq), cancellationToken)
                 .ReceiveJson<GasEstimateResponse>()
                 .WrapExceptions();
         }
 
-        public GasEstimateResponse PostWithdrawRewardsSimulation(string validatorAddress, WithdrawRewardsRequest request)
+        public GasEstimateResponse PostWithdrawRewardsSimulation(string delegatorAddress, string validatorAddress, WithdrawRewardsRequest request)
         {
-            return PostWithdrawRewardsSimulationAsync(validatorAddress, request)
+            return PostWithdrawRewardsSimulationAsync(delegatorAddress, validatorAddress, request)
                 .Sync();
         }
 
-        public Task<StdTx> PostWithdrawRewardsAsync(string validatorAddress, WithdrawRewardsRequest request,
+        public Task<StdTx> PostWithdrawRewardsAsync(string delegatorAddress, string validatorAddress, WithdrawRewardsRequest request,
             CancellationToken cancellationToken = default)
         {
             var baseReq = new BaseReqWithSimulate(request.BaseReq, false);
 
             return _clientGetter()
-                .Request("distribution", "delegators", baseReq.From, "rewards", validatorAddress)
+                .Request("distribution", "delegators", delegatorAddress, "rewards", validatorAddress)
                 .PostJsonAsync(new WithdrawRewardsRequest(baseReq), cancellationToken)
                 .ReceiveJson<StdTx>()
                 .WrapExceptions();
         }
 
-        public StdTx PostWithdrawRewards(string validatorAddress, WithdrawRewardsRequest request)
+        public StdTx PostWithdrawRewards(string delegatorAddress, string validatorAddress, WithdrawRewardsRequest request)
         {
-            return PostWithdrawRewardsAsync(validatorAddress, request)
+            return PostWithdrawRewardsAsync(delegatorAddress, validatorAddress, request)
                 .Sync();
         }
 
@@ -129,40 +129,40 @@ namespace CosmosApi.Endpoints
                 .Sync();
         }
 
-        public Task<GasEstimateResponse> PostWithdrawAddressSimulationAsync(SetWithdrawalAddrRequest request,
+        public Task<GasEstimateResponse> PostWithdrawAddressSimulationAsync(string delegatorAddress, SetWithdrawalAddrRequest request,
             CancellationToken cancellationToken = default)
         {
             var baseReq = new BaseReqWithSimulate(request.BaseReq, true);
             request = new SetWithdrawalAddrRequest(baseReq, request.WithdrawAddress);
 
             return _clientGetter()
-                .Request("distribution", "delegators", request.BaseReq.From, "withdraw_address")
+                .Request("distribution", "delegators", delegatorAddress, "withdraw_address")
                 .PostJsonAsync(request, cancellationToken)
                 .ReceiveJson<GasEstimateResponse>()
                 .WrapExceptions();
         }
 
-        public GasEstimateResponse PostWithdrawAddressSimulation(SetWithdrawalAddrRequest request)
+        public GasEstimateResponse PostWithdrawAddressSimulation(string delegatorAddress, SetWithdrawalAddrRequest request)
         {
-            return PostWithdrawAddressSimulationAsync(request)
+            return PostWithdrawAddressSimulationAsync(delegatorAddress, request)
                 .Sync();
         }
 
-        public Task<StdTx> PostWithdrawAddressAsync(SetWithdrawalAddrRequest request, CancellationToken cancellationToken = default)
+        public Task<StdTx> PostWithdrawAddressAsync(string delegatorAddress, SetWithdrawalAddrRequest request, CancellationToken cancellationToken = default)
         {
             var baseReq = new BaseReqWithSimulate(request.BaseReq, false);
             request = new SetWithdrawalAddrRequest(baseReq, request.WithdrawAddress);
 
             return _clientGetter()
-                .Request("distribution", "delegators", request.BaseReq.From, "withdraw_address")
+                .Request("distribution", "delegators", delegatorAddress, "withdraw_address")
                 .PostJsonAsync(request, cancellationToken)
                 .ReceiveJson<StdTx>()
                 .WrapExceptions();
         }
 
-        public StdTx PostWithdrawAddress(SetWithdrawalAddrRequest request)
+        public StdTx PostWithdrawAddress(string delegatorAddress, SetWithdrawalAddrRequest request)
         {
-            return PostWithdrawAddressAsync(request)
+            return PostWithdrawAddressAsync(delegatorAddress, request)
                 .Sync();
         }
 
@@ -205,6 +205,41 @@ namespace CosmosApi.Endpoints
         public ResponseWithHeight<IList<DecCoin>> GetValidatorRewards(string validatorAddress)
         {
             return GetValidatorRewardsAsync(validatorAddress)
+                .Sync();
+        }
+
+        public Task<GasEstimateResponse> PostValidatorWithdrawRewardsSimulationAsync(string validatorAddress, WithdrawRewardsRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, true);
+
+            return _clientGetter()
+                .Request("distribution", "validators", validatorAddress, "rewards")
+                .PostJsonAsync(new WithdrawRewardsRequest(baseReq), cancellationToken)
+                .ReceiveJson<GasEstimateResponse>()
+                .WrapExceptions();
+        }
+
+        public GasEstimateResponse PostValidatorWithdrawRewardsSimulation(string validatorAddress, WithdrawRewardsRequest request)
+        {
+            return PostValidatorWithdrawRewardsSimulationAsync(validatorAddress, request)
+                .Sync();
+        }
+
+        public Task<StdTx> PostValidatorWithdrawRewardsAsync(string validatorAddress, WithdrawRewardsRequest request, CancellationToken cancellationToken = default)
+        {
+            var baseReq = new BaseReqWithSimulate(request.BaseReq, false);
+
+            return _clientGetter()
+                .Request("distribution", "validators", validatorAddress, "rewards")
+                .PostJsonAsync(new WithdrawRewardsRequest(baseReq), cancellationToken)
+                .ReceiveJson<StdTx>()
+                .WrapExceptions();
+        }
+
+        public StdTx PostValidatorWithdrawRewards(string validatorAddress, WithdrawRewardsRequest request)
+        {
+            return PostValidatorWithdrawRewardsAsync(validatorAddress, request)
                 .Sync();
         }
     }

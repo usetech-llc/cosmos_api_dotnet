@@ -39,10 +39,10 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, "memo", null, null, null, null);
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalAccount1Address, "memo", null, null, null, null);
             var gasEstimation = await client
                 .Distribution
-                .PostWithdrawRewardsSimulationAsync(new WithdrawRewardsRequest(baseRequest));
+                .PostWithdrawRewardsSimulationAsync(Configuration.LocalDelegator1Address, new WithdrawRewardsRequest(baseRequest));
             OutputHelper.WriteLine("Deserialized Gas Estimation:");
             Dump(gasEstimation);
             
@@ -54,10 +54,10 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, "memo", null, null, null, null);
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalAccount1Address, "memo", null, null, null, null);
             var stdTx = await client
                 .Distribution
-                .PostWithdrawRewardsAsync(new WithdrawRewardsRequest(baseRequest));
+                .PostWithdrawRewardsAsync(Configuration.LocalDelegator1Address, new WithdrawRewardsRequest(baseRequest));
             OutputHelper.WriteLine("Deserialized StdTx:");
             Dump(stdTx);
 
@@ -91,10 +91,10 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, "memo", null, null, null, null);
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalAccount1Address, "memo", null, null, null, null);
             var gasEstimation = await client
                 .Distribution
-                .PostWithdrawRewardsSimulationAsync(Configuration.LocalValidatorAddress, new WithdrawRewardsRequest(baseRequest));
+                .PostWithdrawRewardsSimulationAsync(Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress, new WithdrawRewardsRequest(baseRequest));
             OutputHelper.WriteLine("Deserialized Gas Estimation:");
             Dump(gasEstimation);
             
@@ -106,10 +106,10 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, "memo", null, null, null, null);
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalAccount1Address, "memo", null, null, null, null);
             var stdTx = await client
                 .Distribution
-                .PostWithdrawRewardsAsync(Configuration.LocalValidatorAddress, new WithdrawRewardsRequest(baseRequest));
+                .PostWithdrawRewardsAsync(Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress, new WithdrawRewardsRequest(baseRequest));
             OutputHelper.WriteLine("Deserialized StdTx:");
             Dump(stdTx);
 
@@ -138,11 +138,11 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, "memo", null, null, null, null);
-            var request = new SetWithdrawalAddrRequest(baseRequest, Configuration.GlobalDelegator1Address);
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalAccount1Address, "memo", null, null, null, null);
+            var request = new SetWithdrawalAddrRequest(baseRequest, Configuration.LocalAccount1Address);
             var gasEstimation = await client
                 .Distribution
-                .PostWithdrawAddressSimulationAsync(request);
+                .PostWithdrawAddressSimulationAsync(Configuration.LocalDelegator1Address, request);
             OutputHelper.WriteLine("Deserialized Gas Estimation:");
             Dump(gasEstimation);
             
@@ -154,11 +154,11 @@ namespace CosmosApi.Test.Endpoints
         {
             using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, "memo", null, null, null, null);
-            var request = new SetWithdrawalAddrRequest(baseRequest, Configuration.GlobalDelegator1Address);
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalAccount1Address, "memo", null, null, null, null);
+            var request = new SetWithdrawalAddrRequest(baseRequest, Configuration.LocalAccount1Address);
             var stdTx = await client
                 .Distribution
-                .PostWithdrawAddressAsync(request);
+                .PostWithdrawAddressAsync(Configuration.LocalDelegator1Address, request);
             OutputHelper.WriteLine("Deserialized StdTx:");
             Dump(stdTx);
             
@@ -169,7 +169,7 @@ namespace CosmosApi.Test.Endpoints
                 .First();
             
             Assert.Equal(Configuration.LocalDelegator1Address, msg.DelegatorAddress);
-            Assert.Equal(Configuration.GlobalDelegator1Address, msg.WithdrawAddress);
+            Assert.Equal(Configuration.LocalAccount1Address, msg.WithdrawAddress);
         }
 
         [Fact]
@@ -218,5 +218,42 @@ namespace CosmosApi.Test.Endpoints
             Assert.NotEmpty(rewards.Result);
             Assert.All(rewards.Result, CoinNotEmpty);
         }
+        
+        [Fact]
+        public async Task PostValidatorWithdrawRewardsSimulation()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, "memo", null, null, null, null);
+            var gasEstimation = await client
+                .Distribution
+                .PostValidatorWithdrawRewardsSimulationAsync(Configuration.LocalValidatorAddress, new WithdrawRewardsRequest(baseRequest));
+            OutputHelper.WriteLine("Deserialized Gas Estimation:");
+            Dump(gasEstimation);
+            
+            Assert.True(gasEstimation.GasEstimate > 0);
+        }
+
+        [Fact]
+        public async Task PostValidatorWithdrawRewards()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, "memo", null, null, null, null);
+            var stdTx = await client
+                .Distribution
+                .PostValidatorWithdrawRewardsAsync(Configuration.LocalValidatorAddress, new WithdrawRewardsRequest(baseRequest));
+            OutputHelper.WriteLine("Deserialized StdTx:");
+            Dump(stdTx);
+
+            CheckStdTx(baseRequest, stdTx);
+            var withdrawMsg = stdTx.Msg.OfType<MsgWithdrawDelegatorReward>(); 
+            Assert.All(withdrawMsg, w =>
+            {
+                Assert.NotEmpty(w.DelegatorAddress);
+                Assert.Equal(Configuration.LocalValidatorAddress, w.ValidatorAddress);
+            });
+        }
+
     }
 }

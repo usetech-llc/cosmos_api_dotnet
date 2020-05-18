@@ -27,30 +27,36 @@ namespace CosmosApi.Endpoints
         /// <summary>
         /// Post a simulation for a withdraw all delegator rewards request.
         /// </summary>
+        /// <param name="delegatorAddress"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<GasEstimateResponse> PostWithdrawRewardsSimulationAsync(WithdrawRewardsRequest request, CancellationToken cancellationToken = default);
+        Task<GasEstimateResponse> PostWithdrawRewardsSimulationAsync(string delegatorAddress, WithdrawRewardsRequest request, CancellationToken cancellationToken = default);
+
         /// <summary>
         /// Post a simulation for a withdraw all delegator rewards request.
         /// </summary>
+        /// <param name="delegatorAddress"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        GasEstimateResponse PostWithdrawRewardsSimulation(WithdrawRewardsRequest request);
- 
+        GasEstimateResponse PostWithdrawRewardsSimulation(string delegatorAddress, WithdrawRewardsRequest request);
+
         /// <summary>
         /// Post a simulation for a withdraw all delegator rewards request.
         /// </summary>
+        /// <param name="delegatorAddress"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<StdTx> PostWithdrawRewardsAsync(WithdrawRewardsRequest request, CancellationToken cancellationToken = default);
+        Task<StdTx> PostWithdrawRewardsAsync(string delegatorAddress, WithdrawRewardsRequest request, CancellationToken cancellationToken = default);
+
         /// <summary>
         /// Post a simulation for a withdraw all delegator rewards request.
         /// </summary>
+        /// <param name="delegatorAddress"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        StdTx PostWithdrawRewards(WithdrawRewardsRequest request);
+        StdTx PostWithdrawRewards(string delegatorAddress, WithdrawRewardsRequest request);
 
         /// <summary>
         /// Query a delegation reward.
@@ -67,38 +73,44 @@ namespace CosmosApi.Endpoints
         /// <param name="validatorAddress"></param>
         /// <returns></returns>
         ResponseWithHeight<IList<DecCoin>> GetDelegatorRewards(string delegatorAddress, string validatorAddress);
-        
+
         /// <summary>
         /// Post a sumilation of withdraw a delegator's delegation reward from a single validator request.
         /// </summary>
+        /// <param name="delegatorAddress"></param>
         /// <param name="validatorAddress"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<GasEstimateResponse> PostWithdrawRewardsSimulationAsync(string validatorAddress, WithdrawRewardsRequest request, CancellationToken cancellationToken = default);
+        Task<GasEstimateResponse> PostWithdrawRewardsSimulationAsync(string delegatorAddress, string validatorAddress, WithdrawRewardsRequest request, CancellationToken cancellationToken = default);
+
         /// <summary>
         /// Post a sumilation of withdraw a delegator's delegation reward from a single validator request.
         /// </summary>
+        /// <param name="delegatorAddress"></param>
         /// <param name="validatorAddress"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        GasEstimateResponse PostWithdrawRewardsSimulation(string validatorAddress, WithdrawRewardsRequest request);
+        GasEstimateResponse PostWithdrawRewardsSimulation(string delegatorAddress, string validatorAddress, WithdrawRewardsRequest request);
 
         /// <summary>
         /// Withdraw a delegator's delegation reward from a single validator.
         /// </summary>
+        /// <param name="delegatorAddress"></param>
         /// <param name="validatorAddress"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<StdTx> PostWithdrawRewardsAsync(string validatorAddress, WithdrawRewardsRequest request, CancellationToken cancellationToken = default);
+        Task<StdTx> PostWithdrawRewardsAsync(string delegatorAddress, string validatorAddress, WithdrawRewardsRequest request, CancellationToken cancellationToken = default);
+
         /// <summary>
         /// Withdraw a delegator's delegation reward from a single validator.
         /// </summary>
+        /// <param name="delegatorAddress"></param>
         /// <param name="validatorAddress"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        StdTx PostWithdrawRewards(string validatorAddress, WithdrawRewardsRequest request);
+        StdTx PostWithdrawRewards(string delegatorAddress, string validatorAddress, WithdrawRewardsRequest request);
 
         /// <summary>
         /// Get the delegations' rewards withdrawal address. This is the address in which the user will receive the reward funds.
@@ -117,30 +129,36 @@ namespace CosmosApi.Endpoints
         /// <summary>
         /// Post a simulation of a replace the delegations' rewards withdrawal address for a new one request.
         /// </summary>
+        /// <param name="delegatorAddress"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<GasEstimateResponse> PostWithdrawAddressSimulationAsync(SetWithdrawalAddrRequest request, CancellationToken cancellationToken = default);
+        Task<GasEstimateResponse> PostWithdrawAddressSimulationAsync(string delegatorAddress, SetWithdrawalAddrRequest request, CancellationToken cancellationToken = default);
+
         /// <summary>
         /// Post a simulation of a replace the delegations' rewards withdrawal address for a new one request.
         /// </summary>
+        /// <param name="delegatorAddress"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        GasEstimateResponse PostWithdrawAddressSimulation(SetWithdrawalAddrRequest request);
+        GasEstimateResponse PostWithdrawAddressSimulation(string delegatorAddress, SetWithdrawalAddrRequest request);
 
         /// <summary>
         /// Replace the delegations' rewards withdrawal address for a new one.
         /// </summary>
+        /// <param name="delegatorAddress"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<StdTx> PostWithdrawAddressAsync(SetWithdrawalAddrRequest request, CancellationToken cancellationToken = default);
+        Task<StdTx> PostWithdrawAddressAsync(string delegatorAddress, SetWithdrawalAddrRequest request, CancellationToken cancellationToken = default);
+
         /// <summary>
         /// Replace the delegations' rewards withdrawal address for a new one.
         /// </summary>
+        /// <param name="delegatorAddress"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        StdTx PostWithdrawAddress(SetWithdrawalAddrRequest request);
+        StdTx PostWithdrawAddress(string delegatorAddress, SetWithdrawalAddrRequest request);
 
         /// <summary>
         /// Query the distribution information of a single validator.
@@ -184,5 +202,37 @@ namespace CosmosApi.Endpoints
         /// <returns></returns>
         ResponseWithHeight<IList<DecCoin>> GetValidatorRewards(string validatorAddress);
 
+        /// <summary>
+        /// Post a sumulation of a withdraw the validator's self-delegation and commissions rewards request.
+        /// </summary>
+        /// <param name="validatorAddress"></param>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<GasEstimateResponse> PostValidatorWithdrawRewardsSimulationAsync(string validatorAddress, WithdrawRewardsRequest request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Post a sumulation of a withdraw the validator's self-delegation and commissions rewards request.
+        /// </summary>
+        /// <param name="validatorAddress"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        GasEstimateResponse PostValidatorWithdrawRewardsSimulation(string validatorAddress, WithdrawRewardsRequest request);
+
+        /// <summary>
+        /// Withdraw the validator's self-delegation and commissions rewards.
+        /// </summary>
+        /// <param name="validatorAddress"></param>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<StdTx> PostValidatorWithdrawRewardsAsync(string validatorAddress, WithdrawRewardsRequest request, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Withdraw the validator's self-delegation and commissions rewards.
+        /// </summary>
+        /// <param name="validatorAddress"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        StdTx PostValidatorWithdrawRewards(string validatorAddress, WithdrawRewardsRequest request);
     }
 }
