@@ -246,8 +246,21 @@ namespace CosmosApi.Endpoints
         /// Community pool parameters.
         /// </summary>
         /// <param name="height"></param>
-        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         ResponseWithHeight<IList<DecCoin>> GetCommunityPool(long? height = default);
+
+        /// <summary>
+        /// Fee distribution parameters.
+        /// </summary>
+        /// <param name="height"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<DistributionParams>> GetParamsAsync(long? height = default, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Fee distribution parameters.
+        /// </summary>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        ResponseWithHeight<DistributionParams> GetParams(long? height = default);
     }
 }

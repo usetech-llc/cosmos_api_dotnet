@@ -247,13 +247,28 @@ namespace CosmosApi.Endpoints
         {
             return _clientGetter()
                 .Request("distribution", "community_pool")
-                .SetQueryParam("height")
-                .GetJsonAsync<ResponseWithHeight<IList<DecCoin>>>(cancellationToken);
+                .SetQueryParam("height", height)
+                .GetJsonAsync<ResponseWithHeight<IList<DecCoin>>>(cancellationToken)
+                .WrapExceptions();
         }
 
         public ResponseWithHeight<IList<DecCoin>> GetCommunityPool(long? height = default)
         {
             return GetCommunityPoolAsync(height)
+                .Sync();
+        }
+
+        public Task<ResponseWithHeight<DistributionParams>> GetParamsAsync(long? height = default, CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("distribution", "parameters")
+                .GetJsonAsync<ResponseWithHeight<DistributionParams>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public ResponseWithHeight<DistributionParams> GetParams(long? height = default)
+        {
+            return GetParamsAsync(height)
                 .Sync();
         }
     }

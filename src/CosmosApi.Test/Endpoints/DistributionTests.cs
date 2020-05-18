@@ -263,9 +263,28 @@ namespace CosmosApi.Test.Endpoints
             var communityPool = await client
                 .Distribution
                 .GetCommunityPoolAsync();
+            OutputHelper.WriteLine("Deserialized Community Pool:");
+            Dump(communityPool);
             
             Assert.NotEmpty(communityPool.Result);
             Assert.All(communityPool.Result, CoinNotEmpty);
+        }
+
+        [Fact]
+        public async Task GetParamsNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var @params = await client
+                .Distribution
+                .GetParamsAsync();
+            OutputHelper.WriteLine("Deserialized Distribution Params:");
+            Dump(@params);
+            
+            Assert.True(@params.Result.WithdrawAddrEnabled);
+            Assert.True(@params.Result.CommunityTax > 0);
+            Assert.True(@params.Result.BaseProposerReward > 0);
+            Assert.True(@params.Result.BonusProposerReward > 0);
         }
     }
 }
