@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CosmosApi.Extensions;
 using CosmosApi.Models;
+using ExtendedNumerics;
 using Flurl.Http;
 
 namespace CosmosApi.Endpoints
@@ -27,6 +28,20 @@ namespace CosmosApi.Endpoints
         public ResponseWithHeight<MintParams> GetParams(long? height = default)
         {
             return GetParamsAsync(height)
+                .Sync();
+        }
+
+        public Task<ResponseWithHeight<BigDecimal>> GetInflationAsync(CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("minting", "inflation")
+                .GetJsonAsync<ResponseWithHeight<BigDecimal>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public ResponseWithHeight<BigDecimal> GetInflation()
+        {
+            return GetInflationAsync()
                 .Sync();
         }
     }

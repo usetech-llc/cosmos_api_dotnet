@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using ExtendedNumerics;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -27,6 +28,20 @@ namespace CosmosApi.Test.Endpoints
             Assert.True(@params.Result.InflationMin > 0);
             Assert.True(@params.Result.InflationRateChange > 0);
             Assert.True(@params.Result.BlocksPerYear > 0);
+        }
+
+        [Fact]
+        public async Task GetInflationNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var inflation = await client
+                .Mint
+                .GetInflationAsync();
+            OutputHelper.WriteLine("Deserialized Inflation:");
+            Dump(inflation);
+            
+            Assert.True(inflation.Result > 0);
         }
     }
 }

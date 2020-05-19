@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using CosmosApi.Models;
+using ExtendedNumerics;
 
 namespace CosmosApi.Endpoints
 {
@@ -19,5 +20,17 @@ namespace CosmosApi.Endpoints
         /// <param name="height"></param>
         /// <returns></returns>
         ResponseWithHeight<MintParams> GetParams(long? height = default);
+
+        /// <summary>
+        /// Current minting inflation value.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<BigDecimal>> GetInflationAsync(CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Current minting inflation value.
+        /// </summary>
+        /// <returns></returns>
+        ResponseWithHeight<BigDecimal> GetInflation();
     }
 }
