@@ -44,5 +44,19 @@ namespace CosmosApi.Endpoints
             return GetInflationAsync()
                 .Sync();
         }
+
+        public Task<ResponseWithHeight<BigDecimal>> GetAnnualProvisionsAsync(CancellationToken cancellationToken = default)
+        {
+            return _clientGetter()
+                .Request("minting", "annual-provisions")
+                .GetJsonAsync<ResponseWithHeight<BigDecimal>>(cancellationToken)
+                .WrapExceptions();
+        }
+
+        public ResponseWithHeight<BigDecimal> GetAnnualProvisions()
+        {
+            return GetAnnualProvisionsAsync()
+                .Sync();
+        }
     }
 }

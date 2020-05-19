@@ -32,5 +32,17 @@ namespace CosmosApi.Endpoints
         /// </summary>
         /// <returns></returns>
         ResponseWithHeight<BigDecimal> GetInflation();
+
+        /// <summary>
+        /// Current minting annual provisions value.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ResponseWithHeight<BigDecimal>> GetAnnualProvisionsAsync(CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Current minting annual provisions value.
+        /// </summary>
+        /// <returns></returns>
+        ResponseWithHeight<BigDecimal> GetAnnualProvisions();
     }
 }

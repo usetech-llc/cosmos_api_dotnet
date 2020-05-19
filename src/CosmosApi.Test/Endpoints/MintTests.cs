@@ -43,5 +43,19 @@ namespace CosmosApi.Test.Endpoints
             
             Assert.True(inflation.Result > 0);
         }
+
+        [Fact]
+        public async Task GetAnnualProvisionsNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+
+            var annualProvisions = await client
+                .Mint
+                .GetAnnualProvisionsAsync();
+            OutputHelper.WriteLine("Deserialized Annual Provisions:");
+            Dump(annualProvisions);
+            
+            Assert.True(annualProvisions.Result > 0);
+        }
     }
 }
