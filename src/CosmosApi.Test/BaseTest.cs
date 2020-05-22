@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -38,7 +39,7 @@ namespace CosmosApi.Test
         public ICosmosApiBuilder ConfigureBuilder(string? baseUrl)
         {
             return new CosmosApiBuilder()
-                .UseBaseUrl(baseUrl ?? Configuration.GlobalBaseUrl)
+                .UseBaseUrl(baseUrl ?? Configuration.LocalBaseUrl)
                 .Configure(s =>
                 {
                     s.OnAfterCallAsync = OnAfterCall;
@@ -142,6 +143,39 @@ namespace CosmosApi.Test
         {
             Assert.NotEmpty(coin.Denom);
             Assert.True(coin.Amount > 0);
+        }
+        
+        protected void TxIsDelegateAndNotEmpty(TxResponse txResponse)
+        {
+            Assert.True(txResponse.Height > 0);
+            Assert.True(txResponse.GasUsed > 0);
+            Assert.True(txResponse.GasWanted > 0);
+            Assert.NotEmpty(txResponse.Logs);
+            Assert.NotEmpty(txResponse.RawLog);
+            Assert.NotEmpty(txResponse.TxHash);
+
+            var stdTx = Assert.IsType<StdTx>(txResponse.Tx);
+            Assert.NotEmpty(stdTx.Signatures);
+            Assert.All(stdTx.Signatures, s =>
+            {
+                Assert.NotEmpty(s.Signature);
+                Assert.NotNull(s.PubKey);
+                Assert.NotEmpty(s.PubKey!.Type);
+                Assert.NotEmpty(s.PubKey.Value);
+            });
+            if (stdTx.Fee.Gas == 0)
+            {
+                Assert.NotEmpty(stdTx.Fee.Amount);
+                Assert.All(stdTx.Fee.Amount, CoinNotEmpty);
+            }
+
+            var delegateMsg = stdTx
+                .Msg
+                .OfType<MsgDelegate>()
+                .First();
+            CoinNotEmpty(delegateMsg.Amount);
+            Assert.NotEmpty(delegateMsg.DelegatorAddress);
+            Assert.NotEmpty(delegateMsg.ValidatorAddress);
         }
     }
 }

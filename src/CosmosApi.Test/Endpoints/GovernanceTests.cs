@@ -12,7 +12,7 @@ namespace CosmosApi.Test.Endpoints
 {
     public class GovernanceTests : BaseTest
     {
-        private const ulong ProposalId = 23;
+        private const ulong ProposalId = 1;
         
         public GovernanceTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
@@ -21,59 +21,59 @@ namespace CosmosApi.Test.Endpoints
         [Fact]
         public async Task GetProposalsCompletes()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var proposals = await client
                 .Governance
-                .GetProposalsAsync(limit: 5);
+                .GetProposalsAsync(depositor: Configuration.LocalAccount1Address);
             
             OutputHelper.WriteLine("Deserialized Proposals:");
             Dump(proposals);
             
-            Assert.True(proposals.Result.Count <= 5);
             Assert.True(proposals.Height > 0);
-            foreach (var proposal in proposals.Result)
+            Assert.All(proposals.Result, proposal =>
             {
                 Assert.True(proposal.Status != 0);
                 Assert.NotNull(proposal.Content);
                 Assert.NotNull(proposal.TotalDeposit);
                 Assert.NotNull(proposal.FinalTallyResult);
                 Assert.True(proposal.ProposalId > 0);
-            }
+            });
         }
 
         [Fact]
         public async Task GetProposalsStatusFilterWorks()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var proposals = await client
                 .Governance
-                .GetProposalsAsync(status: ProposalStatus.Passed);
+                .GetProposalsAsync(status: ProposalStatus.VotingPeriod);
 
             OutputHelper.WriteLine("Deserialized Proposals:");
             Dump(proposals);
 
-            Assert.All(proposals.Result, p => Assert.Equal(ProposalStatus.Passed, p.Status));
+            Assert.NotEmpty(proposals.Result);
+            Assert.All(proposals.Result, p => Assert.Equal(ProposalStatus.VotingPeriod, p.Status));
         }
 
         [Fact]
         public async Task PostProposalSimulationTextCompletes()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var baseReq = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, "", null, null, null, null);
+            var baseReq = await client.CreateBaseReq(Configuration.LocalAccount1Address, "", null, null, null, null);
             var initialDeposit = new List<Coin>()
             {
                 new Coin()
                 {
                     Amount = 10,
-                    Denom = "uatom"
+                    Denom = "stake"
                 }
             };
             var gasEstimation = await client
                 .Governance
-                .PostProposalSimulationAsync<TextProposal>(baseReq, "title", "description", Configuration.GlobalDelegator1Address, initialDeposit);
+                .PostProposalSimulationAsync<TextProposal>(baseReq, "title", "description", Configuration.LocalDelegator1Address, initialDeposit);
             
             OutputHelper.WriteLine("Deserialized Gas Estimation");
             Dump(gasEstimation);
@@ -84,20 +84,20 @@ namespace CosmosApi.Test.Endpoints
         [Fact]
         public async Task PostProposalTextNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var baseReq = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, "", null, null, null, null);
+            var baseReq = await client.CreateBaseReq(Configuration.LocalAccount1Address, "", null, null, null, null);
             var initialDeposit = new List<Coin>()
             {
                 new Coin()
                 {
                     Amount = 10,
-                    Denom = "uatom"
+                    Denom = "stake"
                 }
             };
             var stdTx = await client
                 .Governance
-                .PostProposalAsync<TextProposal>(baseReq, "title", "description", Configuration.GlobalDelegator1Address, initialDeposit);
+                .PostProposalAsync<TextProposal>(baseReq, "title", "description", Configuration.LocalDelegator1Address, initialDeposit);
             
             OutputHelper.WriteLine("Deserialized Gas Estimation");
             Dump(stdTx);
@@ -107,20 +107,20 @@ namespace CosmosApi.Test.Endpoints
             Assert.NotEmpty(stdTx.Msg);
             Assert.All(stdTx.Msg, Assert.NotNull);
             var proposalMsg = stdTx.Msg.OfType<MsgSubmitProposal>().First();
-            Assert.Equal(Configuration.GlobalDelegator1Address, proposalMsg.Proposer);
+            Assert.Equal(Configuration.LocalDelegator1Address, proposalMsg.Proposer);
             Assert.Equal("title", ((TextProposal)proposalMsg.Content).Title);
             Assert.Equal("description", ((TextProposal)proposalMsg.Content).Description);
             Assert.Collection(proposalMsg.InitialDeposit, coin =>
             {
                 Assert.Equal(10, coin.Amount);
-                Assert.Equal("uatom", coin.Denom, StringComparer.OrdinalIgnoreCase);
+                Assert.Equal("stake", coin.Denom, StringComparer.OrdinalIgnoreCase);
             });
         }
 
         [Fact]
         public async Task GetProposalWithId1NotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var proposal = await client
                 .Governance
@@ -139,7 +139,7 @@ namespace CosmosApi.Test.Endpoints
         [Fact]
         public async Task GetProposerByProposalIdNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var proposer = await client
                 .Governance
@@ -157,7 +157,7 @@ namespace CosmosApi.Test.Endpoints
         [Fact]
         public async Task GetDepositsByProposalIdNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var deposits = await client
                 .Governance
@@ -170,29 +170,25 @@ namespace CosmosApi.Test.Endpoints
             {
                 Assert.Equal(ProposalId, d.ProposalId);
                 Assert.NotEmpty(d.Depositor);
-                Assert.All(d.Amount, c =>
-                {
-                    Assert.True(c.Amount >= 0);
-                    Assert.NotEmpty(c.Denom);
-                });
+                Assert.All(d.Amount, CoinNotEmpty);
             });
         }
 
         [Fact]
         public async Task PostDepositSimulationNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var baseReq = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, "", null, null, null, null);
+            var baseReq = await client.CreateBaseReq(Configuration.LocalAccount1Address, "", null, null, null, null);
             var amount = new List<Coin>()
             {
                 new Coin()
                 {
                     Amount = 10,
-                    Denom = "uatom"
+                    Denom = "stake"
                 }
             };
-            var depositReq = new DepositReq(baseReq, Configuration.GlobalDelegator1Address, amount);
+            var depositReq = new DepositReq(baseReq, Configuration.LocalDelegator1Address, amount);
             var estimation = await client
                 .Governance
                 .PostDepositSimulationAsync(ProposalId, depositReq);
@@ -206,18 +202,18 @@ namespace CosmosApi.Test.Endpoints
         [Fact]
         public async Task PostDepositNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var baseReq = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, "memo", null, null, null, null);
+            var baseReq = await client.CreateBaseReq(Configuration.LocalAccount1Address, "memo", null, null, null, null);
             var amount = new List<Coin>()
             {
                 new Coin()
                 {
                     Amount = 10,
-                    Denom = "uatom"
+                    Denom = "stake"
                 }
             };
-            var depositReq = new DepositReq(baseReq, Configuration.GlobalDelegator1Address, amount);
+            var depositReq = new DepositReq(baseReq, Configuration.LocalAccount1Address, amount);
             var tx = await client
                 .Governance
                 .PostDepositAsync(ProposalId, depositReq);
@@ -227,19 +223,19 @@ namespace CosmosApi.Test.Endpoints
             
             Assert.Equal("memo", tx.Memo);
             var msgDeposit = tx.Msg.OfType<MsgDeposit>().First();
-            Assert.Equal(Configuration.GlobalDelegator1Address, msgDeposit.Depositor, StringComparer.Ordinal);
+            Assert.Equal(Configuration.LocalAccount1Address, msgDeposit.Depositor, StringComparer.Ordinal);
             Assert.Equal(ProposalId, msgDeposit.ProposalId);
             Assert.Collection(msgDeposit.Amount, c =>
             {
                 Assert.Equal(10, c.Amount);
-                Assert.Equal("uatom", c.Denom, StringComparer.OrdinalIgnoreCase);
+                Assert.Equal("stake", c.Denom, StringComparer.OrdinalIgnoreCase);
             });
         }
 
         [Fact]
         public async Task GetDepositReturnsOneDepositFromList()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var deposits = await client
                 .Governance
@@ -260,7 +256,7 @@ namespace CosmosApi.Test.Endpoints
         [Fact]
         public async Task GetVotesNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var votes = await client
                 .Governance
@@ -268,23 +264,22 @@ namespace CosmosApi.Test.Endpoints
             
             OutputHelper.WriteLine("Deserizalized Votes");
             Dump(votes);
-            
             Assert.NotEmpty(votes.Result);
-            Assert.All(votes.Result, v =>
+            Assert.All(votes.Result, vote =>
             {
-                Assert.NotEmpty(v.Voter);
-                Assert.Equal(ProposalId, v.ProposalId);
-                Assert.NotEqual(VoteOption.Empty, v.Option);
+                Assert.NotEqual(VoteOption.Empty, vote.Option);
+                Assert.NotEmpty(vote.Voter);
+                Assert.Equal(ProposalId, vote.ProposalId);
             });
         }
 
         [Fact]
         public async Task PostVoteSimulationNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var baseReq = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, "", null, null, null, null);
-            var voteReq = new VoteReq(baseReq, Configuration.GlobalDelegator1Address, VoteOption.Yes);
+            var baseReq = await client.CreateBaseReq(Configuration.LocalAccount1Address, "", null, null, null, null);
+            var voteReq = new VoteReq(baseReq, Configuration.LocalAccount1Address, VoteOption.Yes);
 
             var gasEstimation = await client
                 .Governance
@@ -299,10 +294,10 @@ namespace CosmosApi.Test.Endpoints
         [Fact]
         public async Task PostVoteNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
-            var baseReq = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, "memo", null, null, null, null);
-            var voteReq = new VoteReq(baseReq, Configuration.GlobalDelegator1Address, VoteOption.Yes);
+            var baseReq = await client.CreateBaseReq(Configuration.LocalAccount1Address, "memo", null, null, null, null);
+            var voteReq = new VoteReq(baseReq, Configuration.LocalAccount1Address, VoteOption.Yes);
 
             var tx = await client
                 .Governance
@@ -314,26 +309,21 @@ namespace CosmosApi.Test.Endpoints
             Assert.Equal("memo", tx.Memo);
             var msg = tx.Msg.OfType<MsgVote>().First();
             Assert.Equal(VoteOption.Yes, msg.Option);
-            Assert.Equal(Configuration.GlobalDelegator1Address, msg.Voter);
+            Assert.Equal(Configuration.LocalAccount1Address, msg.Voter);
             Assert.Equal(ProposalId, msg.ProposalId);
         }
 
-        //[Fact]
-        //Some internal gaia issues. It awlays returns
-        ///{
-        ///    "error": "'' is not a valid vote option"
-        ///}
-        /// And that is because it cannot deserialize result from its internal call.
+        [Fact]
         public async Task GetVoteReturnsOneFromTotalList()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var votes = await client
                 .Governance
                 .GetVotesAsync(ProposalId);
 
             var expectedVote = votes.Result.Last();
-
+            
             var vote = await client
                 .Governance
                 .GetVoteAsync(ProposalId, expectedVote.Voter);
@@ -348,7 +338,7 @@ namespace CosmosApi.Test.Endpoints
         [Fact]
         public async Task GetTallyNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var tally = await client
                 .Governance
@@ -357,16 +347,14 @@ namespace CosmosApi.Test.Endpoints
             OutputHelper.WriteLine("Deserialized Tally:");
             Dump(tally);
             
-            Assert.True(tally.Result.Abstain > 0);
-            Assert.True(tally.Result.No > 0);
-            Assert.True(tally.Result.Yes > 0);
-            Assert.True(tally.Result.NoWithVeto > 0);
+             Assert.True(tally.Result.Abstain > 0);
+             Assert.True(tally.Result.Yes > 0);
         }
 
         [Fact]
         public async Task GetDepositParamsNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var depositParams = await client
                 .Governance
@@ -383,7 +371,7 @@ namespace CosmosApi.Test.Endpoints
         [Fact]
         public async Task GetTallyParamsNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var tallyParams = await client
                 .Governance
@@ -401,7 +389,7 @@ namespace CosmosApi.Test.Endpoints
         [Fact]
         public async Task GetVotingParamsNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var votingParams = await client
                 .Governance

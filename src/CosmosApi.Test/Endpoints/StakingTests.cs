@@ -55,7 +55,7 @@ namespace CosmosApi.Test.Endpoints
             using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, null, null, null, null, null);
-            var delegateRequest = new DelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress, new Coin("stake", 10));
+            var delegateRequest = new DelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidator1Address, new Coin("stake", 10));
 
             var postResult = await client
                 .Staking
@@ -73,7 +73,7 @@ namespace CosmosApi.Test.Endpoints
             using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, null, null, null, null, null);
-            var delegateRequest = new DelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress, new Coin("stake", 10));
+            var delegateRequest = new DelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidator1Address, new Coin("stake", 10));
 
             var postResult = await client
                 .Staking
@@ -92,14 +92,14 @@ namespace CosmosApi.Test.Endpoints
         }
 
         [Fact]
-        public async Task AsyncGetDelegationByValidatorCompletes()
+        public async Task AsyncGetDelegationByValidatorNotEmpty()
         {
             using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var delegation = await client
                 .Staking
                 .GetDelegationByValidatorAsync(Configuration.LocalDelegator1Address,
-                    Configuration.LocalValidatorAddress);
+                    Configuration.LocalValidator1Address);
             OutputHelper.WriteLine("Deserialized delegation:");
             Dump(delegation);
             OutputHelper.WriteLine("");
@@ -108,7 +108,6 @@ namespace CosmosApi.Test.Endpoints
             Assert.True(delegation.Result.Shares > 0);
         }
 
-        //There is a "Completion time" in response and it's 2020-05-13, wonder if it will be removed by that time and break this test.
         [Fact]
         public async Task AsyncGetUnbondingDelegationsNotEmpty()
         {
@@ -120,11 +119,22 @@ namespace CosmosApi.Test.Endpoints
             
             OutputHelper.WriteLine("Deserialized delegations:");
             Dump(delegations);
-
+            
             Assert.NotEmpty(delegations.Result);
-            Assert.Equal(Configuration.LocalDelegator1Address, delegations.Result[0].DelegatorAddress);
-            Assert.Equal(Configuration.LocalValidatorAddress, delegations.Result[0].ValidatorAddress);
-            Assert.True(delegations.Result[0].Entries[0].Balance > 0);
+            Assert.All(delegations.Result, d => { UnbondingDelegationNotEmpty(d); });
+        }
+
+        private void UnbondingDelegationNotEmpty(UnbondingDelegation d)
+        {
+            Assert.Equal(Configuration.LocalDelegator1Address, d.DelegatorAddress);
+            Assert.Equal(Configuration.LocalValidator1Address, d.ValidatorAddress);
+            Assert.NotEmpty(d.Entries);
+            Assert.All(d.Entries, entry =>
+            {
+                Assert.True(entry.Balance > 0);
+                Assert.True(entry.InitialBalance > 0);
+                Assert.True(entry.CreationHeight > 0);
+            });
         }
 
         [Fact]
@@ -133,7 +143,7 @@ namespace CosmosApi.Test.Endpoints
             using var client = CreateClient(Configuration.LocalBaseUrl);
             
             var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, null, null, null, null, null);
-            var undelegateRequest = new UndelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress, new Coin("stake", 10));
+            var undelegateRequest = new UndelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidator1Address, new Coin("stake", 10));
             var tx = (await client
                 .Staking
                 .PostUnbondingDelegationAsync(undelegateRequest));
@@ -149,7 +159,7 @@ namespace CosmosApi.Test.Endpoints
             Assert.Equal("stake", undelegateMessage.Amount.Denom);
             Assert.Equal(10, undelegateMessage.Amount.Amount);
             Assert.Equal(Configuration.LocalDelegator1Address, undelegateMessage.DelegatorAddress);
-            Assert.Equal(Configuration.LocalValidatorAddress, undelegateMessage.ValidatorAddress);
+            Assert.Equal(Configuration.LocalValidator1Address, undelegateMessage.ValidatorAddress);
         }
 
         [Fact]
@@ -159,20 +169,18 @@ namespace CosmosApi.Test.Endpoints
 
             var result = await client
                     .Staking
-                    .GetUnbondingDelegationsByValidatorAsync(Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress);
+                    .GetUnbondingDelegationsByValidatorAsync(Configuration.LocalDelegator1Address, Configuration.LocalValidator1Address);
             OutputHelper.WriteLine("Deserialized unbonding delegation:");
             Dump(result);
-
-            var unbondingDelegation = result.Result;
-            Assert.Equal(Configuration.LocalValidatorAddress, unbondingDelegation.ValidatorAddress);
-            Assert.Equal(Configuration.LocalDelegator1Address, unbondingDelegation.DelegatorAddress);
-            Assert.True(unbondingDelegation.Entries[0].Balance > 0);
+            
+            UnbondingDelegationNotEmpty(result.Result);   
         }
 
-        [Fact]
+        //[Fact]
+        //can't figure out how to make redelegate on local network.
         public async Task AsyncGetRedelegationsAllRedelegationsNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var result = await client
                 .Staking
@@ -181,34 +189,54 @@ namespace CosmosApi.Test.Endpoints
             Dump(result);
             
             Assert.NotEmpty(result.Result);
+            Assert.All(result.Result, r =>
+            {
+                Assert.NotEmpty(r.DelegatorAddress);
+                Assert.NotEmpty(r.ValidatorDstAddress);
+                Assert.NotEmpty(r.ValidatorSrcAddress);
+                Assert.NotEmpty(r.Entries);
+                Assert.All(r.Entries, entry =>
+                {
+                    Assert.True(entry.CreationHeight > 0);
+                    Assert.True(entry.InitialBalance > 0);
+                    Assert.True(entry.SharesDst > 0);
+                });
+            });
         }
 
-        [Fact]
+        //[Fact]
+        //can't figure out how to make redelegate on local network.
         public async Task AsyncGetRedelegationsReturnsKnownDelegatorsAndValidators()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var result = await client
                 .Staking
-                .GetRedelegationsAsync(Configuration.GlobalDelegator1Address, Configuration.GlobalValidator1Address, Configuration.GlobalValidator2Address);
+                .GetRedelegationsAsync(Configuration.LocalDelegator1Address, Configuration.LocalValidator1Address, Configuration.LocalValidator1Address);
             OutputHelper.WriteLine("Deserialized redelegations:");
             Dump(result);
 
-            foreach (var redelegation in result.Result)
+            Assert.NotEmpty(result.Result);
+            Assert.All(result.Result, redelegation =>
             {
-                Assert.Equal(Configuration.GlobalDelegator1Address, redelegation.DelegatorAddress);
-                Assert.Equal(Configuration.GlobalValidator1Address, redelegation.ValidatorSrcAddress);
-                Assert.Equal(Configuration.GlobalValidator2Address, redelegation.ValidatorDstAddress);
-            }
+                Assert.Equal(Configuration.LocalDelegator1Address, redelegation.DelegatorAddress);
+                Assert.Equal(Configuration.LocalValidator1Address, redelegation.ValidatorSrcAddress);
+                Assert.Equal(Configuration.LocalValidator1Address, redelegation.ValidatorDstAddress);
+                Assert.True(redelegation.Entries.Count == 1);
+                var entry = redelegation.Entries[0];
+                Assert.True(entry.CreationHeight > 0);
+                Assert.True(entry.InitialBalance > 0);
+                Assert.True(entry.SharesDst > 0);
+            });
         }
 
         [Fact]
         public async Task AsyncPostRedelegationSimulationCompletes()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
             
-            var baseRequest = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, null, null, null, null, null);
-            var redelegationRequest = new RedelegateRequest(baseRequest, Configuration.GlobalDelegator1Address, Configuration.GlobalValidator1Address, Configuration.GlobalValidator2Address, new Coin("uatom", 10));
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, null, null, null, null, null);
+            var redelegationRequest = new RedelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidator1Address, Configuration.LocalValidator2Address, new Coin("stake", 10));
 
             var gasEstimation = await client
                 .Staking
@@ -217,16 +245,16 @@ namespace CosmosApi.Test.Endpoints
             OutputHelper.WriteLine("Deserialized gas estimation:");
             Dump(gasEstimation);
             
-            Assert.NotNull(gasEstimation);
+            Assert.True(gasEstimation.GasEstimate > 0);
         }
 
         [Fact]
         public async Task PostRedelegationCompletes()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
             
-            var baseRequest = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, null, null, null, null, null);
-            var redelegationRequest = new RedelegateRequest(baseRequest, Configuration.GlobalDelegator1Address, Configuration.GlobalValidator1Address, Configuration.GlobalValidator2Address, new Coin("uatom", 10));
+            var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, null, null, null, null, null);
+            var redelegationRequest = new RedelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidator1Address, Configuration.LocalValidator2Address, new Coin("stake", 10));
 
             var tx = await client
                 .Staking
@@ -239,17 +267,17 @@ namespace CosmosApi.Test.Endpoints
                 .Msg
                 .OfType<MsgBeginRedelegate>()
                 .First();
-            Assert.Equal("uatom", msgRedelegate.Amount.Denom);
+            Assert.Equal("stake", msgRedelegate.Amount.Denom);
             Assert.Equal(10, msgRedelegate.Amount.Amount);
-            Assert.Equal(Configuration.GlobalDelegator1Address, msgRedelegate.DelegatorAddress);
-            Assert.Equal(Configuration.GlobalValidator1Address, msgRedelegate.ValidatorSrcAddress);
-            Assert.Equal(Configuration.GlobalValidator2Address, msgRedelegate.ValidatorDstAddress);
+            Assert.Equal(Configuration.LocalDelegator1Address, msgRedelegate.DelegatorAddress);
+            Assert.Equal(Configuration.LocalValidator1Address, msgRedelegate.ValidatorSrcAddress);
+            Assert.Equal(Configuration.LocalValidator2Address, msgRedelegate.ValidatorDstAddress);
         }
 
         [Fact]
         public async Task AsyncGetValidatorsCompletes()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var validators = await client
                 .Staking
@@ -259,12 +287,26 @@ namespace CosmosApi.Test.Endpoints
             Dump(validators);
             
             Assert.NotEmpty(validators.Result);
+            Assert.All(validators.Result, ValidatorNotEmpty);
+        }
+
+        private static void ValidatorNotEmpty(Validator v)
+        {
+            Assert.NotEmpty(v.OperatorAddress);
+            Assert.NotEmpty(v.ConsPubKey);
+            Assert.True(v.Commission.CommissionRates.Rate > 0);
+            Assert.True(v.Commission.CommissionRates.MaxRate > 0);
+            Assert.True(v.Commission.CommissionRates.MaxChangeRate > 0);
+            Assert.True(v.MinSelfDelegation > 0);
+            Assert.True(v.Tokens > 0);
+            Assert.True(v.DelegatorShares > 0);
+            Assert.Equal(BondStatus.Bonded, v.Status);
         }
 
         [Fact]
         public async Task AsyncGetValidatorsFilterAppliesCorrectly()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var validators = await client
                 .Staking
@@ -275,63 +317,67 @@ namespace CosmosApi.Test.Endpoints
             
             Assert.True(validators.Result.Count <= 3);
             Assert.True(validators.Result.All(v => v.Status == BondStatus.Bonded));
+            Assert.All(validators.Result, ValidatorNotEmpty);
         }
 
         [Fact]
         public async Task AsyncGetValidatorsByDelegateReturnsKnownValue()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var validators = await client
                 .Staking
-                .GetValidatorsAsync(Configuration.GlobalDelegator1Address);
+                .GetValidatorsAsync(Configuration.LocalDelegator1Address);
             
             OutputHelper.WriteLine("Deserialized validators:");
             Dump(validators);
 
             Assert.NotEmpty(validators.Result);
-            var hasValidator1 = validators.Result.Any(v => string.Equals(v.OperatorAddress, Configuration.GlobalValidator1Address, StringComparison.Ordinal));
+            var hasValidator1 = validators.Result.Any(v => string.Equals(v.OperatorAddress, Configuration.LocalValidator1Address, StringComparison.Ordinal));
             Assert.True(hasValidator1);
+            Assert.All(validators.Result, ValidatorNotEmpty);
         }
 
         [Fact]
         public async Task AsyncGetValidatorByDelegatorAndValidatorAddressReturnsQueriedValidator()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var validator = await client
                 .Staking
-                .GetValidatorAsync(Configuration.GlobalDelegator1Address, Configuration.GlobalValidator1Address);
+                .GetValidatorAsync(Configuration.LocalDelegator1Address, Configuration.LocalValidator1Address);
             
             OutputHelper.WriteLine("Deserialized validator:");
             Dump(validator);
             
-            Assert.Equal(Configuration.GlobalValidator1Address, validator.Result.OperatorAddress);
+            Assert.Equal(Configuration.LocalValidator1Address, validator.Result.OperatorAddress);
+            ValidatorNotEmpty(validator.Result);
         }
 
         [Fact]
         public async Task AsyncGetTransactionsReturnsTransactionsForKnownDelegate()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var txs = await client
                 .Staking
-                .GetTransactionsAsync(Configuration.GlobalDelegator1Address);
+                .GetTransactionsAsync(Configuration.LocalDelegator1Address);
             
             OutputHelper.WriteLine("Deserialized transactions:");
             Dump(txs);
             
             Assert.NotEmpty(txs);
-            foreach (var tx in txs)
+            Assert.All(txs, tx =>
             {
                 Assert.NotEmpty(tx.Txs);
-            }
+                Assert.All(tx.Txs, TxIsDelegateAndNotEmpty);
+            });
         }
 
         [Fact]
         public async Task AsyncGetTransactionsBondFilterReturnsOnlyBondingTransactions()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var txTypes = new List<DelegatingTxType>()
             {
@@ -339,87 +385,74 @@ namespace CosmosApi.Test.Endpoints
             };
             var txs = await client
                 .Staking
-                .GetTransactionsAsync(Configuration.GlobalDelegator1Address, txTypes);
+                .GetTransactionsAsync(Configuration.LocalDelegator1Address, txTypes);
             
             OutputHelper.WriteLine("Deserialized transactions:");
             Dump(txs);
 
-            var allTxsAreBond = txs
-                .All(paginatedTx =>
-                {
-                    return paginatedTx.Txs.All(t =>
-                    {
-                        return t.Tx.GetMsgs().Any(msg => msg is MsgDelegate);
-                    });
-                });
-            Assert.True(allTxsAreBond);
+            
+            Assert.NotEmpty(txs);
+            Assert.All(txs, tx =>
+            {
+                Assert.NotEmpty(tx.Txs);
+                Assert.All(tx.Txs, TxIsDelegateAndNotEmpty);
+            });
         }
 
         [Fact]
         public async Task GetValidatorByValidatorAddressNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var validatorResponse = await client
                 .Staking
-                .GetValidatorAsync(Configuration.GlobalValidator1Address);
+                .GetValidatorAsync(Configuration.LocalValidator1Address);
             
             OutputHelper.WriteLine("Deserialized Validator:");
             Dump(validatorResponse);
             
-            Assert.NotNull(validatorResponse);
-            Assert.NotNull(validatorResponse.Result);
-            Assert.NotEmpty(validatorResponse.Result.ConsPubKey);
+            ValidatorNotEmpty(validatorResponse.Result);
         }
 
-        //[Fact]
-        //Browser shows ERR_INCOMPLETE_CHUNKING_ENCODING for that method, unable to test.
+        [Fact]
         public async Task GetDelegationsByValidatorHasKnownDelegator()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var delegations = await client
                 .Staking
-                .GetDelegationsByValidatorAsync(Configuration.GlobalValidator1Address);
+                .GetDelegationsByValidatorAsync(Configuration.LocalValidator1Address);
             
             OutputHelper.WriteLine("Deserialized Delegations:");
             Dump(delegations);
 
-            Assert.Contains(delegations.Result,
-                d => string.Equals(Configuration.GlobalDelegator1Address, d.DelegatorAddress));
+            Assert.All(delegations.Result,
+                d =>
+                {
+                    Assert.Equal(Configuration.LocalValidator1Address, d.ValidatorAddress);
+                    Assert.NotEmpty(d.DelegatorAddress);
+                });
         }
 
         [Fact]
         public async Task GetUnbondingDelegationsByValidatorCompletes()
         {    
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var unbondingDelegations = await client
                 .Staking
-                .GetUnbondingDelegationsByValidatorAsync(Configuration.GlobalValidator1Address);
+                .GetUnbondingDelegationsByValidatorAsync(Configuration.LocalValidator1Address);
             
             OutputHelper.WriteLine("Deserialized Unbonding Delegations:");
             Dump(unbondingDelegations);
-
-            Assert.NotNull(unbondingDelegations);
-            Assert.NotNull(unbondingDelegations.Result);
-            foreach (var unbondingDelegation in unbondingDelegations.Result)
-            {
-                Assert.NotEmpty(unbondingDelegation.DelegatorAddress);
-                Assert.NotEmpty(unbondingDelegation.ValidatorAddress);
-                foreach (var entry in unbondingDelegation.Entries)
-                {
-                    Assert.True(entry.Balance >= 0);
-                    Assert.True(entry.CreationHeight > 0);
-                    Assert.True(entry.InitialBalance >= 0);
-                }
-            }
+            Assert.NotEmpty(unbondingDelegations.Result);
+            Assert.All(unbondingDelegations.Result, UnbondingDelegationNotEmpty);
         }
 
         [Fact]
         public async Task GetStakingPoolNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var pool = await client
                 .Staking
@@ -437,7 +470,7 @@ namespace CosmosApi.Test.Endpoints
         [Fact]
         public async Task GetStakingParametersNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var @params = await client
                 .Staking

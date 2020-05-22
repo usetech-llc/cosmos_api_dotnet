@@ -20,7 +20,7 @@ namespace CosmosApi.Test.Client
         [Fact]
         public void BytesForSigningComputedCorrectlyForStdTx()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
 
             var stdSignDoc = SigningData.StdSignDoc();
             var bytes = Encoding.UTF8.GetBytes(client.Serializer.SerializeSortedAndCompact(stdSignDoc));

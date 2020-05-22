@@ -51,7 +51,7 @@ namespace CosmosApi.Test.Endpoints
 
             var gasEstimation = await client
                 .Slashing
-                .PostUnjailSimulationAsync(Configuration.LocalValidatorAddress, new UnjailRequest(baseReq));
+                .PostUnjailSimulationAsync(Configuration.LocalValidator1Address, new UnjailRequest(baseReq));
             OutputHelper.WriteLine("Deserialized GasEstimation:");
             Dump(gasEstimation);
             
@@ -67,13 +67,13 @@ namespace CosmosApi.Test.Endpoints
 
             var stdTx = await client
                 .Slashing
-                .PostUnjailAsync(Configuration.LocalValidatorAddress, new UnjailRequest(baseReq));
+                .PostUnjailAsync(Configuration.LocalValidator1Address, new UnjailRequest(baseReq));
             OutputHelper.WriteLine("Deserialized StdTx:");
             Dump(stdTx);
 
             var unjailMsg = stdTx.Msg.OfType<MsgUnjail>().First();
             Assert.Equal("memo", stdTx.Memo);
-            Assert.Equal(Configuration.LocalValidatorAddress, unjailMsg.ValidatorAddr);
+            Assert.Equal(Configuration.LocalValidator1Address, unjailMsg.ValidatorAddr);
         }
 
         [Fact]

@@ -14,7 +14,7 @@ namespace CosmosApi.Models
         {
         }
 
-        public Redelegation(string delegatorAddress, string validatorSrcAddress, string validatorDstAddress, IList<Redelegation> entries)
+        public Redelegation(string delegatorAddress, string validatorSrcAddress, string validatorDstAddress, IList<RedelegationEntry> entries)
         {
             DelegatorAddress = delegatorAddress;
             ValidatorSrcAddress = validatorSrcAddress;
@@ -44,7 +44,7 @@ namespace CosmosApi.Models
         /// Redelegation entries.
         /// </summary>
         [JsonProperty(PropertyName = "entries")]
-        public IList<Redelegation> Entries { get; set; } = null!;
+        public IList<RedelegationEntry> Entries { get; set; } = null!;
 
     }
 }
