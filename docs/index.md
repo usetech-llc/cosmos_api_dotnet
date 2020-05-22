@@ -2,6 +2,8 @@
 
 This API enables connection and interaction between a .NET application and a Cosmos blockchain node built with Cosmos SDK.
 
+Built by [UseTech.com](https://usetech.com/blockchain)
+
 - [Getting Started](#getting-started)
 - [Connecting to a Node](#connecting-to-a-node)
   * [Simple Connect](#simple-connect)
