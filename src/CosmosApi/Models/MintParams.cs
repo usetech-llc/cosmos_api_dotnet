@@ -12,7 +12,7 @@ namespace CosmosApi.Models
         /// Type of coin to mint.
         /// </summary>
         [JsonProperty("mint_denom")]
-        public string MintDenom { get; set; } 
+        public string MintDenom { get; set; } = null!;
         /// <summary>
         /// Maximum annual change in inflation rate.
         /// </summary>

@@ -8,8 +8,8 @@ namespace CosmosApi.Models
     public class UnjailRequest
     {
         [JsonProperty("base_req")]
-        public BaseReq BaseReq { get; set; }
-
+        public BaseReq BaseReq { get; set; } = null!;
+        
         public UnjailRequest()
         {
         }
