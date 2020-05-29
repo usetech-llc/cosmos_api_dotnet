@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1.14.2
 
 COPY cosmos-sdk-tutorials/nameservice nameservice
 WORKDIR ./nameservice
