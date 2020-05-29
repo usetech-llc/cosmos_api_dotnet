@@ -48,13 +48,13 @@ namespace CosmosApi.Test.Endpoints
 
             var proposals = await client
                 .Governance
-                .GetProposalsAsync(status: ProposalStatus.VotingPeriod);
+                .GetProposalsAsync(status: ProposalStatus.Passed);
 
             OutputHelper.WriteLine("Deserialized Proposals:");
             Dump(proposals);
 
             Assert.NotEmpty(proposals.Result);
-            Assert.All(proposals.Result, p => Assert.Equal(ProposalStatus.VotingPeriod, p.Status));
+            Assert.All(proposals.Result, p => Assert.Equal(ProposalStatus.Passed, p.Status));
         }
 
         [Fact]
@@ -313,7 +313,8 @@ namespace CosmosApi.Test.Endpoints
             Assert.Equal(ProposalId, msg.ProposalId);
         }
 
-        [Fact]
+        //[Fact]
+        // Faulty test due to https://github.com/cosmos/cosmos-sdk/issues/6302
         public async Task GetVoteReturnsOneFromTotalList()
         {
             using var client = CreateClient(Configuration.LocalBaseUrl);
