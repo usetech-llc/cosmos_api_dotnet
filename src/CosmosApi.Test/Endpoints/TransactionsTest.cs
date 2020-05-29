@@ -1,6 +1,9 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using CosmosApi.Extensions;
+using CosmosApi.Models;
+using ExpectedObjects;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -8,79 +11,72 @@ namespace CosmosApi.Test.Endpoints
 {
     public class TransactionsTest : BaseTest
     {
+        private const string ExistingHash = "45469542DA2009538A7DA4FAEDEE5B9CDA24E5DAE658C538EEEB646D130D784A";
+        
         public TransactionsTest(ITestOutputHelper outputHelper) : base(outputHelper)
         {
         }
 
-        //[Fact]
-        //todo: uncomment when server will stop sending 502.
-        private async Task AsyncGetSearchCompletes()
+        [Fact]
+        public async Task AsyncGetSearchNotEmpty()
         {
-            //For some reasons this method returns 502 way too often.
-            while (true)
-            {
-                try
-                {
-                    using var client = CreateClient();
-                    var searchResult = await client.Transactions.GetSearchAsync("send", null, limit: 2);
-                    return;
-                }
-                catch (CosmosHttpException ex)
-                {
-                    if (ex.Response?.StatusCode == HttpStatusCode.BadGateway)
-                    {
-                        continue;
-                    }
-
-                    throw;
-                }
-            }
-        }
-        
-        //[Fact]
-        //todo: uncomment when server will stop sending 502.
-        private void SyncGetSearchCompletes()
-        {
-            //For some reasons this method returns 502 way too often.
-            while (true)
-            {
-                try
-                {
-                    using var client = CreateClient();
-                    var searchResult = client.Transactions.GetSearch("send", null);
-                    return;
-                }
-                catch (CosmosHttpException ex)
-                {
-                    if (ex.Response?.StatusCode == HttpStatusCode.BadGateway)
-                    {
-                        continue;
-                    }
-
-                    throw;
-                }
-            }
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+            
+            var searchResult = await client.Transactions.GetSearchAsync("delegate", null, limit: 2);
+            OutputHelper.WriteLine("Deserialized Transactions Search Result:");
+            Dump(searchResult);
+            
+            Assert.Equal(2, searchResult.Limit);
+            Assert.Equal(1, searchResult.PageNumber);
+            Assert.True(searchResult.Count > 0);
+            Assert.True(searchResult.PageTotal > 0);
+            Assert.True(searchResult.TotalCount > 0);
+            Assert.NotEmpty(searchResult.Txs);
+            Assert.All(searchResult.Txs, TxIsDelegateAndNotEmpty);
         }
 
         [Fact]
-        public async Task AsyncGetByHashCompletes()
+        public void SyncGetSearchCompletes()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+            
+            var searchResult = client.Transactions.GetSearch("delegate", null, limit: 2);
+            OutputHelper.WriteLine("Deserialized Transactions Search Result:");
+            Dump(searchResult);
+            
+            Assert.Equal(2, searchResult.Limit);
+            Assert.Equal(1, searchResult.PageNumber);
+            Assert.True(searchResult.Count > 0);
+            Assert.True(searchResult.PageTotal > 0);
+            Assert.True(searchResult.TotalCount > 0);
+            Assert.NotEmpty(searchResult.Txs);
+            Assert.All(searchResult.Txs, TxIsDelegateAndNotEmpty);
+        }
+
+        [Fact]
+        public async Task AsyncGetByHashNotEmpty()
+        {
+            using var client = CreateClient(Configuration.LocalBaseUrl);
+            
             var tx = await client.Transactions.GetByHashAsync(
-                ByteArrayExtensions.ParseHexString("7DCB49D5B4FAE87A5532741816E68EE4222C1DBD66326FBADA55268FA7E760E6"));
+                ByteArrayExtensions.ParseHexString(ExistingHash));
             OutputHelper.WriteLine("Deserialized into");
             Dump(tx);
+            
+            TxIsDelegateAndNotEmpty(tx);
         }
         
         
         [Fact]
-        public void SyncGetByHashCompletes()
+        public void SyncGetByHashNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
             var tx = client.Transactions.GetByHash(
-                ByteArrayExtensions.ParseHexString("7DCB49D5B4FAE87A5532741816E68EE4222C1DBD66326FBADA55268FA7E760E6"));
+                ByteArrayExtensions.ParseHexString(ExistingHash));
             OutputHelper.WriteLine("Deserialized into");
             Dump(tx);
+
+            TxIsDelegateAndNotEmpty(tx);
         }
     }
 }
