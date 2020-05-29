@@ -48,13 +48,13 @@ namespace CosmosApi.Test.Endpoints
 
             var proposals = await client
                 .Governance
-                .GetProposalsAsync(status: ProposalStatus.Passed);
+                .GetProposalsAsync(status: ProposalStatus.VotingPeriod);
 
             OutputHelper.WriteLine("Deserialized Proposals:");
             Dump(proposals);
 
             Assert.NotEmpty(proposals.Result);
-            Assert.All(proposals.Result, p => Assert.Equal(ProposalStatus.Passed, p.Status));
+            Assert.All(proposals.Result, p => Assert.Equal(ProposalStatus.VotingPeriod, p.Status));
         }
 
         [Fact]
