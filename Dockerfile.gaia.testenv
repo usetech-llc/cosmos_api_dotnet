@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1.14.2
 
 COPY gaia gaia
 WORKDIR ./gaia
