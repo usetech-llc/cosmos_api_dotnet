@@ -1,6 +1,0 @@
-=============== May 22, 2020 (+07) ===============
-16:58:56.552862 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
-16:58:56.566101 db@open opening
-16:58:56.567648 version@stat F·[] S·0B[] Sc·[]
-16:58:56.575041 db@janitor F·2 G·0
-16:58:56.575132 db@open done T·8.9349ms
