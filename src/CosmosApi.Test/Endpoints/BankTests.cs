@@ -11,25 +11,31 @@ namespace CosmosApi.Test.Endpoints
         }
 
         [Fact]
-        public async Task AsyncGetBankBalanceByAddress_cosmos1h9ymfm2fxrqgd257dlw5nku3jgqjgpl59sm5ns_Completes()
+        public async Task AsyncGetBankBalanceByAddressNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
             var balance =
-                await client.Bank.GetBankBalancesByAddressAsync("cosmos1h9ymfm2fxrqgd257dlw5nku3jgqjgpl59sm5ns");
+                await client.Bank.GetBankBalancesByAddressAsync(Configuration.LocalAccount1Address);
 
             OutputHelper.WriteLine("Deserialized into");
             Dump(balance);
+            
+            Assert.NotEmpty(balance.Result);
+            Assert.All(balance.Result, CoinNotEmpty);
         }
 
         [Fact]
-        public void SyncGetBankBalanceByAddress_cosmos1h9ymfm2fxrqgd257dlw5nku3jgqjgpl59sm5ns_Completes()
+        public void SyncGetBankBalanceByAddressNotEmpty()
         {
-            using var client = CreateClient();
+            using var client = CreateClient(Configuration.LocalBaseUrl);
             var balance =
-                client.Bank.GetBankBalancesByAddress("cosmos1h9ymfm2fxrqgd257dlw5nku3jgqjgpl59sm5ns");
+                client.Bank.GetBankBalancesByAddress(Configuration.LocalAccount1Address);
 
             OutputHelper.WriteLine("Deserialized into");
             Dump(balance);
+
+            Assert.NotEmpty(balance.Result);
+            Assert.All(balance.Result, CoinNotEmpty);
         }
     }
 }

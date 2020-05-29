@@ -5,17 +5,14 @@ namespace CosmosApi.Test
 {
     public class TestConfiguration
     {
-        public string GlobalBaseUrl { get; set; } = null!;
         public string LocalBaseUrl { get; set; } = null!;
         public string LocalAccount1Address { get; set; } = null!;
         public string LocalAccount2Address { get; set; } = null!;
         public string LocalAccount1PrivateKey { get; set; } = null!;
         public string LocalAccount1Passphrase { get; set; } = null!;
         public string LocalDelegator1Address { get; set; } = null!;
-        public string LocalValidatorAddress { get; set; } = null!;
-        public string GlobalDelegator1Address { get; set; } = null!;
-        public string GlobalValidator1Address { get; set; } = null!;
-        public string GlobalValidator2Address { get; set; } = null!;
+        public string LocalValidator1Address { get; set; } = null!;
+        public string LocalValidator2Address { get; set; } = null!;
         public bool CutLongOutput { get; set; } = false;
         public string LocalNameserviceBaseUrl { get; set; } = null!;
         public string LocalNameserviceOwner1 { get; set; } = null!;
