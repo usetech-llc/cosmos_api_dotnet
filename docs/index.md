@@ -5,6 +5,7 @@ This API enables connection and interaction between a .NET application and a Cos
 Built by [UseTech.com](https://usetech.com/blockchain)
 
 - [Getting Started](#getting-started)
+- [Gas Estimates](#gas-estimates)
 - [Connecting to a Node](#connecting-to-a-node)
   * [Simple Connect](#simple-connect)
   * [ICosmosApiBuilder Interface](#icosmosapibuilder-interface)
@@ -24,13 +25,44 @@ Built by [UseTech.com](https://usetech.com/blockchain)
   * [Reading Transaction Info](#reading-transaction-info)
     + [Get Transaction by Hash](#get-transaction-by-hash)
     + [Search Transactions](#search-transactions)
+- [Custom Transactions](#custom-transactions)
+  * [Formatting Transactions](#formatting-transactions)
   * [Sending Transactions](#sending-transactions)
 - [Bank API](#bank-api)
   * [Reading Balance](#reading-balance)
   * [Sending Transfer](#sending-transfer)
 - [Authentication API](#authentication-api)
   * [GetAuthAccountByAddress](#getauthaccountbyaddress)
-
+- [Staking API](#staking-api)
+  * [GetDelegations](#getdelegations)
+  * [PostDelegations](#postdelegations)
+  * [GetDelegationByValidator](#getdelegationbyvalidator)
+  * [GetUnbondingDelegations](#getunbondingdelegations)
+  * [PostUnbondingDelegation](#postunbondingdelegation)
+  * [GetUnbondingDelegationsByValidator](#getunbondingdelegationsbyvalidator)
+  * [GetRedelegations](#getredelegations)
+  * [PostRedelegation](#postredelegation)
+  * [GetValidators](#getvalidators)
+  * [GetValidator](#getvalidator)
+  * [GetTransactions](#gettransactions)
+  * [GetDelegationsByValidator](#getdelegationsbyvalidator)
+  * [GetStakingPool](#getstakingpool)
+  * [GetStakingParams](#getstakingparams)
+- [Government API](#government-api)
+  * [GetProposals](#getproposals)
+  * [PostProposal](#postproposal)
+  * [GetProposal](#getproposal)
+  * [GetProposerByProposalId](#getproposerbyproposalid)
+  * [GetDeposits](#getdeposits)
+  * [PostDeposit](#postdeposit)
+  * [GetDeposit](#getdeposit)
+  * [GetVotes](#getvotes)
+  * [PostVote](#postvote)
+  * [GetVote](#getvote)
+  * [GetTally](#gettally)
+  * [GetDepositParams](#getdepositparams)
+  * [GetTallyParams](#gettallyparams)
+  * [GetVotingParams](#getvotingparams)
 
 ## Getting Started
 
@@ -56,6 +88,13 @@ If the code builds with no errors, you have the development environment setup! C
     </ItemGroup>
 ```
 ...and proceed to the [Connecting to a Node](#connecting-to-a-node) section.
+
+
+## Gas Estimates
+
+In order to format a transaction, Post... methods are used, which return formatted transaction in JSON format ready to be signed and sent to the node. 
+
+Each Post... method has "...Simulation" version, which accepts the same parameters and returns gas estimate for the transaction.
 
 ## Connecting to a Node
 
@@ -607,6 +646,18 @@ Get a validator set a certain height
 [ResponseWithHeight](#responsewithheight)<[ValidatorSet](#validatorset)> structure
 
 # Transactions API
+
+#### Description
+Retrieve a transaction using its hash.
+
+#### Parameters
+**hash** - byte[] - Array of bytes containing transaction hash 
+
+#### Returns
+[TxResponse](#txresponse)
+
+
+
 ## Reading Transaction Info
 ---
 ### Get Transaction by Hash
@@ -690,8 +741,9 @@ Paginated method for searching transactions.
 **maxHeight** - int - transactions on blocks with height less than or equal this value
 
 #### Returns
-PaginatedTxs structure:
+[PaginatedTxs](#paginatedtxs) structure
 
+#### PaginatedTxs
 ```
 PaginatedTxs
   |- int TotalCount
@@ -702,8 +754,67 @@ PaginatedTxs
   |- IList<[TxResponse](#txresponse)> Txs
 ```
 
+# Custom Transactions
+
+The API support sending custom transactions, but there are certain requirements to the module: It must support POST method that creates transaction object. 
+
+There is a NameService demo that comes with this API. It is located in [NameserviceApi](https://github.com/usetech-llc/cosmos_api_dotnet/tree/master/src/NameserviceApi) directory. The method `PostBuyNameAsync` in file `Nameservice.cs` utilizes POST method in NameService SDK example to compose the transaction:
+
+```csharp
+public async Task<StdTx> PostBuyNameAsync(BuyNameReq request, CancellationToken cancellationToken = default)
+{
+    var baseReq = new BaseReqWithSimulate(request.BaseReq, false);
+    request = new BuyNameReq(baseReq, request.Name, request.Amount, request.Buyer);
+    var content = _cosmosApiClient.Serializer.SerializeJsonHttpContent(request);
+    var response = (await _cosmosApiClient.HttpClient.PostAsync("nameservice/names", content, cancellationToken))
+        .EnsureSuccessStatusCode();
+    return await _cosmosApiClient.Serializer.DeserializeJson<StdTx>(response.Content);
+}
+```
+
+In ordert to get access to this method in the application that uses API, we need to implement an API extension. This is done in file `CosmosApiClientExtensions.cs`:
+
+```csharp
+public static class CosmosApiClientExtensions
+{
+    public static INameservice CreateNameservice(this ICosmosApiClient cosmosApiClient)
+    {
+        return new Nameservice(cosmosApiClient);
+    }
+}
+```
+
+...so the calling code will look like this:
+```csharp
+using var client = ConfigureBuilder(Configuration.LocalNameserviceBaseUrl)
+    .RegisterAccountType<Account>("cosmos-sdk/Account")
+    .RegisterMsgType<MsgBuyName>("nameservice/BuyName")
+    .CreateClient();
+var namespaceApi = client.CreateNameservice();
+```
+
+## Formatting Transactions
+
+Now in order to format a transaction that registers a name we need this:
+```csharp
+var baseReq = await client.CreateBaseReq(Configuration.LocalNameserviceOwner1, "memo", null, null, null, null);
+var name = Guid.NewGuid().ToString("N");
+var req = new BuyNameReq(baseReq, name, "1nametoken", Configuration.LocalNameserviceOwner1);
+var stdTx = await namespaceApi.PostBuyNameAsync(req);
+```
+
 ## Sending Transactions
-TBD
+
+Signing and posting the transaction can be done using method `SignAndBroadcastStdTxAsync`:
+```csharp
+var signers = new []{ new SignerWithAddress(Configuration.LocalNameserviceOwner1, Configuration.LocalNameserviceOwner1PrivateKey, Configuration.LocalNameserviceOwner1Passphrase) };
+var broadcastResponse = await client.SignAndBroadcastStdTxAsync(stdTx, signers, BroadcastTxMode.Block);
+```
+
+Alternatively, an already signed transaction can be sent with method `client.Transactions.PostBroadcastAsync`.
+
+The complete example of signing and sending transaction is located in file `src/CosmosApi.Test/Nameservice/NameserviceTests.cs`.
+
 
 # Bank API
 ---
@@ -799,3 +910,1173 @@ public interface IAccount
     public ulong GetAccountNumber();
 }
 ```
+
+# Staking API
+
+## GetDelegations
+```csharp
+Task<ResponseWithHeight<IList<Delegation>>> GetDelegationsAsync(string delegatorAddr, CancellationToken cancellationToken = default);
+ResponseWithHeight<IList<Delegation>> GetDelegations(string delegatorAddr);
+```
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+var delegations = client
+    .Staking
+    .GetDelegations(Configuration.LocalDelegator1Address);
+```
+
+### Description
+Get all delegations from a delegator.
+
+### Parameters
+**delegatorAddr** - Bech32 AccAddress of Delegator.
+
+### Returns
+List of [Delegation](#delegation) structs
+
+#### Delegation
+```csharp
+public class Delegation
+{
+    string DelegatorAddress;
+    string ValidatorAddress;
+    BigDecimal Shares;
+    BigInteger Balance;
+}
+```
+
+## PostDelegations
+```csharp
+Task<StdTx> PostDelegationsAsync(DelegateRequest request, CancellationToken cancellationToken = default);
+StdTx PostDelegations(DelegateRequest request);
+
+Task<GasEstimateResponse> PostDelegationsSimulationAsync(DelegateRequest request, CancellationToken cancellationToken = default);
+GasEstimateResponse PostDelegationsSimulation(DelegateRequest request);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, null, null, null, null, null);
+var delegateRequest = new DelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress, new Coin("stake", 10));
+
+var postResult = await client
+    .Staking
+    .PostDelegationsAsync(delegateRequest);
+```
+
+### Description
+Format Delegation transaction. 
+Sign and send it with [SignAndBroadcastStdTxAsync](#sending-transactions) method.
+The simulation version returns gas estimate.
+
+### Parameters
+**request** - DelegateRequest
+```csharp
+public class DelegateRequest
+{
+    public BaseReq BaseReq;
+    public string DelegatorAddress;
+    public string ValidatorAddress;
+    public Coin Amount;
+}
+```
+
+### Returns
+Transaction in JSON format.
+
+The simulation version returns [GasEstimateResponse](#gasestimateresponse) struct.
+
+#### GasEstimateResponse
+Represents the estimated transaction fees.
+```csharp
+public class GasEstimateResponse
+{
+    public ulong GasEstimate;
+}
+```
+
+## GetDelegationByValidator
+```csharp
+Task<ResponseWithHeight<Delegation>> GetDelegationByValidatorAsync(string delegatorAddr, string validatorAddr, CancellationToken cancellationToken = default);
+ResponseWithHeight<Delegation> GetDelegationByValidator(string delegatorAddr, string validatorAddr);
+```
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var delegation = await client
+    .Staking
+    .GetDelegationByValidatorAsync(Configuration.LocalDelegator1Address,
+        Configuration.LocalValidatorAddress);
+```
+
+### Description
+Query the current delegation between a delegator and a validator.
+
+### Parameters
+**delegatorAddr** - Bech32 AccAddress of Delegator
+**validatorAddr** - Bech32 OperatorAddress of validator
+
+### Returns
+[Delegation](#delegation) struct
+
+## GetUnbondingDelegations
+```csharp
+Task<ResponseWithHeight<IList<UnbondingDelegation>>> GetUnbondingDelegationsAsync(string delegatorAddr, CancellationToken cancellationToken = default);
+ResponseWithHeight<IList<UnbondingDelegation>> GetUnbondingDelegations(string delegatorAddr);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var delegations = await client
+    .Staking
+    .GetUnbondingDelegationsAsync(Configuration.LocalDelegator1Address);
+```
+
+### Description
+Get all unbonding delegations from a delegator.
+
+### Parameters
+**delegatorAddr** - Bech32 AccAddress of Delegator
+
+### Returns
+List of [UnbondingDelegation](#unbondingdelegation) struct
+
+#### UnbondingDelegation
+```csharp
+public class UnbondingDelegation
+{
+    public string DelegatorAddress;
+    public string ValidatorAddress;
+    public IList<UnbondingDelegationEntry> Entries;
+}
+
+public class UnbondingDelegationEntry
+{
+    /// Height which the unbonding took place.
+    public long CreationHeight { get; set; } 
+    /// Time at which the unbonding delegation will complete.
+    public DateTimeOffset CompletionTime { get; set; }
+    /// Atoms initially scheduled to receive at completion.
+    public BigInteger InitialBalance { get; set; }
+    /// Atoms to receive at completion.
+    public BigInteger Balance { get; set; }
+}
+```
+
+## PostUnbondingDelegation
+```csharp
+Task<StdTx> PostUnbondingDelegationAsync(UndelegateRequest request, CancellationToken cancellationToken = default);
+StdTx PostUnbondingDelegation(UndelegateRequest request);
+
+Task<GasEstimateResponse> PostUnbondingDelegationSimulationAsync(UndelegateRequest request, CancellationToken cancellationToken = default);
+GasEstimateResponse PostUnbondingDelegationSimulation(UndelegateRequest request);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, null, null, null, null, null);
+var undelegateRequest = new UndelegateRequest(baseRequest, Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress, new Coin("stake", 10));
+var tx = (await client
+    .Staking
+    .PostUnbondingDelegationAsync(undelegateRequest));
+```
+
+### Description
+Format transaction for unbonding delegation. Sign and send it with [SignAndBroadcastStdTxAsync](#sending-transactions) method.
+
+### Parameters
+**request** - [UndelegateRequest](#undelegaterequest)
+
+#### UndelegateRequest
+```csharp
+public class UndelegateRequest
+{
+    public BaseReq BaseReq;
+    public string DelegatorAddress;
+    public string ValidatorAddress;
+    public Coin Amount;
+}
+```
+
+### Returns
+Transaction in JSON format.
+The simulation version returns [GasEstimateResponse](#gasestimateresponse) struct.
+
+## GetUnbondingDelegationsByValidator
+```csharp
+Task<ResponseWithHeight<UnbondingDelegation>> GetUnbondingDelegationsByValidatorAsync(string delegatorAddr, string validatorAddr, CancellationToken cancellationToken = default);
+ResponseWithHeight<UnbondingDelegation> GetUnbondingDelegationsByValidator(string delegatorAddr, string validatorAddr);
+Task<ResponseWithHeight<IList<UnbondingDelegation>>> GetUnbondingDelegationsByValidatorAsync(string validatorAddr, CancellationToken cancellationToken = default);
+ResponseWithHeight<IList<UnbondingDelegation>> GetUnbondingDelegationsByValidator(string validatorAddr);
+```
+
+### Example 1
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+var result = await client
+        .Staking
+        .GetUnbondingDelegationsByValidatorAsync(Configuration.LocalDelegator1Address, Configuration.LocalValidatorAddress);
+```
+
+### Example 2
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var unbondingDelegations = await client
+    .Staking
+    .GetUnbondingDelegationsByValidatorAsync(Configuration.GlobalValidator1Address);
+```
+
+### Description
+1. Query all unbonding delegations between a delegator and a validator.
+2. Get all unbonding delegations for a validator.
+
+### Parameters
+**delegatorAddr** - Bech32 AccAddress of Delegator
+**validatorAddr** - Bech32 OperatorAddress of validator
+
+### Returns
+List of [UnbondingDelegation](#unbondingdelegation) struct
+
+## GetRedelegations
+```csharp
+Task<ResponseWithHeight<IList<Redelegation>>> GetRedelegationsAsync(string? delegator = default, string? validatorFrom = default, string? validatorTo = default, CancellationToken cancellationToken = default);
+ResponseWithHeight<IList<Redelegation>> GetRedelegations(string? delegator = default, string? validatorFrom = default, string? validatorTo = default);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var result = await client
+    .Staking
+    .GetRedelegationsAsync(Configuration.GlobalDelegator1Address, Configuration.GlobalValidator1Address, Configuration.GlobalValidator2Address);
+```
+
+### Description
+Get all redelegations.
+
+### Parameters
+**delegator** - Bech32 AccAddress of Delegator.
+**validatorFrom** - Bech32 ValAddress of SrcValidator.
+**validatorTo** - Bech32 ValAddress of DstValidator.
+
+### Returns
+List of [Redelegation](#redelegation) struct
+
+#### Redelegation
+Redelegation contains the list of a particular delegator's redelegating bonds from a particular source validator to a particular destination validator
+
+```csharp
+public class Redelegation
+{
+    /// Delegator.
+    public string DelegatorAddress;
+    /// Validator redelegation source operator addr.
+    public string ValidatorSrcAddress;
+    /// Validator redelegation destination operator addr.
+    public string ValidatorDstAddress;
+    /// Redelegation entries.
+    public IList<Redelegation> Entries;
+}
+```
+
+## PostRedelegation
+```csharp
+Task<StdTx> PostRedelegationAsync(RedelegateRequest request, CancellationToken cancellationToken = default);
+StdTx PostRedelegation(RedelegateRequest request);
+
+Task<GasEstimateResponse> PostRedelegationSimulationAsync(RedelegateRequest request, CancellationToken cancellationToken = default);
+GasEstimateResponse PostRedelegationSimulation(RedelegateRequest request);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var baseRequest = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, null, null, null, null, null);
+var redelegationRequest = new RedelegateRequest(baseRequest, Configuration.GlobalDelegator1Address, Configuration.GlobalValidator1Address, Configuration.GlobalValidator2Address, new Coin("uatom", 10));
+
+var tx = await client
+    .Staking
+    .PostRedelegationAsync(redelegationRequest);
+```
+
+### Description
+Format a redelegation request transaction. Sign and send it with [SignAndBroadcastStdTxAsync](#sending-transactions) method.
+
+### Parameters
+**request** - [RedelegateRequest](#redelegaterequest)
+
+#### RedelegateRequest
+```csharp
+public class RedelegateRequest
+{
+    public BaseReq BaseReq;
+    public string DelegatorAddress;
+    public string ValidatorSrcAddress;
+    public string ValidatorDstAddress;
+    public Coin Amount;
+}
+```
+
+### Returns
+Transaction in JSON format.
+The simulation version returns [GasEstimateResponse](#gasestimateresponse) struct.
+
+## GetValidators
+```csharp
+Task<ResponseWithHeight<IList<Validator>>> GetValidatorsAsync(BondStatus? status = default, int? page = default, int? limit = default, CancellationToken cancellationToken = default);
+ResponseWithHeight<IList<Validator>> GetValidators(BondStatus? status = default, int? page = default, int? limit = default);
+ResponseWithHeight<IList<Validator>> GetValidators(string delegatorAddr);
+Task<ResponseWithHeight<Validator>> GetValidatorAsync(string delegatorAddr, string validatorAddr, CancellationToken cancellationToken = default);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var validators = await client
+    .Staking
+    .GetValidatorsAsync();
+```
+
+### Description
+Get all validator candidates. By default it returns only the bonded validators.
+
+### Parameters
+**status** - The validator bond status.
+**page** - The page number.
+**limit** - The maximum number of items per page.
+**delegatorAddr** - Bech32 AccAddress of Delegator.
+
+### Returns
+List of [Validator](#validator) struct
+
+#### Validator
+Validator defines the total amount of bond shares and their exchange rate to coins. Slashing results in a decrease in the exchange rate, allowing correct calculation of future undelegations without iterating over delegators. When coins are delegated to this validator, the validator is credited with a delegation whose number of bond shares is based on the amount of coins delegated divided by the current exchange rate. Voting power can be calculated as total bonded shares multiplied by exchange rate.
+
+```csharp
+public class Validator
+{
+    /// Address of the validator's operator; bech encoded in JSON.
+    public string OperatorAddress { get; set; } = null!;
+    /// The consensus public key of the validator; bech encoded in JSON.
+    public string ConsPubKey { get; set; } = null!;
+    /// Has the validator been jailed from bonded status.
+    public bool Jailed { get; set; }
+    /// Validator status (bonded/unbonding/unbonded).
+    public BondStatus Status { get; set; }
+    /// delegated tokens (incl. self-delegation).
+    public BigInteger Tokens { get; set; }
+    /// Total shares issued to a validator's delegators. 
+    public BigDecimal DelegatorShares { get; set; }
+    /// Description terms for the validator.
+    public ValidatorDescription Description { get; set; } = null!;
+    /// If unbonding, height at which this validator has begun unbonding.
+    public long UnbondingHeight { get; set; }
+    /// If unbonding, min time for the validator to complete unbonding. 
+    public DateTimeOffset UnbondingCompletionTime { get; set; }
+    /// Commission parameters.
+    public ValidatorCommission Commission { get; set; } = null!;
+    /// Validator's self declared minimum self delegation.
+    public BigInteger MinSelfDelegation { get; set; }
+}
+
+public enum BondStatus
+{
+    Unbonded = 0,
+    Unbonding = 1,
+    Bonded = 2,
+}
+
+public class ValidatorDescription
+{
+    /// Name.
+    public string Moniker { get; set; } = null!;
+    /// Optional identity signature (ex. UPort or Keybase).
+    public string Identity { get; set; } = null!;
+    /// Optional website link.
+    public string Website { get; set; } = null!;
+    /// Optional details.
+    public string Details { get; set; } = null!;
+}
+
+public class ValidatorCommission
+{
+    public CommissionRates CommissionRates { get; set; } = null!;
+    /// The last time the commission rate was changed.
+    public DateTimeOffset UpdateTime { get; set; }
+}
+```
+
+## GetValidator
+```csharp
+Task<ResponseWithHeight<Validator>> GetValidatorAsync(string delegatorAddr, string validatorAddr, CancellationToken cancellationToken = default);
+ResponseWithHeight<Validator> GetValidator(string delegatorAddr, string validatorAddr);
+cancellationToken = default);
+```
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var validators = await client
+    .Staking
+    .GetValidatorsAsync(BondStatus.Bonded, limit: 3);
+```
+
+### Description
+Query a validator that a delegator is bonded to.
+
+### Parameters
+**delegatorAddr** - Bech32 AccAddress of Delegator.
+**validatorAddr** - Bech32 ValAddress of Delegator.
+
+### Returns
+[Validator](#validator) struct
+
+## GetTransactions
+```csharp
+Task<IList<PaginatedTxs>> GetTransactionsAsync(string delegatorAddr, IList<DelegatingTxType>? txTypes = default, CancellationToken 
+IList<PaginatedTxs> GetTransactions(string delegatorAddr, IList<DelegatingTxType>? txTypes = default);
+```
+### Example
+This example shows how to get Bond transactions.
+
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var txTypes = new List<DelegatingTxType>()
+{
+    DelegatingTxType.Bond
+};
+var txs = await client
+    .Staking
+    .GetTransactionsAsync(Configuration.GlobalDelegator1Address, txTypes);
+```
+
+### Description
+Get the list of delegation transactions by delegator address and transaction type
+
+### Parameters
+**delegatorAddr** - Delegator address
+**txTypes** - Transaction types
+
+### Returns
+List of [PaginatedTxs](#paginatedtxs)
+
+## GetDelegationsByValidator
+```csharp
+Task<ResponseWithHeight<IList<Delegation>>> GetDelegationsByValidatorAsync(string validatorAddr, CancellationToken cancellationToken = default);
+ResponseWithHeight<IList<Delegation>> GetDelegationsByValidator(string validatorAddr);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var validatorResponse = await client
+    .Staking
+    .GetValidatorAsync(Configuration.GlobalValidator1Address);
+```
+
+### Description
+Get all delegations for a validator.
+
+### Parameters
+**validatorAddr** - Bech32 OperatorAddress of validator
+
+### Returns
+List of [Delegation](#delegation) struct
+
+## GetStakingPool
+```csharp
+Task<ResponseWithHeight<StakingPool>> GetStakingPoolAsync(CancellationToken cancellationToken = default);
+ResponseWithHeight<StakingPool> GetStakingPool();
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var pool = await client
+    .Staking
+    .GetStakingPoolAsync();
+```
+
+### Description
+Get the current state of the staking pool.
+
+### Parameters
+None 
+
+### Returns
+[StakingPool](#stakingpool) struct
+
+#### StakingPool
+```csharp
+public class StakingPool
+{
+    public BigInteger NotBondedTokens;
+    public BigInteger BondedTokens;
+}
+
+```
+
+## GetStakingParams
+```csharp
+Task<ResponseWithHeight<StakingParams>> GetStakingParamsAsync(CancellationToken cancellationToken = default);
+ResponseWithHeight<StakingParams> GetStakingParams();
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var @params = await client
+    .Staking
+    .GetStakingParamsAsync();
+```
+
+### Description
+Get the current staking parameter values
+
+### Parameters
+None
+
+### Returns
+[StakingParams](#stakingparams) struct
+
+#### StakingParams
+```csharp
+public class StakingParams
+{
+    /// Nanoseconds count.
+    public long UnbondingTime;
+    public ushort MaxValidators;
+    public ushort MaxEntries;
+    public string BondDenom;
+}
+```
+
+# Government API
+## GetProposals
+```csharp
+Task<ResponseWithHeight<IList<Proposal>>> GetProposalsAsync(string? voter = default, string? depositor = default, ProposalStatus? status = default, ulong? limit = default, CancellationToken cancellationToken = default);
+ResponseWithHeight<IList<Proposal>> GetProposals(string? voter = default, string? depositor = default, ProposalStatus? status = default, ulong? limit = default);
+```
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var proposals = await client
+    .Governance
+    .GetProposalsAsync(limit: 5);
+```
+
+### Description
+Query proposals.
+
+### Parameters
+**voter** - Voter address.
+**depositor** - Depositor address.
+**status** - Proposal status.
+**limit** - Maximum number of items.
+
+### Returns
+List of [Proposal](#proposal) struct
+
+#### Proposal
+```csharp
+public class Proposal
+{
+    public IProposalContent Content;
+    public ulong ProposalId;
+    public ProposalStatus Status;
+    public TallyResult FinalTallyResult;
+    public DateTimeOffset SubmitTime;
+    public DateTimeOffset DepositEndTime;
+    public IList<Coin> TotalDeposit;
+    public DateTimeOffset VotingStartTime;
+    public DateTimeOffset VotingEndTime;
+}
+```
+
+## PostProposal
+```csharp
+Task<GasEstimateResponse> PostProposalSimulationAsync(PostProposalReq request, CancellationToken cancellationToken = default);
+Task<GasEstimateResponse> PostProposalSimulationAsync(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit, Type proposalContentType, CancellationToken cancellationToken = default);
+Task<GasEstimateResponse> PostProposalSimulationAsync<TContentType>(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit, CancellationToken cancellationToken = default) where TContentType : IProposalContent;
+GasEstimateResponse PostProposalSimulation(PostProposalReq request);
+GasEstimateResponse PostProposalSimulation(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit, Type proposalContentType);
+GasEstimateResponse PostProposalSimulation<TContentType>(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit) where TContentType : IProposalContent;
+Task<StdTx> PostProposalAsync(PostProposalReq request, CancellationToken cancellationToken = default);
+Task<StdTx> PostProposalAsync(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit, Type proposalContentType, CancellationToken cancellationToken = default);
+Task<StdTx> PostProposalAsync<TContentType>(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit, CancellationToken cancellationToken = default) where TContentType : IProposalContent;
+StdTx PostProposal(PostProposalReq request);
+StdTx PostProposal(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit, Type proposalContentType);
+StdTx PostProposal<TContentType>(BaseReq baseReq, string title, string description, string proposer, IList<Coin> initialDeposit) where TContentType : IProposalContent;
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var baseReq = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, "", null, null, null, null);
+var initialDeposit = new List<Coin>()
+{
+    new Coin()
+    {
+        Amount = 10,
+        Denom = "uatom"
+    }
+};
+var stdTx = await client
+    .Governance
+    .PostProposalAsync<TextProposal>(baseReq, "title", "description", Configuration.GlobalDelegator1Address, initialDeposit);
+```
+
+### Description
+Format a proposal transaction. Sign and send it with [SignAndBroadcastStdTxAsync](#sending-transactions) method.
+
+### Parameters
+**request** - PostProposalReq struct
+**baseReq** - base request
+**title** - Proposal title
+**description** - Proposal description
+**proposer** - Proposer address
+**initialDeposit** - Initial proposal deposit
+**proposalContentType** - Proposal type
+
+### Returns
+Transaction in JSON format.
+The simulation version returns [GasEstimateResponse](#gasestimateresponse) struct.
+
+## GetProposal
+```csharp
+Task<ResponseWithHeight<Proposal>> GetProposalAsync(ulong id, CancellationToken cancellationToken = default);
+ResponseWithHeight<Proposal> GetProposal(ulong id);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var proposal = await client
+    .Governance
+    .GetProposalAsync(1);
+```
+
+### Description
+Query a proposal.
+
+### Parameters
+**id** - Proposal ID
+
+### Returns
+[Proposal](#proposal) struct
+
+## GetProposerByProposalId
+```csharp
+Task<ResponseWithHeight<Proposer>> GetProposerByProposalIdAsync(ulong proposalId, CancellationToken cancellationToken = default);
+ResponseWithHeight<Proposer> GetProposerByProposalId(ulong proposalId);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var proposer = await client
+    .Governance
+    .GetProposerByProposalIdAsync(ProposalId);
+```
+
+### Description
+Query proposer.
+
+### Parameters
+**proposalId** - Proposal ID to query proposer for
+
+### Returns
+[Proposer](#proposer) struct
+
+#### Proposer
+```csharp
+public class Proposer
+{
+    public ulong ProposalId { get; set; }
+    public string ProposerAddress { get; set; } = null!;
+}
+```
+
+## GetDeposits
+```csharp
+Task<ResponseWithHeight<IList<Deposit>>> GetDepositsAsync(ulong proposalId, CancellationToken cancellationToken = default);
+ResponseWithHeight<IList<Deposit>> GetDeposits(ulong proposalId);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var deposits = await client
+    .Governance
+    .GetDepositsAsync(ProposalId);
+```
+
+### Description
+Query deposits.
+
+### Parameters
+**proposalId** - Proposal ID
+
+### Returns
+List of [Deposit](#deposit) struct
+
+#### Deposit
+```csharp
+public class Deposit
+{
+    public IList<Coin> Amount;
+    public ulong ProposalId;
+    public string Depositor;
+}
+```
+
+## PostDeposit
+```csharp
+Task<GasEstimateResponse> PostDepositSimulationAsync(ulong proposalId, DepositReq request, CancellationToken cancellationToken = default);
+GasEstimateResponse PostDepositSimulation(ulong proposalId, DepositReq request);
+Task<StdTx> PostDepositAsync(ulong proposalId, DepositReq request, CancellationToken cancellationToken = default);
+StdTx PostDeposit(ulong proposalId, DepositReq request);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var baseReq = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, "memo", null, null, null, null);
+var amount = new List<Coin>()
+{
+    new Coin()
+    {
+        Amount = 10,
+        Denom = "uatom"
+    }
+};
+var depositReq = new DepositReq(baseReq, Configuration.GlobalDelegator1Address, amount);
+var tx = await client
+    .Governance
+    .PostDepositAsync(ProposalId, depositReq);
+```
+
+### Description
+Format a transaction to deposit tokens to a proposal. Sign and send it with [SignAndBroadcastStdTxAsync](#sending-transactions) method.
+
+### Parameters
+**proposalId** - Proposal ID
+**request** - Deposit request, [DepositReq](#depositreq) struct
+
+#### DepositReq
+```csharp
+public class DepositReq
+{
+    public BaseReq BaseReq;
+    
+    /// Address of the depositor.
+    public string Depositor;
+
+    /// Coins to add to the proposal's deposit.
+    public IList<Coin> Amount;
+}
+```
+
+### Returns
+Transaction in JSON format.
+The simulation version returns [GasEstimateResponse](#gasestimateresponse) struct.
+
+## GetDeposit
+```csharp
+Task<ResponseWithHeight<Deposit>> GetDepositAsync(ulong proposalId, string depositor, CancellationToken cancellationToken = default);
+ResponseWithHeight<Deposit> GetDeposit(ulong proposalId, string depositor);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var deposits = await client
+    .Governance
+    .GetDepositsAsync(ProposalId);
+var expectedDeposit = deposits.Result.First();
+
+var deposit = await client
+    .Governance
+    .GetDepositAsync(ProposalId, expectedDeposit.Depositor);
+```
+
+### Description
+Query deposits by proposal ID and depositor.
+
+### Parameters
+**proposalId** - Proposal ID
+**depositor** - Depositor account
+
+### Returns
+[Deposit](#deposit) struct
+
+## GetVotes
+```csharp
+Task<ResponseWithHeight<IList<Vote>>> GetVotesAsync(ulong proposalId, CancellationToken cancellationToken = default);
+ResponseWithHeight<IList<Vote>> GetVotes(ulong proposalId);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var votes = await client
+    .Governance
+    .GetVotesAsync(ProposalId);
+```
+
+### Description
+Query voters information by proposalId.
+
+### Parameters
+**proposalId** - Proposal ID
+
+### Returns
+List of [Vote](#vote) struct
+
+#### Vote
+```csharp
+public class Vote
+{
+    public string Voter;
+    public ulong ProposalId;
+    public VoteOption Option;
+}
+```
+
+## PostVote
+```csharp
+Task<GasEstimateResponse> PostVoteSimulationAsync(ulong proposalId, VoteReq request, CancellationToken cancellationToken = default);
+GasEstimateResponse PostVoteSimulation(ulong proposalId, VoteReq request);
+
+Task<StdTx> PostVoteAsync(ulong proposalId, VoteReq request, CancellationToken cancellationToken = default);
+StdTx PostVote(ulong proposalId, VoteReq request);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var baseReq = await client.CreateBaseReq(Configuration.GlobalDelegator1Address, "memo", null, null, null, null);
+var voteReq = new VoteReq(baseReq, Configuration.GlobalDelegator1Address, VoteOption.Yes);
+
+var tx = await client
+    .Governance
+    .PostVoteAsync(ProposalId, voteReq);
+```
+
+### Description
+Format a voting transaction. Sign and send it with [SignAndBroadcastStdTxAsync](#sending-transactions) method.
+
+### Parameters
+**proposalId** - Proposal ID
+**request** - Voting request, [VoteReq](#votereq) struct
+
+#### VoteReq
+```csharp
+public class VoteReq
+{
+    public BaseReq BaseReq;
+    /// Address of the voter.
+    public string Voter; 
+    public VoteOption Option;
+}
+
+public enum VoteOption : byte
+{
+    Empty = 0x00,
+    Yes = 0x01,
+    Abstain = 0x02,
+    No = 0x03,
+    NoWithVeto = 0x04,
+}
+```
+
+### Returns
+Transaction in JSON format.
+The simulation version returns [GasEstimateResponse](#gasestimateresponse) struct.
+
+## GetVote
+```csharp
+Task<ResponseWithHeight<Vote>> GetVoteAsync(ulong proposalId, string voter, CancellationToken cancellationToken = default);
+ResponseWithHeight<Vote> GetVote(ulong proposalId, string voter);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var votes = await client
+    .Governance
+    .GetVotesAsync(ProposalId);
+
+var expectedVote = votes.Result.Last();
+
+var vote = await client
+    .Governance
+    .GetVoteAsync(ProposalId, expectedVote.Voter);
+```
+
+### Description
+Query vote information by proposal Id and voter address.
+
+### Parameters
+**proposalId** - Proposal ID
+**voter** - Bech32 voter address
+
+### Returns
+[Vote](#vote) struct
+
+## GetTally
+```csharp
+Task<ResponseWithHeight<TallyResult>> GetTallyAsync(ulong proposalId, CancellationToken cancellationToken = default);
+ResponseWithHeight<TallyResult> GetTally(ulong proposalId);
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var tally = await client
+    .Governance
+    .GetTallyAsync(ProposalId);
+```
+
+### Description
+Gets a proposal’s tally result at the current time. If the proposal is pending deposits (i.e status ‘DepositPeriod’) it returns an empty tally result.
+
+### Parameters
+**proposalId** - Proposal ID
+
+### Returns
+[TallyResult](#tallyresult) struct
+
+#### TallyResult
+```csharp
+public class TallyResult
+{
+    public BigDecimal Yes { get; set; }
+    public BigDecimal Abstain { get; set; }
+    public BigDecimal No { get; set; }
+    public BigDecimal NoWithVeto { get; set; }
+}
+```
+
+## GetDepositParams
+```csharp
+Task<ResponseWithHeight<DepositParams>> GetDepositParamsAsync(CancellationToken cancellationToken = default);
+ResponseWithHeight<DepositParams> GetDepositParams();
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var depositParams = await client
+    .Governance
+    .GetDepositParamsAsync();
+```
+
+### Description
+Query governance deposit parameters.
+
+### Parameters
+None
+
+### Returns
+[DepositParams](#depositparams) struct
+
+#### DepositParams
+```csharp
+public class DepositParams
+{
+    /// Minimum deposit for a proposal to enter voting period.
+    public IList<Coin>? MinDeposit;
+    
+    /// Maximum period in nanoseconds for Atom holders to deposit on a proposal.
+    public long? MaxDepositPeriod;
+}
+```
+
+## GetTallyParams
+```csharp
+Task<ResponseWithHeight<TallyParams>> GetTallyParamsAsync(CancellationToken cancellationToken = default);
+ResponseWithHeight<TallyParams> GetTallyParams();
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var tallyParams = await client
+    .Governance
+    .GetTallyParamsAsync();
+```
+
+### Description
+Query governance tally parameters.
+
+### Parameters
+None
+
+### Returns
+[TallyParams](#tallyparams) struct
+
+#### TallyParams
+```csharp
+public class TallyParams
+{
+    /// Minimum percentage of total stake needed to vote for a result to be considered valid.
+    public BigDecimal? Quorum;
+    
+    /// Minimum proportion of Yes votes for proposal to pass.
+    public BigDecimal? Threshold;
+    
+    /// Minimum value of Veto votes to Total votes ratio for proposal to be vetoed.
+    public BigDecimal? Veto;
+}
+```
+
+## GetVotingParams
+```csharp
+Task<ResponseWithHeight<VotingParams>> GetVotingParamsAsync(CancellationToken cancellationToken = default);
+ResponseWithHeight<VotingParams> GetVotingParams();
+```
+
+### Example
+```csharp
+using var client = new CosmosApiBuilder()
+    .UseBaseUrl("localhost:1317")
+    .RegisterCosmosSdkTypeConverters()
+    .CreateClient();
+
+var votingParams = await client
+    .Governance
+    .GetVotingParamsAsync();
+```
+
+### Description
+Query governance voting parameters.
+
+### Parameters
+None 
+
+### Returns
+[VotingParams](#votingparams) struct
+
+#### VotingParams
+```csharp
+public class VotingParams
+{
+    /// Length of the voting period in nanoseconds.
+    public long? VotingPeriod;
+}
+```
+
