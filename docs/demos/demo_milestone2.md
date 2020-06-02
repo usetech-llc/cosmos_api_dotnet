@@ -1,6 +1,6 @@
 # Manual Demos - Milestone 2
 
-Milestone 3 deliverables are tagged as [milestone2tag](https://github.com/usetech-llc/cosmos_api_dotnet/tree/milestone1tag)
+Milestone 2 deliverables are tagged as [milestone2tag](https://github.com/usetech-llc/cosmos_api_dotnet/tree/milestone2tag)
 
 ## Deliverable 3
 
