@@ -36,6 +36,9 @@ namespace CosmosApi
             Bank = new Bank(GetClient);
             Staking = new Staking(GetClient);
             Governance = new Governance(GetClient);
+            Slashing = new Slashing(GetClient);
+            Distribution = new Distribution(GetClient);
+            Mint = new Mint(GetClient);
             var jsonSerializerSettings = JsonSerializerSettings();
             Serializer = new NewtownJsonSerializer(jsonSerializerSettings);
         }
@@ -47,6 +50,9 @@ namespace CosmosApi
         public IBank Bank { get; }
         public IStaking Staking { get; }
         public IGovernance Governance { get; }
+        public ISlashing Slashing { get; }
+        public IDistribution Distribution { get; }
+        public IMint Mint { get; }
 
         public HttpClient HttpClient =>
             _flurlClient?.Value.HttpClient ?? throw new ObjectDisposedException(nameof(CosmosApiClient));

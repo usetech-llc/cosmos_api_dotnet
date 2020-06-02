@@ -40,7 +40,6 @@ namespace CosmosApi.Endpoints
             return _clientGetter()
                 .Request("staking", "delegators", request.DelegatorAddress, "delegations")
                 .PostJsonAsync(request, cancellationToken)
-                .WrapExceptions()
                 .ReceiveJson<StdTx>()
                 .WrapExceptions();
         }
@@ -59,7 +58,6 @@ namespace CosmosApi.Endpoints
             return _clientGetter()
                 .Request("staking", "delegators", request.DelegatorAddress, "delegations")
                 .PostJsonAsync(request, cancellationToken)
-                .WrapExceptions()
                 .ReceiveJson<GasEstimateResponse>()
                 .WrapExceptions();
         }
@@ -106,7 +104,6 @@ namespace CosmosApi.Endpoints
             return _clientGetter()
                 .Request("staking", "delegators", request.DelegatorAddress, "unbonding_delegations")
                 .PostJsonAsync(request, cancellationToken)
-                .WrapExceptions()
                 .ReceiveJson<GasEstimateResponse>()
                 .WrapExceptions();
         }
@@ -124,7 +121,6 @@ namespace CosmosApi.Endpoints
             return _clientGetter()
                 .Request("staking", "delegators", request.DelegatorAddress, "unbonding_delegations")
                 .PostJsonAsync(request, cancellationToken)
-                .WrapExceptions()
                 .ReceiveJson<StdTx>()
                 .WrapExceptions();
         }
@@ -177,7 +173,6 @@ namespace CosmosApi.Endpoints
             return _clientGetter()
                 .Request("staking", "delegators", request.DelegatorAddress, "redelegations")
                 .PostJsonAsync(request, cancellationToken)
-                .WrapExceptions()
                 .ReceiveJson<GasEstimateResponse>()
                 .WrapExceptions();
         }
@@ -196,7 +191,6 @@ namespace CosmosApi.Endpoints
             return _clientGetter()
                 .Request("staking", "delegators", request.DelegatorAddress, "redelegations")
                 .PostJsonAsync(request, cancellationToken)
-                .WrapExceptions()
                 .ReceiveJson<StdTx>()
                 .WrapExceptions();
         }

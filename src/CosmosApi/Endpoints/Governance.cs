@@ -44,7 +44,6 @@ namespace CosmosApi.Endpoints
             return _clientGetter()
                 .Request("gov", "proposals")
                 .PostJsonAsync(request, cancellationToken)
-                .WrapExceptions()
                 .ReceiveJson<GasEstimateResponse>()
                 .WrapExceptions();
         }
@@ -98,7 +97,6 @@ namespace CosmosApi.Endpoints
             return _clientGetter()
                 .Request("gov", "proposals")
                 .PostJsonAsync(request, cancellationToken)
-                .WrapExceptions()
                 .ReceiveJson<StdTx>()
                 .WrapExceptions();
         }
@@ -186,7 +184,6 @@ namespace CosmosApi.Endpoints
             return _clientGetter()
                 .Request("gov", "proposals", proposalId, "deposits")
                 .PostJsonAsync(request, cancellationToken)
-                .WrapExceptions()
                 .ReceiveJson<GasEstimateResponse>()
                 .WrapExceptions();
         }
@@ -205,7 +202,6 @@ namespace CosmosApi.Endpoints
             return _clientGetter()
                 .Request("gov", "proposals", proposalId, "deposits")
                 .PostJsonAsync(request, cancellationToken)
-                .WrapExceptions()
                 .ReceiveJson<StdTx>()
                 .WrapExceptions();
         }
@@ -252,7 +248,6 @@ namespace CosmosApi.Endpoints
             return _clientGetter()
                 .Request("gov", "proposals", proposalId, "votes")
                 .PostJsonAsync(request, cancellationToken)
-                .WrapExceptions()
                 .ReceiveJson<GasEstimateResponse>()
                 .WrapExceptions();
         }
@@ -271,7 +266,6 @@ namespace CosmosApi.Endpoints
             return _clientGetter()
                 .Request("gov", "proposals", proposalId, "votes")
                 .PostJsonAsync(request, cancellationToken)
-                .WrapExceptions()
                 .ReceiveJson<StdTx>()
                 .WrapExceptions();
         }

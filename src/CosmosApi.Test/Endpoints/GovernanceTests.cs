@@ -25,7 +25,7 @@ namespace CosmosApi.Test.Endpoints
 
             var proposals = await client
                 .Governance
-                .GetProposalsAsync(depositor: Configuration.LocalDelegator1Address);
+                .GetProposalsAsync(depositor: Configuration.LocalAccount1Address);
             
             OutputHelper.WriteLine("Deserialized Proposals:");
             Dump(proposals);
@@ -323,7 +323,7 @@ namespace CosmosApi.Test.Endpoints
                 .Governance
                 .GetVotesAsync(ProposalId);
 
-            var expectedVote = votes.Result.First();
+            var expectedVote = votes.Result.Last();
             
             var vote = await client
                 .Governance

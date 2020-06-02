@@ -56,7 +56,6 @@ namespace CosmosApi.Endpoints
             return _clientGetter()
                 .Request("txs")
                 .PostJsonAsync(txBroadcast, cancellationToken)
-                .WrapExceptions()
                 .ReceiveJson<BroadcastTxResult>()
                 .WrapExceptions();
         }
@@ -71,7 +70,6 @@ namespace CosmosApi.Endpoints
             return _clientGetter()
                 .Request("txs", "encode")
                 .PostJsonAsync(tx, cancellationToken)
-                .WrapExceptions()
                 .ReceiveJson<EncodeTxResponse>()
                 .WrapExceptions();
         }
