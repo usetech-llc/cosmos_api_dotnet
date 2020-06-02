@@ -45,6 +45,8 @@ if {$force_conservative} {
 set timeout -1
 spawn $env(SHELL)
 match_max 100000
+send -- "git submodule update --init --recursive\r"
+expect -exact "$ "
 send -- "docker-compose build gaia-test\r"
 expect -exact "$ "
 send -- "docker-compose build nameservice\r"
