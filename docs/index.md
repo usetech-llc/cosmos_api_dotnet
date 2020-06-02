@@ -25,6 +25,7 @@ Built by [UseTech.com](https://usetech.com/blockchain)
     * [Reading Transaction Info](#reading-transaction-info)
         + [Get Transaction by Hash](#get-transaction-by-hash)
         + [Search Transactions](#search-transactions)
+    * [BaseReq Structure](#basereq-structure)
 - [Custom Transactions](#custom-transactions)
     * [Formatting Transactions](#formatting-transactions)
     * [Sending Transactions](#sending-transactions)
@@ -68,29 +69,21 @@ Built by [UseTech.com](https://usetech.com/blockchain)
     * [GetSigningInfos](#getsigninginfos)
     * [PostUnjail](#postunjail)
     * [Get Slashing Parameters](#get-slashing-parameters)
-
-
-
-
-
 - [Distribution API](#distribution-api)
-    * [GetDelegatorRewards](#)
-    * [PostWithdrawRewards](#)
-    * [GetWithdrawAddress](#)
-    * [PostWithdrawAddress](#)
-    * [GetValidatorDistributionInfo](#)
-    * [GetValidatorOutstandingRewards](#)
-    * [GetValidatorRewards](#)
-    * [PostValidatorWithdrawRewards](#)
-    * [GetCommunityPool](#)
-    * [GetParams](#)
+    * [GetDelegatorRewards](#getdelegatorrewards)
+    * [PostWithdrawRewards](#postwithdrawrewards)
+    * [GetWithdrawAddress](#getwithdrawaddress)
+    * [PostWithdrawAddress](#postwithdrawaddress)
+    * [GetValidatorDistributionInfo](#getvalidatordistributioninfo)
+    * [GetValidatorOutstandingRewards](#getvalidatoroutstandingrewards)
+    * [GetValidatorRewards](#getvalidatorrewards)
+    * [PostValidatorWithdrawRewards](#postvalidatorwithdrawrewards)
+    * [GetCommunityPool](#getcommunitypool)
+    * [Get Distribution Parameters](#get-distribution-parameters)
 - [Minting API](#minting-api)
-    * [GetParams](#)
-    * [GetInflation](#)
-    * [GetAnnualProvisions](#)
-
-
-
+    * [Get Minting Parameters](#get-minting-parameters)
+    * [GetInflation](#getinflation)
+    * [GetAnnualProvisions](#getannualprovisions)
 
 ## Getting Started
 
@@ -780,6 +773,33 @@ PaginatedTxs
   |- int PageTotal
   |- int Limit
   |- IList<[TxResponse](#txresponse)> Txs
+```
+
+## BaseReq Structure
+This structure is the base structure for every transaction request.
+
+```csharp
+public class BaseReq
+{
+    // Sender address
+    public string From;
+    // Memo
+    public string? Memo;
+    // Chain ID string
+    public string ChainId;
+    // Account number
+    public ulong AccountNumber { get; set; }
+    // Sequence number
+    public ulong Sequence { get; set; }
+    // fees
+    public IList<Coin>? Fees { get; set; }
+    // gas price in each coin gas charged in
+    public IList<DecCoin>? GasPrices { get; set; }
+    // gas
+    public string? Gas { get; set; }
+    // gas adjustment
+    public string? GasAdjustment { get; set; }
+}
 ```
 
 # Custom Transactions
@@ -2276,17 +2296,28 @@ using var client = new CosmosApiBuilder()
     .RegisterCosmosSdkTypeConverters()
     .CreateClient();
 
+var rewards = await client
+    .Distribution
+    .GetDelegatorRewardsAsync(Configuration.LocalDelegator1Address);
 ```
 
 ### Description
 Get the total rewards balance from all delegations.
 
 ### Parameters
-delegatorAddress
-cancellationToken
+**delegatorAddress** - Delegator address to query
 
 ### Returns
-DelegatorTotalRewards
+[DelegatorTotalRewards](#delegatortotalrewards) struct
+
+#### DelegatorTotalRewards
+```csharp
+public class DelegatorTotalRewards
+{
+    public IList<DelegationDelegatorReward> Rewards;
+    public IList<DecCoin> Total;
+}
+```
 
 ## PostWithdrawRewards
 ```csharp
@@ -2302,14 +2333,25 @@ using var client = new CosmosApiBuilder()
     .RegisterCosmosSdkTypeConverters()
     .CreateClient();
 
+var baseRequest = await client.CreateBaseReq(Configuration.LocalAccount1Address, "memo", null, null, null, null);
+var stdTx = await client
+    .Distribution
+    .PostWithdrawRewardsAsync(Configuration.LocalDelegator1Address, new WithdrawRewardsRequest(baseRequest));
 ```
 
 ### Description
-Post a simulation for a withdraw all delegator rewards request.
- Sign and send it with [SignAndBroadcastStdTxAsync](#sending-transactions) method.
+Format a withdraw all delegator rewards transaction. Sign and send it with [SignAndBroadcastStdTxAsync](#sending-transactions) method.
 ### Parameters
-delegatorAddress
-request
+**delegatorAddress** - Delegator address
+**request** - [WithdrawRewardsRequest](#withdrawrewardsrequest) struct
+
+#### WithdrawRewardsRequest
+```csharp
+public class WithdrawRewardsRequest
+{
+    public BaseReq BaseReq { get; set; } = null!;
+}
+```
 
 ### Returns
 Transaction in JSON format.
@@ -2327,19 +2369,27 @@ using var client = new CosmosApiBuilder()
     .RegisterCosmosSdkTypeConverters()
     .CreateClient();
 
+var rewards = await client
+    .Distribution
+    .GetDelegatorRewardsAsync(Configuration.LocalDelegator1Address, Configuration.LocalValidator1Address);
 ```
 
 ### Description
 Get the delegations' rewards withdrawal address. This is the address in which the user will receive the reward funds.
 
 ### Parameters
-delegatorAddress
+**delegatorAddress** - Delegator address to query
 
 ### Returns
-string
+Withdraw address string
 
 ## PostWithdrawAddress
 ```csharp
+Task<GasEstimateResponse> PostWithdrawAddressSimulationAsync(string delegatorAddress, SetWithdrawalAddrRequest request, CancellationToken cancellationToken = default);
+GasEstimateResponse PostWithdrawAddressSimulation(string delegatorAddress, SetWithdrawalAddrRequest request);
+Task<StdTx> PostWithdrawAddressAsync(string delegatorAddress, SetWithdrawalAddrRequest request, CancellationToken cancellationToken = default);
+StdTx PostWithdrawAddress(string delegatorAddress, SetWithdrawalAddrRequest request);
+
 ```
 ### Example
 ```csharp
@@ -2348,18 +2398,38 @@ using var client = new CosmosApiBuilder()
     .RegisterCosmosSdkTypeConverters()
     .CreateClient();
 
+var baseRequest = await client.CreateBaseReq(Configuration.LocalAccount1Address, "memo", null, null, null, null);
+var stdTx = await client
+    .Distribution
+    .PostWithdrawRewardsAsync(Configuration.LocalDelegator1Address, Configuration.LocalValidator1Address, new WithdrawRewardsRequest(baseRequest));
 ```
 
 ### Description
- Sign and send it with [SignAndBroadcastStdTxAsync](#sending-transactions) method.
+Format a transaction to replace the delegations' rewards withdrawal address for a new one. Sign and send it with [SignAndBroadcastStdTxAsync](#sending-transactions) method.
+
 ### Parameters
+**delegatorAddress** - Delegator address
+**request** - [SetWithdrawalAddrRequest](#setwithdrawaladdrrequest) struct
+
+#### SetWithdrawalAddrRequest
+```csharp
+public class SetWithdrawalAddrRequest
+{
+    public BaseReq BaseReq { get; set; } = null!;
+    public string WithdrawAddress { get; set; } = null!;
+}
+```
+
 ### Returns
 Transaction in JSON format.
 The simulation version returns [GasEstimateResponse](#gasestimateresponse) struct.
 
 ## GetValidatorDistributionInfo
 ```csharp
+Task<ResponseWithHeight<ValidatorDistInfo>> GetValidatorDistributionInfoAsync(string validatorAddress, CancellationToken cancellationToken = default);
+ResponseWithHeight<ValidatorDistInfo> GetValidatorDistributionInfo(string validatorAddress);
 ```
+
 ### Example
 ```csharp
 using var client = new CosmosApiBuilder()
@@ -2367,15 +2437,36 @@ using var client = new CosmosApiBuilder()
     .RegisterCosmosSdkTypeConverters()
     .CreateClient();
 
+var address = await client
+    .Distribution
+    .GetWithdrawAddressAsync(Configuration.LocalDelegator1Address);
 ```
 
 ### Description
+Query the distribution information of a single validator.
+
 ### Parameters
+**validatorAddress** - Validator address
+
 ### Returns
+[ValidatorDistInfo](#validatordistinfo) struct
+
+#### ValidatorDistInfo
+```csharp
+public class ValidatorDistInfo
+{
+    public string OperatorAddress;
+    public IList<DecCoin> SelfBondRewards;
+    public IList<DecCoin> ValCommission;
+}
+```
 
 ## GetValidatorOutstandingRewards
 ```csharp
+Task<ResponseWithHeight<IList<DecCoin>>> GetValidatorOutstandingRewardsAsync(string validatorAddress, CancellationToken cancellationToken = default);
+ResponseWithHeight<IList<DecCoin>> GetValidatorOutstandingRewards(string validatorAddress);
 ```
+
 ### Example
 ```csharp
 using var client = new CosmosApiBuilder()
@@ -2383,15 +2474,37 @@ using var client = new CosmosApiBuilder()
     .RegisterCosmosSdkTypeConverters()
     .CreateClient();
 
+var rewards = await client
+    .Distribution
+    .GetValidatorOutstandingRewardsAsync(Configuration.LocalValidator1Address);
 ```
 
 ### Description
+Fee distribution outstanding rewards of a single validator.
+
 ### Parameters
+**validatorAddress** - Validator address
+
 ### Returns
+List of [DecCoin](#deccoin) struct
+
+#### DecCoin
+DecCoin defines a coin which can have additional decimal points.
+
+```csharp
+public class DecCoin
+{
+    public string Denom { get; set; } = null!;
+    public BigDecimal Amount { get; set; }
+}
+```
 
 ## GetValidatorRewards
 ```csharp
+Task<ResponseWithHeight<IList<DecCoin>>> GetValidatorRewardsAsync(string validatorAddress, CancellationToken cancellationToken = default);
+ResponseWithHeight<IList<DecCoin>> GetValidatorRewards(string validatorAddress);
 ```
+
 ### Example
 ```csharp
 using var client = new CosmosApiBuilder()
@@ -2399,15 +2512,28 @@ using var client = new CosmosApiBuilder()
     .RegisterCosmosSdkTypeConverters()
     .CreateClient();
 
+var rewards = await client
+    .Distribution
+    .GetValidatorRewardsAsync(Configuration.LocalValidator1Address);
 ```
 
 ### Description
+Query the commission and self-delegation rewards of validator.
+
 ### Parameters
+**validatorAddress** - Validator address
+
 ### Returns
+List of [DecCoin](#deccoin) struct
 
 ## PostValidatorWithdrawRewards
 ```csharp
+Task<GasEstimateResponse> PostValidatorWithdrawRewardsSimulationAsync(string validatorAddress, WithdrawRewardsRequest request, CancellationToken cancellationToken = default);
+GasEstimateResponse PostValidatorWithdrawRewardsSimulation(string validatorAddress, WithdrawRewardsRequest request);
+Task<StdTx> PostValidatorWithdrawRewardsAsync(string validatorAddress, WithdrawRewardsRequest request
+StdTx PostValidatorWithdrawRewards(string validatorAddress, WithdrawRewardsRequest request);
 ```
+
 ### Example
 ```csharp
 using var client = new CosmosApiBuilder()
@@ -2415,18 +2541,29 @@ using var client = new CosmosApiBuilder()
     .RegisterCosmosSdkTypeConverters()
     .CreateClient();
 
+var baseRequest = await client.CreateBaseReq(Configuration.LocalDelegator1Address, "memo", null, null, null, null);
+var stdTx = await client
+    .Distribution
+    .PostValidatorWithdrawRewardsAsync(Configuration.LocalValidator1Address, new WithdrawRewardsRequest(baseRequest));
 ```
 
 ### Description
- Sign and send it with [SignAndBroadcastStdTxAsync](#sending-transactions) method.
+Format a transaction to withdraw the validator's self-delegation and commissions rewards. Sign and send it with [SignAndBroadcastStdTxAsync](#sending-transactions) method.
+
 ### Parameters
+**validatorAddress** - Validator address
+**request** - [WithdrawRewardsRequest](#withdrawrewardsrequest) struct
+
 ### Returns
 Transaction in JSON format.
 The simulation version returns [GasEstimateResponse](#gasestimateresponse) struct.
 
 ## GetCommunityPool
 ```csharp
+Task<ResponseWithHeight<IList<DecCoin>>> GetCommunityPoolAsync(long? height = default, CancellationToken cancellationToken = default);
+ResponseWithHeight<IList<DecCoin>> GetCommunityPool(long? height = default);
 ```
+
 ### Example
 ```csharp
 using var client = new CosmosApiBuilder()
@@ -2434,15 +2571,26 @@ using var client = new CosmosApiBuilder()
     .RegisterCosmosSdkTypeConverters()
     .CreateClient();
 
+var communityPool = await client
+    .Distribution
+    .GetCommunityPoolAsync();
 ```
 
 ### Description
-### Parameters
-### Returns
+Fee distribution parameters.
 
-## GetParams
+### Parameters
+**height** - Block to query
+
+### Returns
+List of [DecCoin](#deccoin) struct
+
+## Get Distribution Parameters
 ```csharp
+Task<ResponseWithHeight<DistributionParams>> GetParamsAsync(long? height = default, CancellationToken cancellationToken = default);
+ResponseWithHeight<DistributionParams> GetParams(long? height = default);
 ```
+
 ### Example
 ```csharp
 using var client = new CosmosApiBuilder()
@@ -2450,16 +2598,38 @@ using var client = new CosmosApiBuilder()
     .RegisterCosmosSdkTypeConverters()
     .CreateClient();
 
+var @params = await client
+    .Distribution
+    .GetParamsAsync();
 ```
 
 ### Description
+Get fee distribution parameters.
+
 ### Parameters
+**height** - Block to query
+
 ### Returns
+[DistributionParams](#distributionparams)
+
+#### DistributionParams
+```csharp
+public class DistributionParams
+{
+    public BigDecimal CommunityTax;
+    public BigDecimal BaseProposerReward;
+    public BigDecimal BonusProposerReward;
+    public bool WithdrawAddrEnabled;
+}
+```
 
 # Minting API
-## GetParams
+## Get Minting Parameters
 ```csharp
+Task<ResponseWithHeight<MintParams>> GetParamsAsync(long? height = default, CancellationToken cancellationToken = default);
+ResponseWithHeight<MintParams> GetParams(long? height = default);
 ```
+
 ### Example
 ```csharp
 using var client = new CosmosApiBuilder()
@@ -2467,15 +2637,45 @@ using var client = new CosmosApiBuilder()
     .RegisterCosmosSdkTypeConverters()
     .CreateClient();
 
+var @params = await client
+    .Mint
+    .GetParamsAsync();
 ```
 
 ### Description
+Minting module parameters.
+
 ### Parameters
+**height** - Block to query
+
 ### Returns
+[MintParams](#mintparams) struct
+
+#### MintParams
+```csharp
+public class MintParams
+{
+    /// Type of coin to mint.
+    public string MintDenom;
+    /// Maximum annual change in inflation rate.
+    public BigDecimal InflationRateChange;
+    /// Maximum inflation rate.
+    public BigDecimal InflationMax;
+    /// minimum inflation rate.
+    public BigDecimal InflationMin;
+    /// Goal of percent bonded atoms.
+    public BigDecimal GoalBonded;
+    /// Expected blocks per year.
+    public ulong BlocksPerYear;
+}
+```
 
 ## GetInflation
 ```csharp
+Task<ResponseWithHeight<BigDecimal>> GetInflationAsync(CancellationToken cancellationToken = default);
+ResponseWithHeight<BigDecimal> GetInflation();
 ```
+
 ### Example
 ```csharp
 using var client = new CosmosApiBuilder()
@@ -2483,15 +2683,26 @@ using var client = new CosmosApiBuilder()
     .RegisterCosmosSdkTypeConverters()
     .CreateClient();
 
+var inflation = await client
+    .Mint
+    .GetInflationAsync();
 ```
 
 ### Description
+Current minting inflation value.
+
 ### Parameters
+None 
+
 ### Returns
+BigDecimal inflation rate
 
 ## GetAnnualProvisions
 ```csharp
+Task<ResponseWithHeight<BigDecimal>> GetAnnualProvisionsAsync(CancellationToken cancellationToken = default);
+ResponseWithHeight<BigDecimal> GetAnnualProvisions();
 ```
+
 ### Example
 ```csharp
 using var client = new CosmosApiBuilder()
@@ -2499,8 +2710,17 @@ using var client = new CosmosApiBuilder()
     .RegisterCosmosSdkTypeConverters()
     .CreateClient();
 
+var annualProvisions = await client
+    .Mint
+    .GetAnnualProvisionsAsync();
 ```
 
 ### Description
+Current minting annual provisions value.
+
 ### Parameters
+None
+
 ### Returns
+BigDecimal provisions value
+
