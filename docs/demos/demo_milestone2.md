@@ -4,6 +4,22 @@ Milestone 3 deliverables are tagged as [milestone2tag](https://github.com/usetec
 
 ## Deliverable 3
 
+In order to get started, cleanup the previous Cosmos Dotnet API docker images if you have any. The univeral command set for this is:
+```
+docker stop $(docker ps -q)
+docker rm $(docker ps -a -q)
+docker system prune -a -f
+```
+
+...then run commands below for setup testing environment(line 1) and API tests(line 2):
+```
+$ ./run-services.sh
+$ ./run-tests.sh
+```
+
+Now you are connected to a running docker container with API built. You can execute following commands to examine deliverables.
+
+
 ### Transaction is generated using application RESTful endpoint
 
 Follow test can demonstrates RESTful generated transaction. Generated transaction will be printed in console.
