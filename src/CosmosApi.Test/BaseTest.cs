@@ -95,7 +95,6 @@ namespace CosmosApi.Test
                 }
                 catch (ObjectDisposedException)
                 {
-                    OutputHelper.WriteLine("Failed to read stream, it's already disposed.");
                 }
             }
         }
