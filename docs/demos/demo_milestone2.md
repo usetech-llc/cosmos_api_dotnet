@@ -11,9 +11,10 @@ docker rm $(docker ps -a -q)
 docker system prune -a -f
 ```
 
-...then run command below to setup testing environment and API tests:
+...then run commands below to setup testing environment (line 1) and API tests (line 2):
 ```
-$ ./run.sh
+$ ./run-services.sh
+$ ./run-tests.sh
 ```
 
 Now you are connected to a running docker container with API built. You can execute following commands to examine deliverables.
