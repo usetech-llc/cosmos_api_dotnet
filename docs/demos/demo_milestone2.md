@@ -47,11 +47,7 @@ $ docker-compose run cosmos-api-test dotnet test -l "console;verbosity=detailed"
 
 #### Usage example is provided (using Nameserver application from Cosmos SDK tutorial) 
 
-For examination Nameserver run self titled test group
-```
-$ docker-compose run cosmos-api-test dotnet test --filter NameserviceTests -l "console;verbosity=detailed"
-```
-
+All examples are provided in the [Docuemntation](../index.md), which is also hosted on [ReadTheDocs](https://cosmos-api-dotnet.readthedocs.io/en/latest/), also any unit test can provide an additional example.
 
 ## Deliverable 4
 
@@ -90,8 +86,7 @@ $ docker-compose run cosmos-api-test dotnet test --filter StakingTests -l "conso
 
 ### Usage example is provided
 
-All examples are provided in the [README](../README.md) also any unit test can provide an additional example.
-
+All examples are provided in the [Docuemntation](../index.md), which is also hosted on [ReadTheDocs](https://cosmos-api-dotnet.readthedocs.io/en/latest/), also any unit test can provide an additional example.
 
 
 ## Deliverable 5
@@ -129,4 +124,4 @@ $ docker-compose run cosmos-api-test dotnet test --filter GovernanceTests -l "co
 
 ### Usage examples are provided
 
-All examples are provided in the [README](../README.md) also any unit test can provide an additional example.
+All examples are provided in the [Docuemntation](../index.md), which is also hosted on [ReadTheDocs](https://cosmos-api-dotnet.readthedocs.io/en/latest/), also any unit test can provide an additional example.
