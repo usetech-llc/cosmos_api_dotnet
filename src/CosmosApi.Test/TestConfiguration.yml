@@ -12,7 +12,27 @@ LocalAccount1PrivateKey: |-
   -----END TENDERMINT PRIVATE KEY-----
 Validator1Passphrase: 11111111
 LocalAccount1Passphrase: 11111111
+LocalAccount2PrivateKey: |-
+  -----BEGIN TENDERMINT PRIVATE KEY-----
+  kdf: bcrypt
+  salt: 00793DC1E5C67A8815C1660BF0FEC268
+
+  4dZKIO+JkOXOKwtgkrHThz6DsFqYVOUTAJGpxjU2NAvmjImUepzOQO3HbS3VPpcW
+  neZJeGwgteC8ukJoq4OJBtelDG0r0BBtFWRGo80=
+  =xY68
+  -----END TENDERMINT PRIVATE KEY-----
+LocalAccount2Passphrase: 11111111
 LocalDelegator1Address: cosmos18cqk9yh9alcf54fvprqwaa96d4mu65c0aw4suv
+LocalDelegator1PrivateKey: |-
+  -----BEGIN TENDERMINT PRIVATE KEY-----
+  kdf: bcrypt
+  salt: 19BF16DE8AC987CD62D899FC7B17DAD4
+
+  qQGZtb3NhlpMoxIKay38HlkVm3rCgT+80i1+vCcTusMJ9r3Qk0DZsea8FYfXZVEM
+  jskN0a6SyDdSkFpfEYWHTKiPu3E1mFqNzemG3nk=
+  =mqMr
+  -----END TENDERMINT PRIVATE KEY-----
+LocalDelegator1Passphrase: 11111111
 LocalValidator1Address: cosmosvaloper1ht7y9zx4n4wnvwmgyqm8309xj2yulwklhqpzcp
 LocalValidator2Address: cosmosvaloper1235em592dc22gehs9z44reqtuy2hqulngeqqwc
 CutLongOutput: false
