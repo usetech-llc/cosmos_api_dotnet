@@ -14,6 +14,7 @@ namespace CosmosApi.Crypto
     public class CosmosCryptoService : ICryptoService
     {
         private const string Secp256k1 = "secp256k1";
+        private const string Secp256k1PublicKeyType = "tendermint/PubKeySecp256k1";
         public BinaryPrivateKey ParsePrivateKey(string encodedKey, string? passphrase)
         {
             var (headers, encryptedBytes) = Unarmor(encodedKey);
@@ -58,6 +59,83 @@ namespace CosmosApi.Crypto
             }
 
             throw new NotSupportedException($"Unknown key type {key.Type}");
+        }
+
+        public PublicKey? MakePublicKey(PublicKey? publicKey, BinaryPrivateKey privateKey)
+        {
+            if (publicKey?.Type != null && publicKey?.Value != null)
+            {
+                return publicKey;
+            }
+            
+            if (publicKey?.Value != null)
+            {
+                if (IsSecp256k1(publicKey.Type))
+                {
+                    var parsedKey = ParseSecp256k1PublicKey(publicKey);
+                    if (parsedKey != null)
+                    {
+                        return parsedKey;
+                    } 
+                }
+            }
+            
+            if (IsSecp256k1(privateKey.Type))
+            {
+                return MakeSecp256k1PublicKey(privateKey.Value);
+            }
+
+            return null;
+        }
+
+        private PublicKey? ParseSecp256k1PublicKey(PublicKey publicKey)
+        {
+            byte[]? keyBytes = null;
+            //todo: try to parse bech32 from publicKey.Value
+            if(keyBytes == null)
+            {
+                try
+                {
+                    keyBytes = ByteArrayExtensions.ParseBase64(publicKey.Value);
+                }
+                catch
+                {
+                    // ignored
+                }
+
+            }
+            
+            if (keyBytes == null)
+            {
+                try
+                {
+                    keyBytes = ByteArrayExtensions.ParseBase64(publicKey.Value);
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
+
+            if (keyBytes == null)
+            {
+                return null;
+            }
+
+            if(Context.Instance.TryCreatePubKey(keyBytes, out var compressed, out var ecPublicKey))
+            {
+                var compressedBytes = ecPublicKey!.ToBytes(true);
+                return new PublicKey(Secp256k1PublicKeyType, compressedBytes.ToBase64String());
+            }
+            return null;
+        }
+
+        private PublicKey? MakeSecp256k1PublicKey(byte[] privateKeyValue)
+        {
+            using var ecKey = Context.Instance.CreateECPrivKey(privateKeyValue);
+            var publicKey = ecKey.CreatePubKey()
+                .ToBytes(true);
+            return new PublicKey(Secp256k1PublicKeyType, publicKey.ToBase64String());
         }
 
         private static bool IsSecp256k1(string? type)

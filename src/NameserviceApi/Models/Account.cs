@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CosmosApi.Extensions;
 using CosmosApi.Models;
 using Newtonsoft.Json;
 
@@ -34,7 +35,7 @@ namespace NameserviceApi.Models
         {
             return new PublicKey()
             {
-                Type = "",
+                Type = null,
                 Value = PublicKey
             };
         }
