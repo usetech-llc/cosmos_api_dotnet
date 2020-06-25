@@ -42,6 +42,15 @@ namespace CosmosApi.Crypto
         bool VerifySign(byte[] message, byte[] sign, BinaryPublicKey key);
 
         /// <summary>
+        /// Tries to make public key from private.
+        /// Returns null if can't.
+        /// </summary>
+        /// <param name="publicKey"></param>
+        /// <param name="privateKey"></param>
+        /// <returns></returns>
+        PublicKey? MakePublicKey(PublicKey? publicKey, BinaryPrivateKey privateKey);
+
+        /// <summary>
         /// Verifies sign.
         /// </summary>
         /// <param name="message">Message which was signed.</param>
@@ -68,11 +77,7 @@ namespace CosmosApi.Crypto
             var bytesToSign = Encoding.UTF8.GetBytes(serializer.SerializeSortedAndCompact(stdSignDoc));
             byte[] signedBytes = Sign(bytesToSign, privateKey);
 
-            if (publicKey?.Type == null ||
-                !string.Equals(privateKey.Type, publicKey.Type, StringComparison.OrdinalIgnoreCase))
-            {
-                publicKey = null;
-            }
+            publicKey = MakePublicKey(publicKey, privateKey);
             return new StdSignature(signedBytes, publicKey);
         }
 

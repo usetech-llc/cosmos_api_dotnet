@@ -347,9 +347,7 @@ namespace CosmosApi.Test.Endpoints
             
             OutputHelper.WriteLine("Deserialized Tally:");
             Dump(tally);
-            
-             Assert.True(tally.Result.Abstain > 0);
-             Assert.True(tally.Result.Yes > 0);
+            Assert.True(tally.Result.Yes > 0);            
         }
 
         [Fact]

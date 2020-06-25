@@ -22,7 +22,7 @@ namespace CosmosApi.Test.Endpoints
 
             var delegations = await client
                 .Staking
-                .GetDelegationsAsync(Configuration.LocalDelegator1Address);
+                .GetDelegationsAsync(Configuration.LocalAccount1Address);
             
             OutputHelper.WriteLine("Deserialized into:");
             Dump(delegations);
@@ -39,7 +39,7 @@ namespace CosmosApi.Test.Endpoints
 
             var delegations = client
                 .Staking
-                .GetDelegations(Configuration.LocalDelegator1Address);
+                .GetDelegations(Configuration.LocalAccount1Address);
             
             OutputHelper.WriteLine("Deserialized into:");
             Dump(delegations);
@@ -98,7 +98,7 @@ namespace CosmosApi.Test.Endpoints
 
             var delegation = await client
                 .Staking
-                .GetDelegationByValidatorAsync(Configuration.LocalDelegator1Address,
+                .GetDelegationByValidatorAsync(Configuration.LocalAccount1Address,
                     Configuration.LocalValidator1Address);
             OutputHelper.WriteLine("Deserialized delegation:");
             Dump(delegation);
@@ -115,7 +115,7 @@ namespace CosmosApi.Test.Endpoints
 
             var delegations = await client
                 .Staking
-                .GetUnbondingDelegationsAsync(Configuration.LocalDelegator1Address);
+                .GetUnbondingDelegationsAsync(Configuration.LocalAccount1Address);
             
             OutputHelper.WriteLine("Deserialized delegations:");
             Dump(delegations);
@@ -126,7 +126,7 @@ namespace CosmosApi.Test.Endpoints
 
         private void UnbondingDelegationNotEmpty(UnbondingDelegation d)
         {
-            Assert.Equal(Configuration.LocalDelegator1Address, d.DelegatorAddress);
+            Assert.Equal(Configuration.LocalAccount1Address, d.DelegatorAddress);
             Assert.Equal(Configuration.LocalValidator1Address, d.ValidatorAddress);
             Assert.NotEmpty(d.Entries);
             Assert.All(d.Entries, entry =>
@@ -169,7 +169,7 @@ namespace CosmosApi.Test.Endpoints
 
             var result = await client
                     .Staking
-                    .GetUnbondingDelegationsByValidatorAsync(Configuration.LocalDelegator1Address, Configuration.LocalValidator1Address);
+                    .GetUnbondingDelegationsByValidatorAsync(Configuration.LocalAccount1Address, Configuration.LocalValidator1Address);
             OutputHelper.WriteLine("Deserialized unbonding delegation:");
             Dump(result);
             
@@ -327,7 +327,7 @@ namespace CosmosApi.Test.Endpoints
 
             var validators = await client
                 .Staking
-                .GetValidatorsAsync(Configuration.LocalDelegator1Address);
+                .GetValidatorsAsync(Configuration.LocalAccount1Address);
             
             OutputHelper.WriteLine("Deserialized validators:");
             Dump(validators);
@@ -345,7 +345,7 @@ namespace CosmosApi.Test.Endpoints
 
             var validator = await client
                 .Staking
-                .GetValidatorAsync(Configuration.LocalDelegator1Address, Configuration.LocalValidator1Address);
+                .GetValidatorAsync(Configuration.LocalAccount1Address, Configuration.LocalValidator1Address);
             
             OutputHelper.WriteLine("Deserialized validator:");
             Dump(validator);
@@ -361,7 +361,7 @@ namespace CosmosApi.Test.Endpoints
 
             var txs = await client
                 .Staking
-                .GetTransactionsAsync(Configuration.LocalDelegator1Address);
+                .GetTransactionsAsync(Configuration.LocalAccount1Address);
             
             OutputHelper.WriteLine("Deserialized transactions:");
             Dump(txs);
@@ -385,7 +385,7 @@ namespace CosmosApi.Test.Endpoints
             };
             var txs = await client
                 .Staking
-                .GetTransactionsAsync(Configuration.LocalDelegator1Address, txTypes);
+                .GetTransactionsAsync(Configuration.LocalAccount1Address, txTypes);
             
             OutputHelper.WriteLine("Deserialized transactions:");
             Dump(txs);
