@@ -4,6 +4,22 @@ Milestone 2 deliverables are tagged as [milestone2tag](https://github.com/usetec
 
 ## Deliverable 3
 
+In order to get started, cleanup the previous Cosmos Dotnet API docker images if you have any. The univeral command set for this is:
+```
+docker stop $(docker ps -q)
+docker rm $(docker ps -a -q)
+docker system prune -a -f
+```
+
+...then run commands below to setup testing environment (line 1) and API tests (line 2):
+```
+$ ./run-services.sh
+$ ./run-tests.sh
+```
+
+Now you are connected to a running docker container with API built. You can execute following commands to examine deliverables.
+
+
 ### Transaction is generated using application RESTful endpoint
 
 Follow test can demonstrates RESTful generated transaction. Generated transaction will be printed in console.
@@ -32,11 +48,7 @@ $ docker-compose run cosmos-api-test dotnet test -l "console;verbosity=detailed"
 
 #### Usage example is provided (using Nameserver application from Cosmos SDK tutorial) 
 
-For examination Nameserver run self titled test group
-```
-$ docker-compose run cosmos-api-test dotnet test --filter NameserviceTests -l "console;verbosity=detailed"
-```
-
+All examples are provided in the [Documentation](../index.md), which is also hosted on [ReadTheDocs](https://cosmos-api-dotnet.readthedocs.io/en/latest/), also any unit test can provide an additional example.
 
 ## Deliverable 4
 
@@ -75,8 +87,7 @@ $ docker-compose run cosmos-api-test dotnet test --filter StakingTests -l "conso
 
 ### Usage example is provided
 
-All examples are provided in the [README](../README.md) also any unit test can provide an additional example.
-
+All examples are provided in the [Documentation](../index.md), which is also hosted on [ReadTheDocs](https://cosmos-api-dotnet.readthedocs.io/en/latest/), also any unit test can provide an additional example.
 
 
 ## Deliverable 5
@@ -114,4 +125,4 @@ $ docker-compose run cosmos-api-test dotnet test --filter GovernanceTests -l "co
 
 ### Usage examples are provided
 
-All examples are provided in the [README](../README.md) also any unit test can provide an additional example.
+All examples are provided in the [Documentation](../index.md), which is also hosted on [ReadTheDocs](https://cosmos-api-dotnet.readthedocs.io/en/latest/), also any unit test can provide an additional example.

@@ -11,7 +11,7 @@ namespace CosmosApi.Test.Endpoints
 {
     public class TransactionsTest : BaseTest
     {
-        private const string ExistingHash = "45469542DA2009538A7DA4FAEDEE5B9CDA24E5DAE658C538EEEB646D130D784A";
+        private const string ExistingHash = "9947060C34824A9899ADF3D2E7183855DBEF952B4EAD0B11DF68D41D7470AC1F";
         
         public TransactionsTest(ITestOutputHelper outputHelper) : base(outputHelper)
         {

@@ -57,7 +57,7 @@ namespace CosmosApi.Test.Endpoints
             var baseRequest = await client.CreateBaseReq(Configuration.LocalAccount1Address, "memo", null, null, null, null);
             var stdTx = await client
                 .Distribution
-                .PostWithdrawRewardsAsync(Configuration.LocalDelegator1Address, new WithdrawRewardsRequest(baseRequest));
+                .PostWithdrawRewardsAsync(Configuration.LocalAccount1Address, new WithdrawRewardsRequest(baseRequest));
             OutputHelper.WriteLine("Deserialized StdTx:");
             Dump(stdTx);
 
@@ -65,7 +65,7 @@ namespace CosmosApi.Test.Endpoints
             var withdrawMsg = stdTx.Msg.OfType<MsgWithdrawDelegatorReward>(); 
             Assert.All(withdrawMsg, w =>
             {
-                Assert.Equal(Configuration.LocalDelegator1Address, w.DelegatorAddress);
+                Assert.Equal(Configuration.LocalAccount1Address, w.DelegatorAddress);
                 Assert.NotEmpty(w.ValidatorAddress);
             });
         }
@@ -77,7 +77,7 @@ namespace CosmosApi.Test.Endpoints
 
             var rewards = await client
                 .Distribution
-                .GetDelegatorRewardsAsync(Configuration.LocalDelegator1Address, Configuration.LocalValidator1Address);
+                .GetDelegatorRewardsAsync(Configuration.LocalAccount1Address, Configuration.LocalValidator1Address);
 
             OutputHelper.WriteLine("Deserialized Rewards:");
             Dump(rewards);

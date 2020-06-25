@@ -72,7 +72,14 @@ namespace CosmosApi.Serialization
                 writer.WritePropertyName(property.PropertyName ??
                                          throw new CosmosSerializationException(
                                              $"Property name is null for type {value.GetType()}."));
-                serializer.Serialize(writer, property.ValueProvider!.GetValue(value));
+                if (property.Converter != null)
+                {
+                    property.Converter.WriteJson(writer, property.ValueProvider!.GetValue(value), serializer);
+                }
+                else
+                {
+                    serializer.Serialize(writer, property.ValueProvider!.GetValue(value));
+                }
             }
 
             writer.WriteEndObject();

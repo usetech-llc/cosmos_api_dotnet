@@ -1,3 +1,5 @@
+#!/bin/bash
+
 docker-compose build cosmos-api-test
 docker-compose up -d cosmos-api-test
 
